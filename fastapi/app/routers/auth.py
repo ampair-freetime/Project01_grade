@@ -146,11 +146,7 @@ async def google_auth(request: Request, db: Session = Depends(get_db)):
             AuthUser.email == user_info["email"]).first()
         if not user:
             logger.debug("User not found, creating one")
-            user = AuthUser(
-                email=user_info["email"],
-                name=user_info["name"],
-                avatar_url=user_info.get("picture")
-            )
+            user = AuthUser(email=user_info["email"])
             db.add(user)
             db.commit()
             db.refresh(user)

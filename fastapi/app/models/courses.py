@@ -5,11 +5,13 @@ from app.db import Base
 class Course(Base):
     __tablename__ = "courses"
 
-    id = Column(Integer, primary_key=True, index=True)
-    code = Column(String(20), unique=True, index=True) # รหัสวิชา เช่น CS101
-    name = Column(String(200), nullable=False)
+    id = Column(Integer, primary_key=True, index=True) # ลำดับ
+    course_id = Column(String(20), unique=True, index=True) # รหัสวิชา เช่น CS101
+    course_name = Column(String(200), nullable=False) # ชื่อวิชา
     
-    teacher_id = Column(Integer, ForeignKey("auth_users.id"))
-    teacher = relationship("AuthUser", back_populates="courses")
+    # เชื่อมต่อกับ teacher
+    teacher_id = Column(Integer, ForeignKey("teachers.id"))
+    teacher = relationship("Teacher", back_populates="courses")
 
+    # เชื่อมต่อกับ enrollment
     enrollments = relationship("Enrollment", back_populates="course")

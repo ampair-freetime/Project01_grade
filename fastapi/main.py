@@ -1,9 +1,12 @@
 import sys
 import os
 
-# Add the api directory to the path for Vercel
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 from app import fastapi_app
+from app.db import Base, engine
+from app import models
 
-app = fastapi_app  # Vercel expects 'app' as the entry point
+Base.metadata.create_all(bind=engine)
+
+app = fastapi_app
