@@ -1,14 +1,9 @@
 # fastapi/app/seed.py
 from app.db import SessionLocal, engine, Base
 from app.models import AuthUser, UserRole, Course, Enrollment
-# from werkzeug.security import generate_password_hash # หรือใช้ library อื่นที่โปรเจกต์คุณใช้ hash password
 
 def seed_data():
     db = SessionLocal()
-    
-    # 1. ล้างข้อมูลเก่า (Optional: ระวังข้อมูลหายหมดนะ!)
-    # Base.metadata.drop_all(bind=engine)
-    # Base.metadata.create_all(bind=engine)
 
     # 2. เช็คว่ามีข้อมูลหรือยัง ถ้ามีแล้วไม่สร้างซ้ำ
     if db.query(AuthUser).first():
@@ -57,7 +52,7 @@ def seed_data():
     db.add(grade)
     db.commit()
 
-    print("✅ Seeding complete!")
+    print(" Seeding complete!")
     print(f"Teacher: {teacher.email}")
     print(f"Student: {student.email} (ID: {student.student_id})")
     print(f"Course: {course_cs101.code}")

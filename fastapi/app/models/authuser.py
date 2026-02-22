@@ -1,7 +1,5 @@
-# fastapi/app/models/authuser.py
 from sqlalchemy import Column, Integer, String, Enum
 from sqlalchemy.orm import relationship
-import enum
 from app.db import Base
 
 class AuthUser(Base):

@@ -10,3 +10,7 @@ from .enrollments import Enrollment
 from .student import Student
 # teacher (อาจารย์)
 from .teacher import Teacher
+
+from .scores import Score
+
+from .uploads import Upload

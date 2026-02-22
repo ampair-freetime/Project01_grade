@@ -6,6 +6,7 @@ class UserResponse(BaseModel):
     id: int
     email: EmailStr
     name: str
+    password: str
     avatar_url: Optional[str] = None
     role: str              # เพิ่ม: student หรือ teacher
     student_id: Optional[str] = None  # เพิ่ม: รหัสนักศึกษา (ถ้ามี)
@@ -13,6 +14,5 @@ class UserResponse(BaseModel):
     class Config:
         from_attributes = True  # เพื่อให้อ่านค่าจาก SQLAlchemy Model ได้
 
-# ใช้สำหรับข้อความตอบกลับทั่วไป
 class Message(BaseModel):
     message: str
