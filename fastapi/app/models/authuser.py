@@ -7,10 +7,8 @@ class AuthUser(Base):
 
     # ลำดับ id
     auth_user_id = Column(Integer, primary_key=True, index=True)
-    # email 
-    email = Column(VARCHAR, unique=True, nullable=False)
-    # รหัสผ่าน 
-    password = Column(VARCHAR)
+    email = Column(VARCHAR(100), unique=True, nullable=False)
+    password = Column(VARCHAR(255))
 
     student = relationship("Student", back_populates="auth_user", uselist=False)
     teacher = relationship("Teacher", back_populates="auth_user", uselist=False)

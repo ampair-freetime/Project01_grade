@@ -2,13 +2,16 @@ from sqlalchemy import Column, Integer, Float, ForeignKey, Boolean, DateTime
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
 from sqlalchemy_serializer import SerializerMixin
+from sqlalchemy import UniqueConstraint
 from app.db import Base
 
 class Score(Base, SerializerMixin):
     __tablename__ = "scores"
+    __table_args__ = (
+        UniqueConstraint("student_id", "quiz_id", name="unique_student_quiz"),
+    )
 
     score_id = Column(Integer, primary_key=True, index=True)
-
     # คะแนนของนักเรียน
     score = Column(Float, default=0.0)
     # เปิดดูแล้วหรือยัง
