@@ -1,9 +1,10 @@
 from sqlalchemy import Column, Integer, String, ForeignKey, DateTime, Boolean
 from sqlalchemy.orm import relationship
 from datetime import datetime
+from sqlalchemy_serializer import SerializerMixin
 from app.db import Base
 
-class Course(Base):
+class Course(Base, SerializerMixin):
     __tablename__ = "courses"
 
     course_id = Column(Integer, primary_key=True, index=True)
@@ -16,6 +17,6 @@ class Course(Base):
     is_deleted = Column(Boolean, default=False)
 
     teacher = relationship("Teacher", back_populates="courses")
-    enrollments = relationship("Enrollment", back_populates="course")
+    scores = relationship("Score", back_populates="course")
     uploads = relationship("Upload", back_populates="course")
     quizzes = relationship("Quiz", back_populates="course")

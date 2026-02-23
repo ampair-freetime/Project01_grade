@@ -4,8 +4,6 @@
 from .authuser import AuthUser
 # courses (ตารางรายวิชา)
 from .courses import Course
-# enrollments (ตารางคะแนน)
-from .enrollments import Enrollment
 # student (นักเรียน)
 from .student import Student
 # teacher (อาจารย์)

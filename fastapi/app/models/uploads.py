@@ -21,5 +21,5 @@ class Upload(Base):
     #connection with teacher and courses
     teacher_id = Column(Integer, ForeignKey("teachers.teacher_id"))
     teacher = relationship("Teacher",back_populates="uploads")
-    course_id = Column(Integer, ForeignKey("courses.couse_id"))
+    course_id = Column(Integer, ForeignKey("courses.course_id"))
     course = relationship("Course", back_populates="uploads")

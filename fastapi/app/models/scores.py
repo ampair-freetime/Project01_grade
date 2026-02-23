@@ -1,9 +1,10 @@
 from sqlalchemy import Column, Integer, Float, ForeignKey, Boolean, DateTime
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
+from sqlalchemy_serializer import SerializerMixin
 from app.db import Base
 
-class Score(Base):
+class Score(Base, SerializerMixin):
     __tablename__ = "scores"
 
     score_id = Column(Integer, primary_key=True, index=True)
@@ -13,13 +14,15 @@ class Score(Base):
     # เปิดดูแล้วหรือยัง
     unread_flag = Column(Boolean, default=True)
 
-    # เชื่อมต่อกับ enrollment
-    enrollment_id = Column(Integer, ForeignKey("enrollments.enrollment_id"))
-    enrollment = relationship("Enrollment", back_populates="scores")
-
     # เชื่อมต่อกับ quiz
     quiz_id = Column(Integer, ForeignKey("quizzes.quiz_id"))
     quiz = relationship("Quiz", back_populates="scores")
+
+    student_id = Column(Integer, ForeignKey("students.student_id"))
+    student = relationship("Student", back_populates="scores")
+
+    course_id = Column(Integer, ForeignKey("courses.course_id"))
+    course = relationship("Course", back_populates="scores")
 
     # create/update
     created_at = Column(DateTime(timezone=True), server_default=func.now())
