@@ -10,7 +10,9 @@ from .enrollments import Enrollment
 from .student import Student
 # teacher (อาจารย์)
 from .teacher import Teacher
-
+# score (คะแนน)
 from .scores import Score
-
+# uploads (อัปโหลด)
 from .uploads import Upload
+# quiz (ควิซ)
+from .quiz import Quiz
