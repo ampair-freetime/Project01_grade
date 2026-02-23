@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, Float, ForeignKey, Boolean, DateTime
+from sqlalchemy import Column, Integer, Float, ForeignKey, Boolean, DateTime, VARCHAR
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
 from sqlalchemy_serializer import SerializerMixin
@@ -16,6 +16,8 @@ class Score(Base, SerializerMixin):
     score = Column(Float, default=0.0)
     # เปิดดูแล้วหรือยัง
     unread_flag = Column(Boolean, default=True)
+    # section
+    section = Column(VARCHAR(50))
 
     # เชื่อมต่อกับ quiz
     quiz_id = Column(Integer, ForeignKey("quizzes.quiz_id"))
@@ -23,9 +25,6 @@ class Score(Base, SerializerMixin):
 
     student_id = Column(Integer, ForeignKey("students.student_id"))
     student = relationship("Student", back_populates="scores")
-
-    course_id = Column(Integer, ForeignKey("courses.course_id"))
-    course = relationship("Course", back_populates="scores")
 
     # create/update
     created_at = Column(DateTime(timezone=True), server_default=func.now())
