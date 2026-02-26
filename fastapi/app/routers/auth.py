@@ -80,7 +80,7 @@ async def hello():
     return {"message": "From auth.py: Hello World!"}
 
 
-@router.get("/login", response_description="Redirects to Google OAuth")
+@router.get("/login_with_google", response_description="Redirects to Google OAuth")
 async def login(request: Request):
     """
     **Initiate Google OAuth Login**
@@ -169,6 +169,13 @@ async def google_auth(request: Request, db: Session = Depends(get_db)):
         logger.error(f"Error processing Google auth callback: {e}")
         return RedirectResponse(url=settings.frontend_login_failure_uri)
 
+@router.get("/login")
+async def login():
+    #นำเข้ารหัส email มาเช็คก่อน โดย filter if . then role เป็นอาจารย์,_ role นักเรียน
+    #เช็คว่า email ที่มา นั้นมีใน database ไหม
+    #   มี; เช็ครหัสต่อ verify(password, hash) then token get_current_user
+    #   ไม่มี; return json invalid email or password
+    return ...
 
 @router.get("/logout", response_model=Message)
 async def logout():
