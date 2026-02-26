@@ -181,6 +181,7 @@ async def login():
 @router.get("/register")
 async def register():
     #ใช้สมัครสำหรับ นักเรียนใหม่ เพื่อเข้าสู่ระบบ เช็ค database แล้วเปลี่ยนเอา หรือ สร้าง database ใหม่
+    #ถ้ามีเวลาให้เอาอันนี้ออก แล้ว ใช้ การ ส่งรหัสผ่าน email (advance)
     return ...
 
 @router.get("/logout", response_model=Message)
