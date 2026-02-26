@@ -175,6 +175,12 @@ async def login():
     #เช็คว่า email ที่มา นั้นมีใน database ไหม
     #   มี; เช็ครหัสต่อ verify(password, hash) then token get_current_user
     #   ไม่มี; return json invalid email or password
+    # ใช้ login ผ่านเข้าสู่ระบบ
+    return ...
+
+@router.get("/register")
+async def register():
+    #ใช้สมัครสำหรับ นักเรียนใหม่ เพื่อเข้าสู่ระบบ เช็ค database แล้วเปลี่ยนเอา หรือ สร้าง database ใหม่
     return ...
 
 @router.get("/logout", response_model=Message)
