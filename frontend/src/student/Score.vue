@@ -2,88 +2,95 @@
   <div
     class="bg-background-light dark:bg-background-dark text-text-main-light dark:text-text-main-dark transition-colors duration-200 min-h-screen flex flex-col"
   >
-    <nav
-      class="bg-card-light dark:bg-card-dark border-b border-border-light dark:border-blue-700 h-16 sticky top-0 z-50 shadow-sm"
+    <header
+      class="bg-white dark:bg-[#1a232e] border-b border-[#e0e7eb] dark:border-[#2a363e] h-16 shrink-0 sticky top-0 z-50"
     >
       <div
-        class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-full flex items-center justify-between"
+        class="max-w-7xl mx-auto px-4 h-full flex items-center justify-between"
       >
-        <div class="flex items-center gap-3">
-          <div
-            class="bg-primary rounded-lg p-1.5 flex items-center justify-center text-white"
-          >
-            <span class="material-icons-outlined text-xl">school</span>
-          </div>
-          <span
-            class="font-bold text-xl tracking-tight text-gray-900 dark:text-white"
-            >UniGrades</span
-          >
-        </div>
-        <div class="flex items-center gap-4">
-          <div class="hidden md:flex flex-col items-end mr-2">
-            <span class="text-sm font-semibold text-gray-900 dark:text-white"
-              >John Doe</span
-            >
-            <span
-              class="text-xs text-text-muted-light dark:text-text-muted-dark"
-              >Undergraduate Student</span
-            >
-          </div>
-          <div class="relative">
-            <img
-              alt="User profile picture"
-              class="h-10 w-10 rounded-full object-cover border-2 border-primary"
-              src="https://lh3.googleusercontent.com/aida-public/AB6AXuAfs56wd3ZKem_c5viO2sbQi6QqagsAHOE_1vjyHa7ZI8VHLknmGt20_hlaSVETqWYOsJL90qkBypXOjJp3RLSZRVCCQdcfaZh5kBgmGKpB2H1ljdV46tJTVLrSN0GurDyMvTs3Rbs4iUT-JQEizgeI8EIRbyNIvgzgmld5oKsHWGOuXctpZU9YajqdkAw1xoCp7REQvLbXOz8A9iuN2iz7maCHA50bOTOwjKS5ivvz9hojTaRSN6jd9o2cDN90A2qviBCKcL1ugg"
-            />
+        <div class="flex items-center gap-2">
+          <div class="flex items-center gap-3">
             <div
-              class="absolute bottom-0 right-0 h-3 w-3 rounded-full bg-blue-400 border-2 border-white dark:border-gray-800"
-            ></div>
+              class="bg-primary rounded-lg p-1.5 flex items-center justify-center text-white"
+            >
+              <span class="material-symbols-outlined text-white text-xl"
+                >school</span
+              >
+            </div>
+            <h2 class="text-lg font-bold leading-tight tracking-[-0.015em]">
+              University Grade Portal
+            </h2>
           </div>
-          <button
-            class="p-2 text-text-muted-light dark:text-text-muted-dark hover:text-primary dark:hover:text-white transition-colors rounded-full hover:bg-blue-50 dark:hover:bg-blue-700"
-            title="Logout"
-          >
-            <span class="material-icons-outlined">logout</span>
-          </button>
+        </div>
+        <div class="flex items-center gap-6">
+          <div class="flex items-center gap-3">
+            <button
+              class="flex items-center space-x-3 hover:bg-gray-100 dark:hover:bg-gray-700 px-3 py-2 rounded-lg transition"
+            >
+              <div class="hidden md:flex flex-col items-end mr-2">
+                <span
+                  class="text-sm font-semibold text-gray-900 dark:text-white"
+                  >John Doe</span
+                >
+              </div>
+              <div class="relative">
+                <img
+                  alt="User profile picture"
+                  class="h-10 w-10 rounded-full object-cover border-2 border-primary"
+                  src="https://lh3.googleusercontent.com/aida-public/AB6AXuAfs56wd3ZKem_c5viO2sbQi6QqagsAHOE_1vjyHa7ZI8VHLknmGt20_hlaSVETqWYOsJL90qkBypXOjJp3RLSZRVCCQdcfaZh5kBgmGKpB2H1ljdV46tJTVLrSN0GurDyMvTs3Rbs4iUT-JQEizgeI8EIRbyNIvgzgmld5oKsHWGOuXctpZU9YajqdkAw1xoCp7REQvLbXOz8A9iuN2iz7maCHA50bOTOwjKS5ivvz9hojTaRSN6jd9o2cDN90A2qviBCKcL1ugg"
+                />
+              </div>
+            </button>
+            <a
+              class="flex items-center justify-center size-10 rounded-full hover:bg-red-50 dark:hover:bg-red-900/20 text-[#637888] dark:text-[#a0b8cf] hover:text-red-600 dark:hover:text-red-400 transition-colors"
+              href="#"
+              title="Log Out"
+            >
+              <span class="material-symbols-outlined text-[20px]">logout</span>
+            </a>
+          </div>
         </div>
       </div>
-    </nav>
+    </header>
     <main class="flex-grow w-full max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       <nav
         aria-label="Breadcrumb"
         class="flex mb-6 text-sm text-text-muted-light dark:text-text-muted-dark"
       >
-        <ol class="inline-flex items-center space-x-1 md:space-x-3">
-          <li class="inline-flex items-center">
+        <div class="flex flex-col gap-4">
+          <a
+            class="group flex w-fit items-center gap-3 text-sm font-bold text-[#111811] dark:text-white hover:text-primary transition-colors"
+            href="#"
+          >
+            <div
+              class="flex size-9 items-center justify-center rounded-full bg-surface-light dark:bg-surface-dark border border-border-light dark:border-border-dark shadow-sm group-hover:border-primary group-hover:text-primary transition-colors"
+            >
+              <span class="material-symbols-outlined text-[20px]"
+                >arrow_back</span
+              >
+            </div>
+            <span>Return to Courses</span>
+          </a>
+          <div class="flex flex-wrap gap-2 text-sm">
             <a
-              class="hover:text-primary dark:hover:text-white transition-colors"
+              class="text-[#638863] hover:text-primary dark:text-[#8ba38b] font-medium"
               href="#"
               >Courses</a
             >
-          </li>
-          <li>
-            <div class="flex items-center">
-              <span class="material-icons-outlined text-sm mx-1"
-                >chevron_right</span
-              >
-              <a
-                class="hover:text-primary dark:hover:text-white transition-colors"
-                href="#"
-                >CS101: Intro to Algorithms</a
-              >
-            </div>
-          </li>
-          <li aria-current="page">
-            <div class="flex items-center">
-              <span class="material-icons-outlined text-sm mx-1"
-                >chevron_right</span
-              >
-              <span class="font-medium text-gray-900 dark:text-white"
-                >Assignment 1</span
-              >
-            </div>
-          </li>
-        </ol>
+            <span class="text-[#638863] dark:text-[#8ba38b] font-medium"
+              >/</span
+            >
+            <span class="text-[#111811] dark:text-white font-medium"
+              >CS101 - Intro to Algorithms</span
+            >
+            <span class="text-[#638863] dark:text-[#8ba38b] font-medium"
+              >/</span
+            >
+            <span class="text-[#111811] dark:text-white font-medium"
+              >Assignment 1</span
+            >
+          </div>
+        </div>
       </nav>
       <div
         class="flex flex-col md:flex-row md:items-center justify-between mb-8 gap-4"
@@ -92,17 +99,7 @@
           <h1 class="text-2xl font-bold text-gray-900 dark:text-white">
             Assignment 1
           </h1>
-          <span
-            class="bg-blue-100 dark:bg-blue-900 text-primary dark:text-blue-300 text-xs font-semibold px-3 py-1 rounded-full border border-blue-200 dark:border-blue-700"
-            >Graded</span
-          >
         </div>
-        <button
-          class="inline-flex items-center gap-2 px-4 py-2 bg-white dark:bg-card-dark border border-gray-300 dark:border-blue-600 rounded-lg text-sm font-medium text-primary dark:text-white hover:bg-blue-50 dark:hover:bg-blue-700 transition-colors shadow-sm"
-        >
-          <span class="material-icons-outlined text-sm">arrow_back</span>
-          Return
-        </button>
       </div>
       <div
         class="bg-card-light dark:bg-card-dark rounded-xl shadow-sm border border-border-light dark:border-blue-700 p-8 md:p-12 mb-8 flex flex-col items-center justify-center text-center"
@@ -136,24 +133,18 @@
           >
             <span
               class="text-5xl font-bold text-gray-900 dark:text-white tracking-tight"
-              >80%</span
+              >24/30</span
             >
             <span
               class="text-lg text-text-muted-light dark:text-text-muted-dark mt-1 font-medium"
-              >24 / 30 pts</span
+              >80%</span
             >
           </div>
         </div>
-        <h2 class="text-xl font-bold text-gray-900 dark:text-white mb-2">
-          Current Result
-        </h2>
-        <p class="text-text-muted-light dark:text-text-muted-dark">
-          Overall performance for Assignment 1
-        </p>
       </div>
       <div class="mb-8">
         <div class="flex items-center gap-2 mb-4">
-          <span class="material-icons-outlined text-primary">analytics</span>
+          <span class="material-symbols-outlined text-primary">analytics</span>
           <h3
             class="text-sm font-bold uppercase tracking-wider text-text-muted-light dark:text-text-muted-dark"
           >
@@ -245,7 +236,7 @@
           <div
             class="absolute right-0 -top-6 text-xs font-medium text-text-muted-light dark:text-text-muted-dark"
           >
-            30 (Max)
+            30 (Full Mark)
           </div>
           <div
             class="absolute -top-8 text-[10px] font-semibold text-text-muted-light dark:text-text-muted-dark transform -translate-x-1/2"

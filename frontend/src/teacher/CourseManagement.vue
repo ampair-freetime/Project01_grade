@@ -59,6 +59,11 @@
           >
             Course Management
           </h1>
+          <p
+            class="mt-2 text-sm text-text-muted-light dark:text-text-muted-dark"
+          >
+            Manage your assigned courses and student grades
+          </p>
         </div>
       </div>
       <div
@@ -93,21 +98,18 @@
         class="bg-surface-light dark:bg-surface-dark shadow-sm rounded-xl border border-border-light dark:border-border-dark overflow-hidden"
       >
         <div
-          class="px-8 py-4 border-b border-border-light dark:border-border-dark flex justify-between items-center bg-gray-50/50 dark:bg-gray-800/30"
+          class="px-6 py-4 border-b border-border-light dark:border-border-dark flex justify-between items-center bg-gray-50/50 dark:bg-gray-800/30"
         >
           <span
             class="text-xs font-semibold text-text-muted-light dark:text-text-muted-dark uppercase tracking-wider"
             >Course Info</span
           >
-          <div class="flex items-center gap-6">
+          <div class="flex items-center gap-8">
             <span
               class="text-xs font-semibold text-text-muted-light dark:text-text-muted-dark uppercase tracking-wider"
               >Enrolled</span
             >
-            <span
-              class="text-xs font-semibold text-text-muted-light dark:text-text-muted-dark uppercase tracking-wider"
-              >Actions</span
-            >
+            <span class="w-8"></span>
           </div>
         </div>
         <ul class="divide-y divide-border-light dark:divide-border-dark">
@@ -115,14 +117,12 @@
             class="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors duration-150"
           >
             <div class="px-6 py-5 flex items-center justify-between">
-              <!-- Course Info -->
               <a class="flex items-center flex-grow" href="#">
                 <div
                   class="flex-shrink-0 h-12 w-12 rounded-xl bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 flex items-center justify-center"
                 >
                   <span class="material-symbols-outlined">laptop_mac</span>
                 </div>
-
                 <div class="ml-4">
                   <div
                     class="text-base font-bold text-gray-900 dark:text-white"
@@ -136,19 +136,15 @@
                   </div>
                 </div>
               </a>
-
-              <!-- Right Section -->
               <div class="flex items-center gap-6">
-                <!-- Student Count -->
                 <div class="flex flex-col items-end min-w-[80px]">
                   <div
                     class="flex items-center text-gray-900 dark:text-white font-semibold"
                   >
                     <span
                       class="material-symbols-outlined text-text-muted-light dark:text-text-muted-dark mr-1 text-lg"
+                      >people</span
                     >
-                      people
-                    </span>
                     142
                   </div>
                   <div
@@ -157,28 +153,15 @@
                     Students
                   </div>
                 </div>
-
-                <div class="flex items-center">
-                  <!-- Archive Button -->
-                  <button
-                    class="p-2 text-gray-400 hover:text-yellow-600 hover:bg-yellow-50 dark:hover:bg-yellow-900/30 rounded-full transition-colors duration-200 group"
-                    title="Archive Course"
+                <button
+                  class="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-900/30 rounded-full transition-colors duration-200 group"
+                  title="Delete Course"
+                >
+                  <span
+                    class="material-symbols-outlined text-xl group-hover:text-red-600"
+                    >delete</span
                   >
-                    <span class="material-symbols-outlined text-xl"
-                      >archive</span
-                    >
-                  </button>
-
-                  <!-- Delete Button -->
-                  <button
-                    class="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-900/30 rounded-full transition-colors duration-200 group"
-                    title="Delete Course"
-                  >
-                    <span class="material-symbols-outlined text-xl"
-                      >delete</span
-                    >
-                  </button>
-                </div>
+                </button>
               </div>
             </div>
           </li>
@@ -222,27 +205,15 @@
                     Students
                   </div>
                 </div>
-                <div class="flex items-center">
-                  <!-- Archive Button -->
-                  <button
-                    class="p-2 text-gray-400 hover:text-yellow-600 hover:bg-yellow-50 dark:hover:bg-yellow-900/30 rounded-full transition-colors duration-200 group"
-                    title="Archive Course"
+                <button
+                  class="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-900/30 rounded-full transition-colors duration-200 group"
+                  title="Delete Course"
+                >
+                  <span
+                    class="material-symbols-outlined text-xl group-hover:text-red-600"
+                    >delete</span
                   >
-                    <span class="material-symbols-outlined text-xl"
-                      >archive</span
-                    >
-                  </button>
-
-                  <!-- Delete Button -->
-                  <button
-                    class="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-900/30 rounded-full transition-colors duration-200 group"
-                    title="Delete Course"
-                  >
-                    <span class="material-symbols-outlined text-xl"
-                      >delete</span
-                    >
-                  </button>
-                </div>
+                </button>
               </div>
             </div>
           </li>
@@ -286,27 +257,15 @@
                     Students
                   </div>
                 </div>
-                <div class="flex items-center">
-                  <!-- Archive Button -->
-                  <button
-                    class="p-2 text-gray-400 hover:text-yellow-700 hover:bg-yellow-50 dark:hover:bg-yellow-900/30 rounded-full transition-colors duration-200 group"
-                    title="Archive Course"
+                <button
+                  class="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-900/30 rounded-full transition-colors duration-200 group"
+                  title="Delete Course"
+                >
+                  <span
+                    class="material-symbols-outlined text-xl group-hover:text-red-600"
+                    >delete</span
                   >
-                    <span class="material-symbols-outlined text-xl"
-                      >archive</span
-                    >
-                  </button>
-
-                  <!-- Delete Button -->
-                  <button
-                    class="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-900/30 rounded-full transition-colors duration-200 group"
-                    title="Delete Course"
-                  >
-                    <span class="material-symbols-outlined text-xl"
-                      >delete</span
-                    >
-                  </button>
-                </div>
+                </button>
               </div>
             </div>
           </li>
@@ -350,27 +309,15 @@
                     Students
                   </div>
                 </div>
-                <div class="flex items-center">
-                  <!-- Archive Button -->
-                  <button
-                    class="p-2 text-gray-400 hover:text-yellow-700 hover:bg-yellow-50 dark:hover:bg-yellow-900/30 rounded-full transition-colors duration-200 group"
-                    title="Archive Course"
+                <button
+                  class="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-900/30 rounded-full transition-colors duration-200 group"
+                  title="Delete Course"
+                >
+                  <span
+                    class="material-symbols-outlined text-xl group-hover:text-red-600"
+                    >delete</span
                   >
-                    <span class="material-symbols-outlined text-xl"
-                      >archive</span
-                    >
-                  </button>
-
-                  <!-- Delete Button -->
-                  <button
-                    class="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-900/30 rounded-full transition-colors duration-200 group"
-                    title="Delete Course"
-                  >
-                    <span class="material-symbols-outlined text-xl"
-                      >delete</span
-                    >
-                  </button>
-                </div>
+                </button>
               </div>
             </div>
           </li>

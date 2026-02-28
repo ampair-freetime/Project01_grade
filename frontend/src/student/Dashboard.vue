@@ -9,59 +9,38 @@
         class="max-w-7xl mx-auto px-4 h-full flex items-center justify-between"
       >
         <div class="flex items-center gap-2">
+          <div class="flex items-center gap-3">
           <div
-            class="size-8 rounded-lg bg-primary/20 flex items-center justify-center text-primary"
+            class="bg-primary rounded-lg p-1.5 flex items-center justify-center text-white"
           >
-            <span class="material-symbols-outlined icon-filled">school</span>
-          </div>
-          <div class="flex flex-col">
-            <h1
-              class="text-[#111811] dark:text-white text-lg font-bold leading-tight"
+            <span class="material-symbols-outlined text-white text-xl"
+              >school</span
             >
-              UniPortal
-            </h1>
-            <p class="text-[#637888] dark:text-[#a0b8cf] text-xs font-normal">
-              Student Dashboard
-            </p>
           </div>
+          <h2 class="text-lg font-bold leading-tight tracking-[-0.015em]">
+            University Grade Portal
+          </h2>
+        </div>
         </div>
         <div class="flex items-center gap-6">
-          <nav class="hidden md:flex items-center gap-1">
-            <a
-              class="flex items-center gap-2 px-3 py-2 rounded-lg bg-[#f0f4f8] dark:bg-[#253038] transition-colors group"
-              href="#"
-            >
-              <span
-                class="material-symbols-outlined text-[#111811] dark:text-white icon-filled text-[20px]"
-                >dashboard</span
-              >
-              <p class="text-[#111811] dark:text-white text-sm font-medium">
-                Overview
-              </p>
-            </a>
-          </nav>
-          <div
-            class="h-6 w-px bg-[#e0e7eb] dark:bg-[#2a363e] hidden md:block"
-          ></div>
           <div class="flex items-center gap-3">
-            <div class="hidden sm:flex flex-col items-end">
-              <p class="text-sm font-medium text-[#111811] dark:text-white">
-                Alex Student
-              </p>
-              <p class="text-xs text-[#637888] dark:text-[#a0b8cf]">
-                ID: 2024001
-              </p>
-            </div>
-            <div
-              class="relative rounded-full size-10 overflow-hidden shrink-0 border-2 border-primary/30 cursor-pointer hover:border-primary transition-colors"
+            <button
+              class="flex items-center space-x-3 hover:bg-gray-100 dark:hover:bg-gray-700 px-3 py-2 rounded-lg transition"
             >
-              <img
-                alt="Portrait of student Alex smiling"
-                class="w-full h-full object-cover"
-                data-alt="Portrait of student Alex smiling"
-                src="https://lh3.googleusercontent.com/aida-public/AB6AXuA2v_m2Fz1ch3NPLGzH9eMaoTV-93B4acKLrUPvM_rqxKrQYk5kbjKKMAfrFmtw5FGyzSD1KMH2a-VWjuWrPGK8ZlbPavlIIJuvuAzDbZMQGWe1jn0AQQ4ERw-WfWdu46hkD0G6xrSczReJZhozEyi8hZFyyQRv8-mgZ8VsbXRgnwsS2Iid9RIfNLhbVCqbfPuqjYUwPsIMmYxnNyuuFPckvZ7uBDRGVTE2avJ2C_oHiWeCQCTJ1XKfOkWyaIz7RJfgT2bZSBQJWg"
-              />
-            </div>
+              <div class="hidden md:flex flex-col items-end mr-2">
+                <span
+                  class="text-sm font-semibold text-gray-900 dark:text-white"
+                  >John Doe</span
+                >
+              </div>
+              <div class="relative">
+                <img
+                  alt="User profile picture"
+                  class="h-10 w-10 rounded-full object-cover border-2 border-primary"
+                  src="https://lh3.googleusercontent.com/aida-public/AB6AXuAfs56wd3ZKem_c5viO2sbQi6QqagsAHOE_1vjyHa7ZI8VHLknmGt20_hlaSVETqWYOsJL90qkBypXOjJp3RLSZRVCCQdcfaZh5kBgmGKpB2H1ljdV46tJTVLrSN0GurDyMvTs3Rbs4iUT-JQEizgeI8EIRbyNIvgzgmld5oKsHWGOuXctpZU9YajqdkAw1xoCp7REQvLbXOz8A9iuN2iz7maCHA50bOTOwjKS5ivvz9hojTaRSN6jd9o2cDN90A2qviBCKcL1ugg"
+                />
+              </div>
+            </button>
             <a
               class="flex items-center justify-center size-10 rounded-full hover:bg-red-50 dark:hover:bg-red-900/20 text-[#637888] dark:text-[#a0b8cf] hover:text-red-600 dark:hover:text-red-400 transition-colors"
               href="#"
@@ -88,11 +67,6 @@
               >
                 Hello, Alex
               </h2>
-              <p
-                class="text-[#4e5b6b] dark:text-[#a0b8cf] text-base font-normal"
-              >
-                Here are your courses for the Spring 2024 semester.
-              </p>
             </div>
             <div class="w-full md:w-96">
               <label
@@ -146,22 +120,12 @@
                         class="font-mono text-xs font-bold text-[#637888] dark:text-[#a0b8cf] bg-[#f0f4f8] dark:bg-[#253038] px-1.5 py-0.5 rounded"
                         >CS101</span
                       >
-                      <span
-                        class="size-2 rounded-full bg-primary animate-pulse shadow-[0_0_8px_#30a0e8]"
-                      ></span>
-                      <span
-                        class="text-[10px] font-bold tracking-wider text-primary uppercase"
-                        >New Grade</span
-                      >
                     </div>
                     <h4
                       class="text-[#111811] dark:text-white text-lg font-semibold truncate group-hover:text-primary transition-colors"
                     >
                       Introduction to Computer Science
                     </h4>
-                    <p class="text-[#637888] dark:text-[#a0b8cf] text-sm">
-                      Spring 2024 • Prof. Alan Turing
-                    </p>
                   </div>
                 </div>
                 <div
@@ -195,9 +159,6 @@
                     >
                       General Biology I
                     </h4>
-                    <p class="text-[#637888] dark:text-[#a0b8cf] text-sm">
-                      Spring 2024 • Prof. Rosalind Franklin
-                    </p>
                   </div>
                 </div>
                 <div
@@ -231,9 +192,6 @@
                     >
                       Calculus II
                     </h4>
-                    <p class="text-[#637888] dark:text-[#a0b8cf] text-sm">
-                      Spring 2024 • Prof. Katherine Johnson
-                    </p>
                   </div>
                 </div>
                 <div
@@ -261,22 +219,12 @@
                         class="font-mono text-xs font-bold text-[#637888] dark:text-[#a0b8cf] bg-[#f0f4f8] dark:bg-[#253038] px-1.5 py-0.5 rounded"
                         >ENG105</span
                       >
-                      <span
-                        class="size-2 rounded-full bg-primary animate-pulse shadow-[0_0_8px_#30a0e8]"
-                      ></span>
-                      <span
-                        class="text-[10px] font-bold tracking-wider text-primary uppercase"
-                        >New Grade</span
-                      >
                     </div>
                     <h4
                       class="text-[#111811] dark:text-white text-lg font-semibold truncate group-hover:text-primary transition-colors"
                     >
                       Academic Writing
                     </h4>
-                    <p class="text-[#637888] dark:text-[#a0b8cf] text-sm">
-                      Spring 2024 • Prof. Maya Angelou
-                    </p>
                   </div>
                 </div>
                 <div
@@ -310,9 +258,6 @@
                     >
                       World History
                     </h4>
-                    <p class="text-[#637888] dark:text-[#a0b8cf] text-sm">
-                      Spring 2024 • Prof. Howard Zinn
-                    </p>
                   </div>
                 </div>
                 <div
