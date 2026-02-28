@@ -1,42 +1,28 @@
 <template>
-  <div class="min-h-screen flex flex-col relative overflow-x-hidden">
-    <!-- background -->
-    <div class="fixed inset-0 -z-10 overflow-hidden pointer-events-none">
-      <div
-        class="absolute -top-[10%] -left-[10%] w-[50%] h-[50%] rounded-full bg-primary/10 blur-[120px]"
-      ></div>
-      <div
-        class="absolute top-[30%] -right-[10%] w-[40%] h-[40%] rounded-full bg-primary/15 blur-[100px] dark:bg-primary/10"
-      ></div>
-      <div
-        class="absolute bottom-0 left-0 w-full h-32 bg-gradient-to-t from-white/40 to-transparent dark:from-black/20"
-      ></div>
-    </div>
-
-    <!-- header -->
+  <div
+    class="bg-background-light dark:bg-background-dark text-text-main-light dark:text-text-main-dark transition-colors duration-200 min-h-screen flex flex-col"
+  >
     <header
-      class="w-full flex items-center justify-between whitespace-nowrap border-b border-solid border-border-color dark:border-[#0c4a6e] px-6 lg:px-10 py-4 bg-surface-light/80 dark:bg-surface-dark/80 backdrop-blur-md sticky top-0 z-50"
+      class="bg-white dark:bg-[#1a232e] border-b border-[#e0e7eb] dark:border-[#2a363e] h-16 shrink-0 sticky top-0 z-50"
     >
       <div
-        class="flex items-center gap-3 text-text-main dark:text-white group cursor-pointer"
+        class="max-w-7xl mx-auto px-4 h-full flex items-center justify-between relative"
+        ref="dropdownRef"
       >
-        <div
-          class="size-8 text-primary transition-transform group-hover:scale-110 duration-300"
-        >
-          <svg
-            class="w-full h-full drop-shadow-sm"
-            fill="currentColor"
-            viewBox="0 0 24 24"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              d="M12 3L1 9L12 15L21 10.09V17H23V9M5 13.18V17.18L12 21L19 17.18V13.18L12 17L5 13.18Z"
-            ></path>
-          </svg>
+        <div class="flex items-center gap-2">
+          <div class="flex items-center gap-3">
+            <div
+              class="bg-primary rounded-lg p-1.5 flex items-center justify-center text-white"
+            >
+              <span class="material-symbols-outlined text-white text-xl"
+                >school</span
+              >
+            </div>
+            <h2 class="text-lg font-bold leading-tight tracking-[-0.015em]">
+              University Grade Portal
+            </h2>
+          </div>
         </div>
-        <h2 class="text-lg font-bold leading-tight tracking-tight">
-          University Grade Portal
-        </h2>
       </div>
     </header>
 
@@ -184,18 +170,6 @@
               </div>
             </div>
             <div class="flex flex-col gap-4 mt-2">
-              <div class="relative flex items-center justify-center w-full">
-                <div class="absolute inset-0 flex items-center">
-                  <div
-                    class="w-full border-t border-border-color dark:border-[#0c4a6e]"
-                  ></div>
-                </div>
-                <div
-                  class="relative bg-surface-light dark:bg-surface-dark px-2"
-                >
-                  <span class="text-xs font-medium text-text-muted">or</span>
-                </div>
-              </div>
               <button
                 class="group relative w-full h-12 bg-primary hover:bg-primary-dark text-white text-base font-bold rounded-lg shadow-[0_2px_10px_rgba(56,189,248,0.2)] hover:shadow-glow hover:-translate-y-0.5 active:translate-y-0 transition-all duration-200 flex items-center justify-center gap-2 overflow-hidden"
                 type="submit"
@@ -209,6 +183,19 @@
                 >
                 <span class="relative z-10">Sign Up</span>
               </button>
+              <div class="relative flex items-center justify-center w-full">
+                <div class="absolute inset-0 flex items-center">
+                  <div
+                    class="w-full border-t border-border-color dark:border-[#0c4a6e]"
+                  ></div>
+                </div>
+                <div
+                  class="relative bg-surface-light dark:bg-surface-dark px-2"
+                >
+                  <span class="text-xs font-medium text-text-muted">or</span>
+                </div>
+              </div>
+
               <button
                 class="group relative w-full h-12 bg-white dark:bg-[#0c4a6e] hover:bg-sky-50 dark:hover:bg-[#075985] text-text-main dark:text-white text-base font-medium rounded-lg border border-border-color dark:border-[#0c4a6e] hover:border-primary/40 dark:hover:border-primary/40 transition-all duration-200 flex items-center justify-center gap-3"
                 type="button"

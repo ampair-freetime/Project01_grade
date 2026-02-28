@@ -6,7 +6,8 @@
       class="bg-white dark:bg-[#1a232e] border-b border-[#e0e7eb] dark:border-[#2a363e] h-16 shrink-0 sticky top-0 z-50"
     >
       <div
-        class="max-w-7xl mx-auto px-4 h-full flex items-center justify-between"
+        class="max-w-7xl mx-auto px-4 h-full flex items-center justify-between relative"
+        ref="dropdownRef"
       >
         <div class="flex items-center gap-2">
           <div class="flex items-center gap-3">
@@ -25,6 +26,7 @@
         <div class="flex items-center gap-6">
           <div class="flex items-center gap-3">
             <button
+              @click="toggleDropdown"
               class="flex items-center space-x-3 hover:bg-gray-100 dark:hover:bg-gray-700 px-3 py-2 rounded-lg transition"
             >
               <div class="hidden md:flex flex-col items-end mr-2">
@@ -41,6 +43,25 @@
                 />
               </div>
             </button>
+            <transition name="fade">
+              <div
+                v-if="isOpen"
+                class="absolute right-4 top-full mt-2 w-64 bg-white dark:bg-gray-800 rounded-xl shadow-lg p-4 z-50"
+              >
+                <div class="flex items-center space-x-3">
+                  <img
+                    class="h-12 w-12 rounded-full object-cover"
+                    src="https://lh3.googleusercontent.com/aida-public/AB6AXuAfs56wd3ZKem_c5viO2sbQi6QqagsAHOE_1vjyHa7ZI8VHLknmGt20_hlaSVETqWYOsJL90qkBypXOjJp3RLSZRVCCQdcfaZh5kBgmGKpB2H1ljdV46tJTVLrSN0GurDyMvTs3Rbs4iUT-JQEizgeI8EIRbyNIvgzgmld5oKsHWGOuXctpZU9YajqdkAw1xoCp7REQvLbXOz8A9iuN2iz7maCHA50bOTOwjKS5ivvz9hojTaRSN6jd9o2cDN90A2qviBCKcL1ugg"
+                  />
+                  <div>
+                    <p class="font-semibold text-gray-900 dark:text-white">
+                      Johnathan Doe
+                    </p>
+                    <p class="text-sm text-gray-500">Student ID: 65012345</p>
+                  </div>
+                </div>
+              </div>
+            </transition>
             <a
               class="flex items-center justify-center size-10 rounded-full hover:bg-red-50 dark:hover:bg-red-900/20 text-[#637888] dark:text-[#a0b8cf] hover:text-red-600 dark:hover:text-red-400 transition-colors"
               href="#"
@@ -91,23 +112,21 @@
             class="flex flex-col md:flex-row gap-6 bg-surface-light dark:bg-surface-dark rounded-xl shadow-sm border border-border-light dark:border-border-dark overflow-hidden"
           >
             <div class="flex-1 p-6 md:p-8 flex flex-col justify-center gap-4">
-              
-                <h1
-                  class="text-[#111811] dark:text-white text-3xl md:text-4xl font-black leading-tight tracking-[-0.033em]"
+              <h1
+                class="text-[#111811] dark:text-white text-3xl md:text-4xl font-black leading-tight tracking-[-0.033em]"
+              >
+                CS101: Intro to Algorithms
+              </h1>
+              <div
+                class="flex items-center gap-2 text-[#638863] dark:text-[#8ba38b] mt-1"
+              >
+                <span class="material-symbols-outlined text-[20px]"
+                  >school</span
                 >
-                  CS101: Intro to Algorithms
-                </h1>
-                <div
-                  class="flex items-center gap-2 text-[#638863] dark:text-[#8ba38b] mt-1"
-                >
-                  <span class="material-symbols-outlined text-[20px]"
-                    >school</span
-                  >
-                  <p class="text-base font-normal">
-                    Instructor: Dr. Sarah Bennett
-                  </p>
-                </div>
-              
+                <p class="text-base font-normal">
+                  Instructor: Dr. Sarah Bennett
+                </p>
+              </div>
             </div>
           </div>
         </section>
@@ -243,5 +262,40 @@
 <script>
 export default {
   name: "CourseDetail",
+  data() {
+    return {
+      isOpen: false,
+    };
+  },
+
+  methods: {
+    toggleDropdown() {
+      this.isOpen = !this.isOpen;
+    },
+    handleClickOutside(event) {
+      if (!this.$refs.dropdownRef.contains(event.target)) {
+        this.isOpen = false;
+      }
+    },
+  },
+
+  mounted() {
+    document.addEventListener("click", this.handleClickOutside);
+  },
+
+  beforeUnmount() {
+    document.removeEventListener("click", this.handleClickOutside);
+  },
 };
 </script>
+
+<style>
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.2s ease;
+}
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+}
+</style>

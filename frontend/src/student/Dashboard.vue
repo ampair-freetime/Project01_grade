@@ -1,30 +1,32 @@
 <template>
   <div
-    class="bg-mint-soft dark:bg-background-dark text-[#111811] dark:text-white h-screen flex flex-col overflow-hidden"
+    class="bg-background-light dark:bg-background-dark text-text-main-light dark:text-text-main-dark transition-colors duration-200 min-h-screen flex flex-col"
   >
     <header
-      class="bg-white dark:bg-[#1a232e] border-b border-[#e0e7eb] dark:border-[#2a363e] h-16 shrink-0 z-30"
+      class="bg-white dark:bg-[#1a232e] border-b border-[#e0e7eb] dark:border-[#2a363e] h-16 shrink-0 sticky top-0 z-50"
     >
       <div
-        class="max-w-7xl mx-auto px-4 h-full flex items-center justify-between"
+        class="max-w-7xl mx-auto px-4 h-full flex items-center justify-between relative"
+        ref="dropdownRef"
       >
         <div class="flex items-center gap-2">
           <div class="flex items-center gap-3">
-          <div
-            class="bg-primary rounded-lg p-1.5 flex items-center justify-center text-white"
-          >
-            <span class="material-symbols-outlined text-white text-xl"
-              >school</span
+            <div
+              class="bg-primary rounded-lg p-1.5 flex items-center justify-center text-white"
             >
+              <span class="material-symbols-outlined text-white text-xl"
+                >school</span
+              >
+            </div>
+            <h2 class="text-lg font-bold leading-tight tracking-[-0.015em]">
+              University Grade Portal
+            </h2>
           </div>
-          <h2 class="text-lg font-bold leading-tight tracking-[-0.015em]">
-            University Grade Portal
-          </h2>
-        </div>
         </div>
         <div class="flex items-center gap-6">
           <div class="flex items-center gap-3">
             <button
+              @click="toggleDropdown"
               class="flex items-center space-x-3 hover:bg-gray-100 dark:hover:bg-gray-700 px-3 py-2 rounded-lg transition"
             >
               <div class="hidden md:flex flex-col items-end mr-2">
@@ -41,6 +43,25 @@
                 />
               </div>
             </button>
+            <transition name="fade">
+              <div
+                v-if="isOpen"
+                class="absolute right-4 top-full mt-2 w-64 bg-white dark:bg-gray-800 rounded-xl shadow-lg p-4 z-50"
+              >
+                <div class="flex items-center space-x-3">
+                  <img
+                    class="h-12 w-12 rounded-full object-cover"
+                    src="https://lh3.googleusercontent.com/aida-public/AB6AXuAfs56wd3ZKem_c5viO2sbQi6QqagsAHOE_1vjyHa7ZI8VHLknmGt20_hlaSVETqWYOsJL90qkBypXOjJp3RLSZRVCCQdcfaZh5kBgmGKpB2H1ljdV46tJTVLrSN0GurDyMvTs3Rbs4iUT-JQEizgeI8EIRbyNIvgzgmld5oKsHWGOuXctpZU9YajqdkAw1xoCp7REQvLbXOz8A9iuN2iz7maCHA50bOTOwjKS5ivvz9hojTaRSN6jd9o2cDN90A2qviBCKcL1ugg"
+                  />
+                  <div>
+                    <p class="font-semibold text-gray-900 dark:text-white">
+                      Johnathan Doe
+                    </p>
+                    <p class="text-sm text-gray-500">Student ID: 65012345</p>
+                  </div>
+                </div>
+              </div>
+            </transition>
             <a
               class="flex items-center justify-center size-10 rounded-full hover:bg-red-50 dark:hover:bg-red-900/20 text-[#637888] dark:text-[#a0b8cf] hover:text-red-600 dark:hover:text-red-400 transition-colors"
               href="#"
@@ -277,5 +298,41 @@
 <script>
 export default {
   name: "Dashboard",
+
+  data() {
+    return {
+      isOpen: false,
+    };
+  },
+
+  methods: {
+    toggleDropdown() {
+      this.isOpen = !this.isOpen;
+    },
+    handleClickOutside(event) {
+      if (!this.$refs.dropdownRef.contains(event.target)) {
+        this.isOpen = false;
+      }
+    },
+  },
+
+  mounted() {
+    document.addEventListener("click", this.handleClickOutside);
+  },
+
+  beforeUnmount() {
+    document.removeEventListener("click", this.handleClickOutside);
+  },
 };
 </script>
+
+<style>
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.2s ease;
+}
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+}
+</style>
