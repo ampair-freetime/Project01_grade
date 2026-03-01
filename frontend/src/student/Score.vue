@@ -1,22 +1,23 @@
 <template>
   <div
-    class="bg-background-light dark:bg-background-dark text-text-main-light dark:text-text-main-dark transition-colors duration-200 min-h-screen flex flex-col"
+    class="bg-gray-50 dark:bg-background-dark text-text-light dark:text-text-dark transition-colors duration-200 min-h-screen flex flex-col"
   >
     <header
-      class="bg-white dark:bg-[#1a232e] border-b border-[#e0e7eb] dark:border-[#2a363e] h-16 shrink-0 sticky top-0 z-50"
+      class="bg-surface-light dark:bg-surface-dark border-b border-border-light dark:border-border-dark sticky h-16 top-0 z-10 shadow-sm"
     >
       <div
         class="max-w-7xl mx-auto px-4 h-full flex items-center justify-between relative"
         ref="dropdownRef"
       >
+
         <div class="flex items-center gap-2">
           <div class="flex items-center gap-3">
             <div
               class="bg-primary rounded-lg p-1.5 flex items-center justify-center text-white"
             >
-              <span class="material-symbols-outlined text-white text-xl"
-                >school</span
-              >
+              <span class="material-symbols-outlined text-white text-xl">
+                school
+              </span>
             </div>
             <h2 class="text-lg font-bold leading-tight tracking-[-0.015em]">
               University Grade Portal
@@ -29,10 +30,10 @@
               @click="toggleDropdown"
               class="flex items-center space-x-3 hover:bg-gray-100 dark:hover:bg-gray-700 px-3 py-2 rounded-lg transition"
             >
-              <div class="hidden md:flex flex-col items-end mr-2">
+              <div class="hidden md:flex flex-col items-end mr-1">
                 <span
                   class="text-sm font-semibold text-gray-900 dark:text-white"
-                  >John Doe</span
+                  >Giselle</span
                 >
               </div>
               <div class="relative">
@@ -46,7 +47,7 @@
             <transition name="fade">
               <div
                 v-if="isOpen"
-                class="absolute right-4 top-full mt-2 w-64 bg-white dark:bg-gray-800 rounded-xl shadow-lg p-4 z-50"
+                class="absolute right-4 top-full mt-2 bg-white dark:bg-gray-800 rounded-xl shadow-lg p-4 z-50 w-max min-w-[250px] max-w-[90vw]"
               >
                 <div class="flex items-center space-x-3">
                   <img
@@ -54,10 +55,13 @@
                     src="https://lh3.googleusercontent.com/aida-public/AB6AXuAfs56wd3ZKem_c5viO2sbQi6QqagsAHOE_1vjyHa7ZI8VHLknmGt20_hlaSVETqWYOsJL90qkBypXOjJp3RLSZRVCCQdcfaZh5kBgmGKpB2H1ljdV46tJTVLrSN0GurDyMvTs3Rbs4iUT-JQEizgeI8EIRbyNIvgzgmld5oKsHWGOuXctpZU9YajqdkAw1xoCp7REQvLbXOz8A9iuN2iz7maCHA50bOTOwjKS5ivvz9hojTaRSN6jd9o2cDN90A2qviBCKcL1ugg"
                   />
                   <div>
-                    <p class="font-semibold text-gray-900 dark:text-white">
-                      Johnathan Doe
+                    <p class="font-semibold text-gray-900 dark:text-white break-all">
+                      Uchinaga Aeri
                     </p>
-                    <p class="text-sm text-gray-500">Student ID: 65012345</p>
+                    <p class="text-sm text-gray-500 break-all">Student ID: 65012345</p>
+                    <p class="text-sm text-gray-500 break-all">
+                      Email: Gigi_selle@cmu.ac.th
+                    </p>
                   </div>
                 </div>
               </div>
@@ -90,25 +94,15 @@
                 >arrow_back</span
               >
             </div>
-            <span>Return to CS101 - Intro to Algorithms</span>
+            <span>Return</span>
           </a>
           <div class="flex flex-wrap gap-2 text-sm">
-            <a
-              class="text-[#638863] hover:text-primary dark:text-[#8ba38b] font-medium"
-              href="#"
-              >Courses</a
-            >
-            <span class="text-[#638863] dark:text-[#8ba38b] font-medium"
-              >/</span
-            >
-            <a
-              class="text-[#638863] hover:text-primary dark:text-[#8ba38b] font-medium"
-              href="#"
+            <a class="hover:text-primary font-medium" href="#">Courses</a>
+            <span class="font-medium">/</span>
+            <a class="hover:text-primary font-medium" href="#"
               >CS101 - Intro to Algorithms</a
             >
-            <span class="text-[#638863] dark:text-[#8ba38b] font-medium"
-              >/</span
-            >
+            <span class="font-medium">/</span>
             <span class="text-[#111811] dark:text-white font-medium"
               >Assignment 1</span
             >
@@ -242,6 +236,7 @@
           </div>
         </div>
       </div>
+                  class="text-sm font-semibold text-gray-900 dark:tex
       <div
         class="bg-card-light dark:bg-card-dark rounded-xl shadow-sm border border-border-light dark:border-blue-700 p-8"
       >
@@ -294,36 +289,81 @@
         </div>
       </div>
     </main>
+    <div class="fixed bottom-6 right-6 z-50">
+      <button
+        @click="toggleTheme"
+        class="p-3 rounded-full bg-surface-light dark:bg-surface-dark text-gray-500 dark:text-gray-400 hover:text-primary dark:hover:text-primary shadow-lg border border-border-light dark:border-border-dark transition-all duration-300 focus:outline-none"
+      >
+        <span
+          class="material-symbols-outlined text-2xl hidden dark:block"
+          id="theme-icon-dark"
+          >dark_mode</span
+        >
+        <span
+          class="material-symbols-outlined text-2xl block dark:hidden"
+          id="theme-icon-light"
+          >light_mode</span
+        >
+      </button>
+    </div>
   </div>
 </template>
 
-<script>
-export default {
-  name: "Score",
-  data() {
-    return {
-      isOpen: false,
-    };
-  },
+<script setup>
+name: "Score";
+import { ref, onMounted, onBeforeUnmount } from "vue";
+import { useRouter } from "vue-router";
 
-  methods: {
-    toggleDropdown() {
-      this.isOpen = !this.isOpen;
-    },
-    handleClickOutside(event) {
-      if (!this.$refs.dropdownRef.contains(event.target)) {
-        this.isOpen = false;
-      }
-    },
-  },
+const router = useRouter();
 
-  mounted() {
-    document.addEventListener("click", this.handleClickOutside);
-  },
+const isOpen = ref(false);
 
-  beforeUnmount() {
-    document.removeEventListener("click", this.handleClickOutside);
-  },
+const dropdownRef = ref(null);
+
+const toggleDropdown = () => {
+  isOpen.value = !isOpen.value;
+};
+
+const handleClickOutside = (event) => {
+  if (dropdownRef.value && !dropdownRef.value.contains(event.target)) {
+    isOpen.value = false;
+  }
+};
+
+const toggleTheme = () => {
+  const htmlElement = document.documentElement;
+  if (htmlElement.classList.contains("dark")) {
+    htmlElement.classList.remove("dark");
+    localStorage.setItem("color-theme", "light");
+  } else {
+    htmlElement.classList.add("dark");
+    localStorage.setItem("color-theme", "dark");
+  }
+};
+
+onMounted(() => {
+  document.addEventListener("click", handleClickOutside);
+});
+
+onBeforeUnmount(() => {
+  document.removeEventListener("click", handleClickOutside);
+});
+
+const handleLogout = async () => {
+  try {
+    const response = await fetch("http://localhost:56733/logout", {
+      method: "GET",
+      credentials: "include",
+    });
+
+    if (response.ok) {
+      localStorage.removeItem("csrf_token");
+      localStorage.removeItem("role");
+      router.push("/login");
+    }
+  } catch (error) {
+    console.error("Logout failed", error);
+  }
 };
 </script>
 
