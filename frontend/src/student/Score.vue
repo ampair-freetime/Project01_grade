@@ -29,10 +29,10 @@
               @click="toggleDropdown"
               class="flex items-center space-x-3 hover:bg-gray-100 dark:hover:bg-gray-700 px-3 py-2 rounded-lg transition"
             >
-              <div class="hidden md:flex flex-col items-end mr-2">
+              <div class="hidden md:flex flex-col items-end mr-1">
                 <span
                   class="text-sm font-semibold text-gray-900 dark:text-white"
-                  >John</span
+                  >Giselle</span
                 >
               </div>
               <div class="relative">
@@ -46,7 +46,7 @@
             <transition name="fade">
               <div
                 v-if="isOpen"
-                class="absolute right-4 top-full mt-2 w-64 bg-white dark:bg-gray-800 rounded-xl shadow-lg p-4 z-50"
+                class="absolute right-4 top-full mt-2 bg-white dark:bg-gray-800 rounded-xl shadow-lg p-4 z-50 w-max min-w-[250px] max-w-[90vw]"
               >
                 <div class="flex items-center space-x-3">
                   <img
@@ -54,10 +54,13 @@
                     src="https://lh3.googleusercontent.com/aida-public/AB6AXuAfs56wd3ZKem_c5viO2sbQi6QqagsAHOE_1vjyHa7ZI8VHLknmGt20_hlaSVETqWYOsJL90qkBypXOjJp3RLSZRVCCQdcfaZh5kBgmGKpB2H1ljdV46tJTVLrSN0GurDyMvTs3Rbs4iUT-JQEizgeI8EIRbyNIvgzgmld5oKsHWGOuXctpZU9YajqdkAw1xoCp7REQvLbXOz8A9iuN2iz7maCHA50bOTOwjKS5ivvz9hojTaRSN6jd9o2cDN90A2qviBCKcL1ugg"
                   />
                   <div>
-                    <p class="font-semibold text-gray-900 dark:text-white">
-                      Johnathan Doe
+                    <p class="font-semibold text-gray-900 dark:text-white break-all">
+                      Uchinaga Aeri
                     </p>
-                    <p class="text-sm text-gray-500">Student ID: 65012345</p>
+                    <p class="text-sm text-gray-500 break-all">Student ID: 65012345</p>
+                    <p class="text-sm text-gray-500 break-all">
+                      Email: Gigi_selle@cmu.ac.th
+                    </p>
                   </div>
                 </div>
               </div>
@@ -90,25 +93,15 @@
                 >arrow_back</span
               >
             </div>
-            <span>Return to CS101 - Intro to Algorithms</span>
+            <span>Return</span>
           </a>
           <div class="flex flex-wrap gap-2 text-sm">
-            <a
-              class="text-[#638863] hover:text-primary dark:text-[#8ba38b] font-medium"
-              href="#"
-              >Courses</a
-            >
-            <span class="text-[#638863] dark:text-[#8ba38b] font-medium"
-              >/</span
-            >
-            <a
-              class="text-[#638863] hover:text-primary dark:text-[#8ba38b] font-medium"
-              href="#"
+            <a class="hover:text-primary font-medium" href="#">Courses</a>
+            <span class="font-medium">/</span>
+            <a class="hover:text-primary font-medium" href="#"
               >CS101 - Intro to Algorithms</a
             >
-            <span class="text-[#638863] dark:text-[#8ba38b] font-medium"
-              >/</span
-            >
+            <span class="font-medium">/</span>
             <span class="text-[#111811] dark:text-white font-medium"
               >Assignment 1</span
             >
