@@ -7,10 +7,12 @@ from fastapi import APIRouter, Request, Depends, HTTPException, status, Response
 from fastapi.responses import RedirectResponse, JSONResponse
 from sqlalchemy.orm import Session
 from app.db import get_db
-from app.schemas.auth import UserResponse, Message, UserLogin
+from app.schemas.auth import UserResponse, Message, UserLogin, UserSignin
 from pwdlib import PasswordHash
 
 from app.models.authuser import AuthUser
+from app.models.teacher import Teacher
+from app.models.student import Student
 from app.config import settings
 from jose import jwt, JWTError
 from datetime import datetime, timedelta
@@ -178,6 +180,8 @@ async def login(login_data: UserLogin,response: Response, db: Session = Depends(
     user = db.query(AuthUser).filter(AuthUser.email == login_data.email).first()
     if not user:
         raise HTTPException(status_code=401, detail="Email Not Found")
+    if user.password is None:
+        raise HTTPException(status_code=401, detail="Your are not sign up")
     if not password_hash.verify(login_data.password, user.password):
         raise HTTPException(status_code=401, detail="Password Not Correct")
     #สร้าง ข้อมูลเพื่อทำ JWT Token
@@ -204,12 +208,51 @@ async def login(login_data: UserLogin,response: Response, db: Session = Depends(
         "role": user_role
     }
 
-@router.get("/register")
-async def register(request: Request):
+@router.post("/register")
+async def register(signin_data: UserSignin, db: Session = Depends(get_db)):
+    #check email is teacher or student
+    #example email stu_dent@cmu.ac.th นักเรียนต้องมี ขีดเท่านั้น tea.cher@cmu.ac.th teacher จะเป็นจุดก่อนเสมอ
+    #student
+    if signin_data.student_id:
+        user = db.query(AuthUser).filter(AuthUser.email == signin_data.email).first()
+        if not user:
+            raise HTTPException(status_code=401, detail="Yor are not invited")
+        #this user not rewrite 2 ขั้น ใช้ password เป็น none และ student_id เทียบกัน
+        if user.password is None and user.student.student_id == signin_data.student_id:
+            user.student.first_name = signin_data.first_name
+            user.student.last_name = signin_data.last_name
+            user.studennt.middle_name = signin_data.middle_name
+            user.password = password_hash.hash(signin_data.password)
+            db.commit()
+            return {"message": "Account successful"}
+        else:
+            raise HTTPException(status_code=401, detail="This user already used")
+    else:
+        #teacher
+        user = db.query(AuthUser).filter(AuthUser.email == signin_data.email).first()
+        if user:
+            raise HTTPException(status_code=401, detail="Email already used")
+            #ต้องไม่มี ใน databse
+        new_auth = AuthUser(
+            email=signin_data.email,
+            password=password_hash.hash(signin_data.password)
+        )
+        db.add(new_auth)
+        db.commit()
+        db.refresh(new_auth)
+
+        new_profile = Teacher(
+            first_name=signin_data.first_name,
+            last_name= signin_data.last_name,
+            middle_name= signin_data.middle_name,
+            auth_user_id=new_auth.auth_user_id
+        )
+        db.add(new_profile)
+        db.commit()
     #if request.email แยก เป็น 
     #ใช้สมัครสำหรับ นักเรียนใหม่ เพื่อเข้าสู่ระบบ เช็ค database แล้วเปลี่ยนเอา หรือ สร้าง database ใหม่
     #ถ้ามีเวลาให้เอาอันนี้ออก แล้ว ใช้ การ ส่งรหัสผ่าน email (advance)
-    return ...
+    return {"message": "Sign in completed"}
 
 @router.get("/logout")
 async def logout(response: Response):

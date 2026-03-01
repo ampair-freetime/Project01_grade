@@ -19,3 +19,11 @@ class Message(BaseModel):
 class UserLogin(BaseModel):
     email: EmailStr
     password: str
+
+class UserSignin(BaseModel):
+    first_name: str
+    last_name: str
+    middle_name: Optional[str]
+    email: EmailStr
+    student_id: Optional[int]
+    password: str
