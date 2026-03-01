@@ -19,3 +19,4 @@ class Course(Base, SerializerMixin):
     teacher = relationship("Teacher", back_populates="courses")
     uploads = relationship("Upload", back_populates="course")
     quizzes = relationship("Quiz",back_populates="course",cascade="all, delete",passive_deletes=True)
+    enrollments = relationship("Enrollment", back_populates="course", cascade="all, delete", passive_deletes=True)
