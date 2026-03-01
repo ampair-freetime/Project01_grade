@@ -1,22 +1,23 @@
 <template>
   <div
-    class="bg-background-light dark:bg-background-dark text-text-main-light dark:text-text-main-dark transition-colors duration-200 min-h-screen flex flex-col"
+    class="bg-gray-50 dark:bg-background-dark text-text-light dark:text-text-dark transition-colors duration-200 min-h-screen flex flex-col"
   >
     <header
-      class="bg-white dark:bg-[#1a232e] border-b border-[#e0e7eb] dark:border-[#2a363e] h-16 shrink-0 sticky top-0 z-50"
+      class="bg-surface-light dark:bg-surface-dark border-b border-border-light dark:border-border-dark sticky h-16 top-0 z-10 shadow-sm"
     >
       <div
         class="max-w-7xl mx-auto px-4 h-full flex items-center justify-between relative"
         ref="dropdownRef"
       >
+
         <div class="flex items-center gap-2">
           <div class="flex items-center gap-3">
             <div
               class="bg-primary rounded-lg p-1.5 flex items-center justify-center text-white"
             >
-              <span class="material-symbols-outlined text-white text-xl"
-                >school</span
-              >
+              <span class="material-symbols-outlined text-white text-xl">
+                school
+              </span>
             </div>
             <h2 class="text-lg font-bold leading-tight tracking-[-0.015em]">
               University Grade Portal
@@ -242,6 +243,24 @@
         </section>
       </div>
     </main>
+    <div class="fixed bottom-6 right-6 z-50">
+      <button
+      @click="toggleTheme"
+        class="p-3 rounded-full bg-surface-light dark:bg-surface-dark text-gray-500 dark:text-gray-400 hover:text-primary dark:hover:text-primary shadow-lg border border-border-light dark:border-border-dark transition-all duration-300 focus:outline-none"
+        id="theme-toggle"
+      >
+        <span
+          class="material-symbols-outlined text-2xl hidden dark:block"
+          id="theme-icon-dark"
+          >dark_mode</span
+        >
+        <span
+          class="material-symbols-outlined text-2xl block dark:hidden"
+          id="theme-icon-light"
+          >light_mode</span
+        >
+      </button>
+    </div>
   </div>
 </template>
 
@@ -266,7 +285,28 @@ const handleClickOutside = (event) => {
   }
 };
 
+const toggleTheme = () => {
+  const htmlElement = document.documentElement;
+  if (htmlElement.classList.contains("dark")) {
+    htmlElement.classList.remove("dark");
+    localStorage.setItem("color-theme", "light");
+  } else {
+    htmlElement.classList.add("dark");
+    localStorage.setItem("color-theme", "dark");
+  }
+};
+
 onMounted(() => {
+  const htmlElement = document.documentElement;
+  if (
+    localStorage.getItem("color-theme") === "dark" ||
+    (!("color-theme" in localStorage) &&
+      window.matchMedia("(prefers-color-scheme: dark)").matches)
+  ) {
+    htmlElement.classList.add("dark");
+  } else {
+    htmlElement.classList.remove("dark");
+  }
   document.addEventListener("click", handleClickOutside);
 });
 

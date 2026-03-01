@@ -3,76 +3,81 @@
     class="bg-background-light dark:bg-background-dark text-text-light dark:text-text-dark transition-colors duration-200 min-h-screen flex flex-col"
   >
     <header
-      class="bg-surface-light dark:bg-surface-dark border-b border-border-light dark:border-border-dark sticky top-0 z-10 shadow-sm"
+      class="bg-surface-light dark:bg-surface-dark border-b border-border-light dark:border-border-dark sticky h-16 top-0 z-10 shadow-sm"
     >
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="flex justify-between items-center h-16">
-          <div class="flex items-center">
-            <div class="flex-shrink-0 flex items-center gap-2">
-              <div
-                class="bg-primary rounded-lg p-1.5 flex items-center justify-center"
-              >
-                <span class="material-symbols-outlined text-white text-xl"
-                  >school</span
-                >
-              </div>
-              <span
-                class="font-bold text-lg tracking-tight text-gray-900 dark:text-white"
-                >University Grade Portal</span
-              >
+      <div
+        class="max-w-7xl mx-auto px-4 h-full flex items-center justify-between relative"
+        ref="dropdownRef"
+      >
+
+        <div class="flex items-center gap-2">
+          <div class="flex items-center gap-3">
+            <div
+              class="bg-primary rounded-lg p-1.5 flex items-center justify-center text-white"
+            >
+              <span class="material-symbols-outlined text-white text-xl">
+                school
+              </span>
             </div>
+            <h2 class="text-lg font-bold leading-tight tracking-[-0.015em]">
+              University Grade Portal
+            </h2>
           </div>
-          <div class="flex items-center gap-6">
-            <div class="relative flex items-center gap-3">
-              <button
-                @click="toggleDropdown"
-                class="flex items-center space-x-3 hover:bg-gray-100 dark:hover:bg-gray-700 px-3 py-2 rounded-lg transition"
+        </div>
+
+        <div class="flex items-center gap-6">
+          <div class="flex items-center gap-3">
+            <button
+              @click="toggleDropdown"
+              class="flex items-center space-x-3 hover:bg-gray-100 dark:hover:bg-gray-700 px-3 py-2 rounded-lg transition"
+            >
+              <div class="hidden md:flex flex-col items-end mr-2">
+                <span
+                  class="text-sm font-semibold text-gray-900 dark:text-white"
+                >
+                  KATARINABLUU
+                </span>
+              </div>
+              <div class="relative">
+                <img
+                  alt="User profile picture"
+                  class="h-10 w-10 rounded-full object-cover border-2 border-primary"
+                  src="https://lh3.googleusercontent.com/aida-public/AB6AXuA6ks6i0YSsJsdUh4f96EGndBnmP5pOe0jjp_Q9acQEQM11AzaPK7CCc7w-QiLzzN_qmRFO6MoO1BUx0mq50TWJai3AYppjYwm0WmzXNk9gCodOda6Fln53ift0i4aOWutD0QihvMIyWdrlVe9bpfd8iaTyMDGDlVQFeXYITSMNcEaBk_SRw4GQAq2XvI0W-vb8uGMcGqvaS4uYNMiJXtr4p83cjHH_n0uhwOn-HWItnMXbPU3_rAg0HM6wz3pruWbigJmGvuRaYg"
+                />
+              </div>
+            </button>
+
+            <transition name="fade">
+              <div
+                v-if="isOpen"
+                class="absolute right-4 top-full mt-2 bg-white dark:bg-gray-800 rounded-xl shadow-lg p-4 z-50 w-max min-w-[250px] max-w-[90vw]"
               >
-                <div class="hidden md:flex flex-col items-end mr-2">
-                  <span
-                    class="text-sm font-semibold text-gray-900 dark:text-white"
-                    >KATARINABLUU</span
-                  >
-                </div>
-                <div class="relative">
+                <div class="flex items-center space-x-3">
                   <img
-                    alt="User profile picture"
-                    class="h-10 w-10 rounded-full object-cover border-2 border-primary"
+                    class="h-12 w-12 rounded-full object-cover"
                     src="https://lh3.googleusercontent.com/aida-public/AB6AXuA6ks6i0YSsJsdUh4f96EGndBnmP5pOe0jjp_Q9acQEQM11AzaPK7CCc7w-QiLzzN_qmRFO6MoO1BUx0mq50TWJai3AYppjYwm0WmzXNk9gCodOda6Fln53ift0i4aOWutD0QihvMIyWdrlVe9bpfd8iaTyMDGDlVQFeXYITSMNcEaBk_SRw4GQAq2XvI0W-vb8uGMcGqvaS4uYNMiJXtr4p83cjHH_n0uhwOn-HWItnMXbPU3_rAg0HM6wz3pruWbigJmGvuRaYg"
                   />
-                </div>
-              </button>
-              <transition name="fade">
-                <div
-                  v-if="isOpen"
-                  class="absolute right-0 top-full mt-2 w-64 bg-white dark:bg-gray-800 rounded-xl shadow-lg p-4 z-50"
-                >
-                  <div class="flex items-center space-x-3">
-                    <img
-                      class="h-10 w-10 rounded-full object-cover"
-                      src="https://lh3.googleusercontent.com/aida-public/AB6AXuA6ks6i0YSsJsdUh4f96EGndBnmP5pOe0jjp_Q9acQEQM11AzaPK7CCc7w-QiLzzN_qmRFO6MoO1BUx0mq50TWJai3AYppjYwm0WmzXNk9gCodOda6Fln53ift0i4aOWutD0QihvMIyWdrlVe9bpfd8iaTyMDGDlVQFeXYITSMNcEaBk_SRw4GQAq2XvI0W-vb8uGMcGqvaS4uYNMiJXtr4p83cjHH_n0uhwOn-HWItnMXbPU3_rAg0HM6wz3pruWbigJmGvuRaYg"
-                    />
-                    <div>
-                      <p class="font-semibold text-gray-900 dark:text-white">
-                        Katarina Bluu
-                      </p>
-                      <p class="text-sm text-gray-500">
-                        Email : katarina.bluu@cmu.ac.th
-                      </p>
-                    </div>
+                  <div>
+                    <p class="font-semibold text-gray-900 dark:text-white break-all">
+                      Katarina Bluu
+                    </p>
+                    <p class="text-sm text-gray-500 break-all">
+                      Email : katarina.bluu@cmu.ac.th
+                    </p>
                   </div>
                 </div>
-              </transition>
-              <a
-                class="flex items-center justify-center size-10 rounded-full hover:bg-red-50 dark:hover:bg-red-900/20 text-[#637888] dark:text-[#a0b8cf] hover:text-red-600 dark:hover:text-red-400 transition-colors"
-                href="#"
-                title="Log Out"
-              >
-                <span class="material-symbols-outlined text-[20px]"
-                  >logout</span
-                >
-              </a>
-            </div>
+              </div>
+            </transition>
+
+            <a
+              class="flex items-center justify-center size-10 rounded-full hover:bg-red-50 dark:hover:bg-red-900/20 text-[#637888] dark:text-[#a0b8cf] hover:text-red-600 dark:hover:text-red-400 transition-colors"
+              href="#"
+              title="Log Out"
+            >
+              <span class="material-symbols-outlined text-[20px]">
+                logout
+              </span>
+            </a>
           </div>
         </div>
       </div>
@@ -94,26 +99,28 @@
                 >arrow_back</span
               >
             </div>
-            <span>Return to CS101 - Intro to Algorithms</span>
+            <span>Return</span>
           </a>
           <div class="flex flex-wrap gap-2 text-sm">
             <a
-              class="text-green-700 hover:text-green-700 hover:underline dark:text-green-500 font-medium"
+              class="text-dark hover:underline dark:text-white font-medium"
               href="#"
               >Course Management</a
             >
-            <span class="text-green-700 hover:text-green-700 hover:underline dark:text-green-500 font-medium"
+            <span
+              class="text-dark dark:text-white font-medium"
               >/</span
             >
             <a
-              class="text-green-700 hover:text-green-700 hover:underline dark:text-green-500 font-medium"
+              class="text-dark hover:underline dark:text-white font-medium"
               href="#"
               >CS101 - Intro to Computer Science</a
             >
-            <span class="text-green-700 hover:text-green-700 hover:underline dark:text-green-500 font-medium"
+            <span
+              class="text-dark dark:text-white font-medium"
               >/</span
             >
-            <span class="text-black-500 dark:text-white font-medium"
+            <span class="text-dark dark:text-white font-medium"
               >Midterm Exam</span
             >
           </div>
@@ -340,7 +347,9 @@
                   <span
                     class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-amber-100 dark:bg-yellow-900/50 text-amber-700 dark:text-yellow-300"
                   >
-                    <span class="w-1.5 h-1.5 rounded-full bg-amber-500 dark:bg-yellow-400"></span>
+                    <span
+                      class="w-1.5 h-1.5 rounded-full bg-amber-500 dark:bg-yellow-400"
+                    ></span>
                     Unread
                   </span>
                 </td>
@@ -567,6 +576,7 @@
     </main>
     <div class="fixed bottom-6 right-6 z-50">
       <button
+        @click="toggleTheme"
         class="p-3 rounded-full bg-surface-light dark:bg-surface-dark text-gray-500 dark:text-gray-400 hover:text-primary dark:hover:text-primary shadow-lg border border-border-light dark:border-border-dark transition-all duration-300 focus:outline-none"
         id="theme-toggle"
       >
@@ -604,11 +614,19 @@ export default {
         this.isOpen = false;
       }
     },
-
+    toggleTheme() {
+      const htmlElement = document.documentElement;
+      if (htmlElement.classList.contains("dark")) {
+        htmlElement.classList.remove("dark");
+        localStorage.setItem("color-theme", "light");
+      } else {
+        htmlElement.classList.add("dark");
+        localStorage.setItem("color-theme", "dark");
+      }
+    },    
   },
 
   mounted() {
-    const themeToggleBtn = document.getElementById("theme-toggle");
     const htmlElement = document.documentElement;
     if (
       localStorage.getItem("color-theme") === "dark" ||
@@ -619,15 +637,6 @@ export default {
     } else {
       htmlElement.classList.remove("dark");
     }
-    themeToggleBtn.addEventListener("click", function () {
-      if (htmlElement.classList.contains("dark")) {
-        htmlElement.classList.remove("dark");
-        localStorage.setItem("color-theme", "light");
-      } else {
-        htmlElement.classList.add("dark");
-        localStorage.setItem("color-theme", "dark");
-      }
-    });
     document.addEventListener("click", this.handleClickOutside);
   },
 
