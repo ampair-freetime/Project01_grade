@@ -32,7 +32,7 @@
               <div class="hidden md:flex flex-col items-end mr-2">
                 <span
                   class="text-sm font-semibold text-gray-900 dark:text-white"
-                  >John Doe</span
+                  >John</span
                 >
               </div>
               <div class="relative">
@@ -297,33 +297,49 @@
   </div>
 </template>
 
-<script>
-export default {
-  name: "Score",
-  data() {
-    return {
-      isOpen: false,
-    };
-  },
+<script setup>
+import { ref, onMounted, onBeforeUnmount } from "vue";
+import { useRouter } from "vue-router";
 
-  methods: {
-    toggleDropdown() {
-      this.isOpen = !this.isOpen;
-    },
-    handleClickOutside(event) {
-      if (!this.$refs.dropdownRef.contains(event.target)) {
-        this.isOpen = false;
-      }
-    },
-  },
+const router = useRouter();
 
-  mounted() {
-    document.addEventListener("click", this.handleClickOutside);
-  },
+const isOpen = ref(false);
 
-  beforeUnmount() {
-    document.removeEventListener("click", this.handleClickOutside);
-  },
+const dropdownRef = ref(null);
+
+const toggleDropdown = () => {
+  isOpen.value = !isOpen.value;
+};
+
+const handleClickOutside = (event) => {
+  if (dropdownRef.value && !dropdownRef.value.contains(event.target)) {
+    isOpen.value = false;
+  }
+};
+
+onMounted(() => {
+  document.addEventListener("click", handleClickOutside);
+});
+
+onBeforeUnmount(() => {
+  document.removeEventListener("click", handleClickOutside);
+});
+
+const handleLogout = async () => {
+  try {
+    const response = await fetch("http://localhost:56733/logout", {
+      method: "GET",
+      credentials: "include",
+    });
+
+    if (response.ok) {
+      localStorage.removeItem("csrf_token");
+      localStorage.removeItem("role");
+      router.push("/login");
+    }
+  } catch (error) {
+    console.error("Logout failed", error);
+  }
 };
 </script>
 

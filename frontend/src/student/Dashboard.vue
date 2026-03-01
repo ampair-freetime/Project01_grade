@@ -32,7 +32,7 @@
               <div class="hidden md:flex flex-col items-end mr-2">
                 <span
                   class="text-sm font-semibold text-gray-900 dark:text-white"
-                  >John Doe</span
+                  >John</span
                 >
               </div>
               <div class="relative">
@@ -296,9 +296,33 @@
 </template>
 
 <script setup>
-name: "Dashboard";
+import { ref, onMounted, onBeforeUnmount } from "vue";
 import { useRouter } from "vue-router";
+
 const router = useRouter();
+
+const isOpen = ref(false);
+
+const dropdownRef = ref(null);
+
+const toggleDropdown = () => {
+  isOpen.value = !isOpen.value;
+};
+
+const handleClickOutside = (event) => {
+  if (dropdownRef.value && !dropdownRef.value.contains(event.target)) {
+    isOpen.value = false;
+  }
+};
+
+onMounted(() => {
+  document.addEventListener("click", handleClickOutside);
+});
+
+onBeforeUnmount(() => {
+  document.removeEventListener("click", handleClickOutside);
+});
+
 const handleLogout = async () => {
   try {
     const response = await fetch("http://localhost:56733/logout", {
@@ -308,7 +332,6 @@ const handleLogout = async () => {
     if (response.ok) {
       localStorage.removeItem("csrf_token");
       localStorage.removeItem("role");
-
       router.push("/login");
     }
   } catch (error) {
