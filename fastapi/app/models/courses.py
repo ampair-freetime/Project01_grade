@@ -17,6 +17,5 @@ class Course(Base, SerializerMixin):
     is_deleted = Column(Boolean, default=False)
 
     teacher = relationship("Teacher", back_populates="courses")
-    scores = relationship("Score", back_populates="course", cascade="all, delete", passive_deletes=True)
     uploads = relationship("Upload", back_populates="course")
     quizzes = relationship("Quiz",back_populates="course",cascade="all, delete",passive_deletes=True)

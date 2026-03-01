@@ -67,7 +67,15 @@
               href="#"
               title="Log Out"
             >
-              <span class="material-symbols-outlined text-[20px]">logout</span>
+              <form @submit.prevent="handleLogout">
+                <button
+                  class="flex items-center justify-center text-[#638863] dark:text-[#8ba38b] hover:text-primary transition-colors"
+                >
+                  <span class="material-symbols-outlined text-[24px]"
+                    >logout</span
+                  >
+                </button>
+              </form>
             </a>
           </div>
         </div>
@@ -88,6 +96,11 @@
               >
                 Hello, Alex
               </h2>
+              <p
+                class="text-[#4e5b6b] dark:text-[#a0b8cf] text-base font-normal"
+              >
+                Here are your courses for the Spring 2024 semester.
+              </p>
             </div>
             <div class="w-full md:w-96">
               <label
@@ -140,6 +153,13 @@
                       <span
                         class="font-mono text-xs font-bold text-[#637888] dark:text-[#a0b8cf] bg-[#f0f4f8] dark:bg-[#253038] px-1.5 py-0.5 rounded"
                         >CS101</span
+                      >
+                      <span
+                        class="size-2 rounded-full bg-primary animate-pulse shadow-[0_0_8px_#30a0e8]"
+                      ></span>
+                      <span
+                        class="text-[10px] font-bold tracking-wider text-primary uppercase"
+                        >New Grade</span
                       >
                     </div>
                     <h4
@@ -295,34 +315,25 @@
   </div>
 </template>
 
-<script>
-export default {
-  name: "Dashboard",
+<script setup>
+name: "Dashboard";
+import { useRouter } from "vue-router";
+const router = useRouter();
+const handleLogout = async () => {
+  try {
+    const response = await fetch("http://localhost:56733/logout", {
+      method: "GET",
+      credentials: "include",
+    });
+    if (response.ok) {
+      localStorage.removeItem("csrf_token");
+      localStorage.removeItem("role");
 
-  data() {
-    return {
-      isOpen: false,
-    };
-  },
-
-  methods: {
-    toggleDropdown() {
-      this.isOpen = !this.isOpen;
-    },
-    handleClickOutside(event) {
-      if (!this.$refs.dropdownRef.contains(event.target)) {
-        this.isOpen = false;
-      }
-    },
-  },
-
-  mounted() {
-    document.addEventListener("click", this.handleClickOutside);
-  },
-
-  beforeUnmount() {
-    document.removeEventListener("click", this.handleClickOutside);
-  },
+      router.push("/login");
+    }
+  } catch (error) {
+    console.error("Logout failed", error);
+  }
 };
 </script>
 

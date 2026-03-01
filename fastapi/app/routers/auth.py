@@ -3,11 +3,12 @@
 
 import logging
 import secrets
-from fastapi import APIRouter, Request, Depends, HTTPException, status
+from fastapi import APIRouter, Request, Depends, HTTPException, status, Response
 from fastapi.responses import RedirectResponse, JSONResponse
 from sqlalchemy.orm import Session
 from app.db import get_db
-from app.schemas.auth import UserResponse, Message
+from app.schemas.auth import UserResponse, Message, UserLogin
+from pwdlib import PasswordHash
 
 from app.models.authuser import AuthUser
 from app.config import settings
@@ -32,6 +33,8 @@ GOOGLE_REDIRECT_URI = "http://localhost:8080/auth/google/auth"  # Adjust as need
 GOOGLE_AUTH_URL = "https://accounts.google.com/o/oauth2/v2/auth"
 GOOGLE_TOKEN_URL = "https://oauth2.googleapis.com/token"
 GOOGLE_USERINFO_URL = "https://www.googleapis.com/oauth2/v1/userinfo"
+
+password_hash = PasswordHash.recommended()
 
 
 def create_access_token(data: dict, expires_delta: timedelta = None):
@@ -169,31 +172,61 @@ async def google_auth(request: Request, db: Session = Depends(get_db)):
         logger.error(f"Error processing Google auth callback: {e}")
         return RedirectResponse(url=settings.frontend_login_failure_uri)
 
-@router.get("/login")
-async def login():
-    #นำเข้ารหัส email มาเช็คก่อน โดย filter if . then role เป็นอาจารย์,_ role นักเรียน
-    #เช็คว่า email ที่มา นั้นมีใน database ไหม
-    #   มี; เช็ครหัสต่อ verify(password, hash) then token get_current_user
-    #   ไม่มี; return json invalid email or password
-    # ใช้ login ผ่านเข้าสู่ระบบ
-    return ...
+@router.post("/login")
+async def login(login_data: UserLogin,response: Response, db: Session = Depends(get_db)):
+    # ไม่ต้อง ตรวจ . หรือ _ เพราะเสริชหาข้อมูลจาก data base ได้เลย
+    user = db.query(AuthUser).filter(AuthUser.email == login_data.email).first()
+    if not user:
+        raise HTTPException(status_code=401, detail="Email Not Found")
+    if not password_hash.verify(login_data.password, user.password):
+        raise HTTPException(status_code=401, detail="Password Not Correct")
+    #สร้าง ข้อมูลเพื่อทำ JWT Token
+    user_role = "student" if user.student else "teacher"
+    payload = {
+        "sub": str(user.auth_user_id),
+        "user_role": user_role
+    }
+    jwt_token = create_access_token(payload, expires_delta=timedelta(days=1))
+
+    decoded = jwt.decode(jwt_token, SECRET_KEY, algorithms=[ALGORITHM])
+    csrf_token = decoded.get("csrf_token")
+    #บันทึก jwt ลง cookie
+    response.set_cookie(
+        key="jwt",
+        value=jwt_token,
+        httponly=True,
+        secure=settings.jwt_cookie_secure,
+        samesite=settings.jwt_cookie_samesite
+    )
+    return {
+        "message": "Login successful",
+        "csrf_token": csrf_token,
+        "role": user_role
+    }
 
 @router.get("/register")
-async def register():
+async def register(request: Request):
+    #if request.email แยก เป็น 
     #ใช้สมัครสำหรับ นักเรียนใหม่ เพื่อเข้าสู่ระบบ เช็ค database แล้วเปลี่ยนเอา หรือ สร้าง database ใหม่
     #ถ้ามีเวลาให้เอาอันนี้ออก แล้ว ใช้ การ ส่งรหัสผ่าน email (advance)
     return ...
 
-@router.get("/logout", response_model=Message)
-async def logout():
+@router.get("/logout")
+async def logout(response: Response):
+    response.delete_cookie(
+        key="jwt",
+        path="/",
+        httponly=True,
+        samesite=settings.jwt_cookie_samesite,
+        secure=settings.jwt_cookie_secure
+    )
     """
     **Logout User**
-
     Instructs the client to clear the JWT token.
     Note: Real server-side logout would require a token blacklist.
     """
     logger.info("User logged out")
-    return JSONResponse(content={"message": "Logout successful. Remove JWT token on frontend."})
+    return {"message": "Logout successful"}
 
 
 @router.get("/me", response_model=UserResponse)
