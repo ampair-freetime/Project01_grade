@@ -6,7 +6,6 @@ class UserResponse(BaseModel):
     id: int
     email: EmailStr
     name: str
-    password: str
     avatar_url: Optional[str] = None
     role: str              # เพิ่ม: student หรือ teacher
     student_id: Optional[str] = None  # เพิ่ม: รหัสนักศึกษา (ถ้ามี)
