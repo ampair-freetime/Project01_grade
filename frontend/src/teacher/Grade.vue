@@ -1,52 +1,123 @@
 <template>
   <div
-    class="bg-background-light dark:bg-background-dark font-sans text-text-main-light dark:text-text-main-dark min-h-screen transition-colors duration-200"
+    class="bg-background-light dark:bg-background-dark text-text-light dark:text-text-dark transition-colors duration-200 min-h-screen flex flex-col"
   >
     <header
-      class="bg-white dark:bg-card-dark border-b border-border-light dark:border-border-dark sticky top-0 z-30"
+      class="bg-surface-light dark:bg-surface-dark border-b border-border-light dark:border-border-dark sticky top-0 z-10 shadow-sm"
     >
-      <div
-        class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between"
-      >
-        <div class="flex items-center space-x-8">
-          <a class="flex items-center space-x-2 group" href="#">
-            <div
-              class="w-8 h-8 bg-sky-500 rounded-lg flex items-center justify-center text-white"
-            >
-              <span class="material-symbols-outlined text-xl">school</span>
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex justify-between items-center h-16">
+          <div class="flex items-center">
+            <div class="flex-shrink-0 flex items-center gap-2">
+              <div
+                class="bg-primary rounded-lg p-1.5 flex items-center justify-center"
+              >
+                <span class="material-symbols-outlined text-white text-xl"
+                  >school</span
+                >
+              </div>
+              <span
+                class="font-bold text-lg tracking-tight text-gray-900 dark:text-white"
+                >University Grade Portal</span
+              >
             </div>
-            <span
-              class="text-lg font-bold text-gray-900 dark:text-white tracking-tight"
-              >UniGrade Portal</span
-            >
-          </a>
-        </div>
-        <div class="flex items-center space-x-4">
-          <div
-            class="h-8 w-8 rounded-full bg-gray-200 dark:bg-gray-700 overflow-hidden border border-gray-200 dark:border-gray-600 cursor-pointer"
-          >
-            <img
-              alt="User Profile"
-              class="w-full h-full object-cover"
-              src="https://lh3.googleusercontent.com/aida-public/AB6AXuDiqKCaTOqZUXW9tQ-lDk427nmydxkPZ2VpXhXv32xrd3_IQZw_IB6zaegZWijTxnQvD36xUBsdl4aDV-4nzwzlPmf-IOIydZqP2QyV5IIIivuPRiC2M3Gu2Fq2cNvwTZVXWrNv6JHyVAnh-iCFAMiXUtheQCjKOUGn1z5xokQvF1sdXnTxHpyMKBdwdMwHk1w3_kBN4UlibfxxCOTqfHE00uzUtQfOoYVYNw30gWw8vub1V7zlJSwOyX9yQu4vwJ2wuhPAzXWaAw"
-            />
+          </div>
+          <div class="flex items-center gap-6">
+            <div class="relative flex items-center gap-3">
+              <button
+                @click="toggleDropdown"
+                class="flex items-center space-x-3 hover:bg-gray-100 dark:hover:bg-gray-700 px-3 py-2 rounded-lg transition"
+              >
+                <div class="hidden md:flex flex-col items-end mr-2">
+                  <span
+                    class="text-sm font-semibold text-gray-900 dark:text-white"
+                    >KATARINABLUU</span
+                  >
+                </div>
+                <div class="relative">
+                  <img
+                    alt="User profile picture"
+                    class="h-10 w-10 rounded-full object-cover border-2 border-primary"
+                    src="https://lh3.googleusercontent.com/aida-public/AB6AXuA6ks6i0YSsJsdUh4f96EGndBnmP5pOe0jjp_Q9acQEQM11AzaPK7CCc7w-QiLzzN_qmRFO6MoO1BUx0mq50TWJai3AYppjYwm0WmzXNk9gCodOda6Fln53ift0i4aOWutD0QihvMIyWdrlVe9bpfd8iaTyMDGDlVQFeXYITSMNcEaBk_SRw4GQAq2XvI0W-vb8uGMcGqvaS4uYNMiJXtr4p83cjHH_n0uhwOn-HWItnMXbPU3_rAg0HM6wz3pruWbigJmGvuRaYg"
+                  />
+                </div>
+              </button>
+              <transition name="fade">
+                <div
+                  v-if="isOpen"
+                  class="absolute right-0 top-full mt-2 w-64 bg-white dark:bg-gray-800 rounded-xl shadow-lg p-4 z-50"
+                >
+                  <div class="flex items-center space-x-3">
+                    <img
+                      class="h-10 w-10 rounded-full object-cover"
+                      src="https://lh3.googleusercontent.com/aida-public/AB6AXuA6ks6i0YSsJsdUh4f96EGndBnmP5pOe0jjp_Q9acQEQM11AzaPK7CCc7w-QiLzzN_qmRFO6MoO1BUx0mq50TWJai3AYppjYwm0WmzXNk9gCodOda6Fln53ift0i4aOWutD0QihvMIyWdrlVe9bpfd8iaTyMDGDlVQFeXYITSMNcEaBk_SRw4GQAq2XvI0W-vb8uGMcGqvaS4uYNMiJXtr4p83cjHH_n0uhwOn-HWItnMXbPU3_rAg0HM6wz3pruWbigJmGvuRaYg"
+                    />
+                    <div>
+                      <p class="font-semibold text-gray-900 dark:text-white">
+                        Katarina Bluu
+                      </p>
+                      <p class="text-sm text-gray-500">
+                        Email : katarina.bluu@cmu.ac.th
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </transition>
+              <a
+                class="flex items-center justify-center size-10 rounded-full hover:bg-red-50 dark:hover:bg-red-900/20 text-[#637888] dark:text-[#a0b8cf] hover:text-red-600 dark:hover:text-red-400 transition-colors"
+                href="#"
+                title="Log Out"
+              >
+                <span class="material-symbols-outlined text-[20px]"
+                  >logout</span
+                >
+              </a>
+            </div>
           </div>
         </div>
       </div>
     </header>
     <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
       <nav
-        class="text-sm font-medium text-text-muted-light dark:text-text-muted-dark flex items-center space-x-2 flex-wrap"
+        aria-label="Breadcrumb"
+        class="flex mb-6 text-sm text-text-muted-light dark:text-text-muted-dark"
       >
-        <a class="hover:text-sky-500 transition-colors" href="#">Courses</a>
-        <span class="text-gray-300 dark:text-gray-600">/</span>
-        <a class="hover:text-sky-500 transition-colors" href="#"
-          >CS101 - Intro to Algorithms</a
-        >
-        <span class="text-gray-300 dark:text-gray-600">/</span>
-        <span class="text-gray-900 dark:text-white font-semibold"
-          >Midterm Exam</span
-        >
+        <div class="flex flex-col gap-4">
+          <a
+            class="group flex w-fit items-center gap-3 text-sm font-bold text-[#111811] dark:text-white hover:text-primary transition-colors"
+            href="#"
+          >
+            <div
+              class="flex size-9 items-center justify-center rounded-full bg-surface-light dark:bg-surface-dark border border-border-light dark:border-border-dark shadow-sm group-hover:border-primary group-hover:text-primary transition-colors"
+            >
+              <span class="material-symbols-outlined text-[20px]"
+                >arrow_back</span
+              >
+            </div>
+            <span>Return to CS101 - Intro to Algorithms</span>
+          </a>
+          <div class="flex flex-wrap gap-2 text-sm">
+            <a
+              class="text-green-700 hover:text-green-700 hover:underline dark:text-green-500 font-medium"
+              href="#"
+              >Course Management</a
+            >
+            <span class="text-green-700 hover:text-green-700 hover:underline dark:text-green-500 font-medium"
+              >/</span
+            >
+            <a
+              class="text-green-700 hover:text-green-700 hover:underline dark:text-green-500 font-medium"
+              href="#"
+              >CS101 - Intro to Computer Science</a
+            >
+            <span class="text-green-700 hover:text-green-700 hover:underline dark:text-green-500 font-medium"
+              >/</span
+            >
+            <span class="text-black-500 dark:text-white font-medium"
+              >Midterm Exam</span
+            >
+          </div>
+        </div>
       </nav>
       <div class="flex flex-col lg:flex-row lg:items-end justify-between gap-4">
         <div>
@@ -55,7 +126,7 @@
               Midterm Exam
             </h1>
             <span
-              class="px-2.5 py-0.5 rounded-full bg-sky-100 dark:bg-sky-900/30 text-sky-700 dark:text-sky-300 text-xs font-semibold border border-sky-200 dark:border-sky-800"
+              class="px-2.5 py-0.5 rounded-full bg-sky-50 dark:bg-sky-900/20 text-sky-700 dark:text-sky-300 text-xs font-semibold border border-sky-700 dark:border-sky-500"
               >Section A</span
             >
           </div>
@@ -84,7 +155,7 @@
         </div>
       </div>
       <div
-        class="bg-white dark:bg-card-dark rounded-xl border border-border-light dark:border-border-dark p-2 flex flex-col md:flex-row items-center justify-between gap-4 shadow-sm"
+        class="px-4 py-6 bg-surface-light dark:bg-surface-dark rounded-xl border border-border-light dark:border-border-dark p-2 flex flex-col md:flex-row items-center justify-between gap-4 shadow-sm"
       >
         <div class="relative w-full md:w-96">
           <span
@@ -108,29 +179,29 @@
             class="flex items-center gap-2 text-sm text-text-muted-light dark:text-text-muted-dark whitespace-nowrap"
           >
             <span
-              class="uppercase text-xs font-bold tracking-wider mr-1 text-gray-400 dark:text-gray-500"
-              >Status:</span
+              class="uppercase text-xs font-bold tracking-wider mr-1 text-gray-500 dark:text-gray-300"
+              >Status :</span
             >
             <button
-              class="px-3 py-1.5 bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900 rounded-md font-medium text-xs"
+              class="px-3 py-1.5 bg-surface-dark dark:bg-surface-light text-white dark:text-slate-900 rounded-md font-medium text-xs"
             >
               All Students
             </button>
             <button
-              class="px-3 py-1.5 text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-slate-800 rounded-md font-medium text-xs flex items-center gap-1 transition-colors"
+              class="px-3 py-1.5 text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-slate-700 rounded-md font-medium text-xs flex items-center gap-1 transition-colors"
             >
               Read Announcement
               <span
-                class="bg-sky-100 dark:bg-sky-900 text-sky-700 dark:text-sky-300 px-1.5 py-0.5 rounded-full text-[10px]"
+                class="bg-sky-100 dark:bg-sky-800 text-sky-700 dark:text-sky-100 px-1.5 py-0.5 rounded-full text-[10px]"
                 >12</span
               >
             </button>
             <button
-              class="px-3 py-1.5 text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-slate-800 rounded-md font-medium text-xs flex items-center gap-1 transition-colors"
+              class="px-3 py-1.5 text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-slate-700 rounded-md font-medium text-xs flex items-center gap-1 transition-colors"
             >
               Unread
               <span
-                class="bg-amber-100 dark:bg-amber-900 text-amber-700 dark:text-amber-300 px-1.5 py-0.5 rounded-full text-[10px]"
+                class="bg-amber-200 dark:bg-yellow-600 text-amber-900 dark:text-yellow-50 px-1.5 py-0.5 rounded-full text-[10px]"
                 >4</span
               >
             </button>
@@ -140,7 +211,7 @@
           ></div>
           <div class="flex items-center gap-2 text-sm whitespace-nowrap">
             <span
-              class="uppercase text-xs font-bold tracking-wider text-gray-400 dark:text-gray-500"
+              class="uppercase text-xs font-bold tracking-wider text-gray-400 dark:text-gray-300"
               >Sort By:</span
             >
             <button
@@ -153,7 +224,7 @@
         </div>
       </div>
       <div
-        class="bg-white dark:bg-card-dark rounded-xl border border-border-light dark:border-border-dark shadow-sm overflow-hidden"
+        class="bg-surface-light dark:bg-surface-dark rounded-xl border border-border-light dark:border-border-dark shadow-sm overflow-hidden"
       >
         <div class="overflow-x-auto">
           <table class="w-full text-left border-collapse">
@@ -162,22 +233,22 @@
                 class="border-b border-border-light dark:border-border-dark bg-gray-50/50 dark:bg-slate-800/50"
               >
                 <th
-                  class="p-4 text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider pl-6"
+                  class="p-4 text-xs font-bold text-gray-500 dark:text-gray-300 uppercase tracking-wider pl-6"
                 >
                   Student Info
                 </th>
                 <th
-                  class="p-4 text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider text-center"
+                  class="p-4 text-xs font-bold text-gray-500 dark:text-gray-300 uppercase tracking-wider text-center"
                 >
                   Score
                 </th>
                 <th
-                  class="p-4 text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider text-center"
+                  class="p-4 text-xs font-bold text-gray-500 dark:text-gray-300 uppercase tracking-wider text-center"
                 >
                   Status
                 </th>
                 <th
-                  class="p-4 text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider text-center"
+                  class="p-4 text-xs font-bold text-gray-500 dark:text-gray-300 uppercase tracking-wider text-center"
                 >
                   Actions
                 </th>
@@ -219,7 +290,7 @@
                 </td>
                 <td class="p-4 text-center">
                   <span
-                    class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-sky-100 dark:bg-sky-900/30 text-sky-700 dark:text-sky-300"
+                    class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-sky-100 dark:bg-sky-700/40 text-sky-700 dark:text-sky-200"
                   >
                     <span class="w-1.5 h-1.5 rounded-full bg-sky-500"></span>
                     Read
@@ -267,9 +338,9 @@
                 </td>
                 <td class="p-4 text-center">
                   <span
-                    class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300"
+                    class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-amber-100 dark:bg-yellow-900/50 text-amber-700 dark:text-yellow-300"
                   >
-                    <span class="w-1.5 h-1.5 rounded-full bg-amber-500"></span>
+                    <span class="w-1.5 h-1.5 rounded-full bg-amber-500 dark:bg-yellow-400"></span>
                     Unread
                   </span>
                 </td>
@@ -321,7 +392,7 @@
                 </td>
                 <td class="p-4 text-center">
                   <span
-                    class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-sky-100 dark:bg-sky-900/30 text-sky-700 dark:text-sky-300"
+                    class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-sky-100 dark:bg-sky-700/40 text-sky-700 dark:text-sky-200"
                   >
                     <span class="w-1.5 h-1.5 rounded-full bg-sky-500"></span>
                     Read
@@ -369,7 +440,7 @@
                 </td>
                 <td class="p-4 text-center">
                   <span
-                    class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-sky-100 dark:bg-sky-900/30 text-sky-700 dark:text-sky-300"
+                    class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-sky-100 dark:bg-sky-700/40 text-sky-700 dark:text-sky-200"
                   >
                     <span class="w-1.5 h-1.5 rounded-full bg-sky-500"></span>
                     Read
@@ -423,7 +494,7 @@
                 </td>
                 <td class="p-4 text-center">
                   <span
-                    class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300"
+                    class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-amber-100 dark:bg-yellow-900/50 text-amber-700 dark:text-yellow-300"
                   >
                     <span class="w-1.5 h-1.5 rounded-full bg-amber-500"></span>
                     Unread
@@ -494,44 +565,74 @@
         </div>
       </div>
     </main>
-    <button
-      class="fixed bottom-6 right-6 w-12 h-12 bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-600 rounded-full shadow-lg flex items-center justify-center text-slate-700 dark:text-yellow-400 hover:scale-105 transition-transform z-50"
-      id="theme-toggle"
-    >
-      <span class="material-symbols-outlined text-xl dark:hidden"
-        >dark_mode</span
+    <div class="fixed bottom-6 right-6 z-50">
+      <button
+        class="p-3 rounded-full bg-surface-light dark:bg-surface-dark text-gray-500 dark:text-gray-400 hover:text-primary dark:hover:text-primary shadow-lg border border-border-light dark:border-border-dark transition-all duration-300 focus:outline-none"
+        id="theme-toggle"
       >
-      <span class="material-symbols-outlined text-xl hidden dark:block"
-        >light_mode</span
-      >
-    </button>
+        <span
+          class="material-symbols-outlined text-2xl hidden dark:block"
+          id="theme-icon-dark"
+          >dark_mode</span
+        >
+        <span
+          class="material-symbols-outlined text-2xl block dark:hidden"
+          id="theme-icon-light"
+          >light_mode</span
+        >
+      </button>
+    </div>
   </div>
 </template>
 
 <script>
 export default {
   name: "Grade",
+
+  data() {
+    return {
+      isOpen: false,
+    };
+  },
+
+  methods: {
+    toggleDropdown() {
+      this.isOpen = !this.isOpen;
+    },
+    handleClickOutside(event) {
+      if (!this.$refs.dropdownRef.contains(event.target)) {
+        this.isOpen = false;
+      }
+    },
+
+  },
+
   mounted() {
     const themeToggleBtn = document.getElementById("theme-toggle");
-    const html = document.documentElement;
-    // Check local storage or system preference
+    const htmlElement = document.documentElement;
     if (
-      localStorage.theme === "dark" ||
-      (!("theme" in localStorage) &&
+      localStorage.getItem("color-theme") === "dark" ||
+      (!("color-theme" in localStorage) &&
         window.matchMedia("(prefers-color-scheme: dark)").matches)
     ) {
-      html.classList.add("dark");
+      htmlElement.classList.add("dark");
     } else {
-      html.classList.remove("dark");
+      htmlElement.classList.remove("dark");
     }
-    themeToggleBtn.addEventListener("click", () => {
-      html.classList.toggle("dark");
-      if (html.classList.contains("dark")) {
-        localStorage.theme = "dark";
+    themeToggleBtn.addEventListener("click", function () {
+      if (htmlElement.classList.contains("dark")) {
+        htmlElement.classList.remove("dark");
+        localStorage.setItem("color-theme", "light");
       } else {
-        localStorage.theme = "light";
+        htmlElement.classList.add("dark");
+        localStorage.setItem("color-theme", "dark");
       }
     });
+    document.addEventListener("click", this.handleClickOutside);
+  },
+
+  beforeUnmount() {
+    document.removeEventListener("click", this.handleClickOutside);
   },
 };
 </script>
