@@ -112,7 +112,7 @@
             </div>
             <div class="flex flex-col gap-4 mt-2">
               <button
-                class="group relative w-full h-12 bg-primary hover:bg-primary-dark text-[#0c4a6e] text-base font-bold rounded-lg shadow-[0_2px_10px_rgba(56,189,248,0.2)] hover:shadow-glow hover:-translate-y-0.5 active:translate-y-0 transition-all duration-200 flex items-center justify-center gap-2 overflow-hidden"
+                class="group relative w-full h-12 bg-primary hover:bg-primary-dark text-white text-base font-bold rounded-lg shadow-[0_2px_10px_rgba(56,189,248,0.2)] hover:shadow-glow hover:-translate-y-0.5 active:translate-y-0 transition-all duration-200 flex items-center justify-center gap-2 overflow-hidden"
                 type="submit"
               >
                 <span
