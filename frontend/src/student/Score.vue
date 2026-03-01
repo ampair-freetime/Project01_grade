@@ -90,7 +90,7 @@
                 >arrow_back</span
               >
             </div>
-            <span>Return to Courses</span>
+            <span>Return to CS101 - Intro to Algorithms</span>
           </a>
           <div class="flex flex-wrap gap-2 text-sm">
             <a
