@@ -297,16 +297,6 @@ const toggleTheme = () => {
 };
 
 onMounted(() => {
-  const htmlElement = document.documentElement;
-  if (
-    localStorage.getItem("color-theme") === "dark" ||
-    (!("color-theme" in localStorage) &&
-      window.matchMedia("(prefers-color-scheme: dark)").matches)
-  ) {
-    htmlElement.classList.add("dark");
-  } else {
-    htmlElement.classList.remove("dark");
-  }
   document.addEventListener("click", handleClickOutside);
 });
 
