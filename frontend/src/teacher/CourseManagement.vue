@@ -31,7 +31,7 @@
               @click="toggleDropdown"
               class="flex items-center space-x-3 hover:bg-gray-100 dark:hover:bg-gray-700 px-3 py-2 rounded-lg transition"
             >
-              <div class="hidden md:flex flex-col items-end mr-2">
+              <div class="hidden md:flex flex-col items-end mr-1">
                 <span
                   class="text-sm font-semibold text-gray-900 dark:text-white"
                 >

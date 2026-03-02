@@ -31,7 +31,7 @@
               @click="toggleDropdown"
               class="flex items-center space-x-3 hover:bg-gray-100 dark:hover:bg-gray-700 px-3 py-2 rounded-lg transition"
             >
-              <div class="hidden md:flex flex-col items-end mr-2">
+              <div class="hidden md:flex flex-col items-end mr-1">
                 <span
                   class="text-sm font-semibold text-gray-900 dark:text-white"
                 >
@@ -102,25 +102,13 @@
             <span>Return</span>
           </a>
           <div class="flex flex-wrap gap-2 text-sm">
-            <a
-              class="text-dark hover:underline dark:text-white font-medium"
-              href="#"
-              >Course Management</a
+            <a class="hover:text-primary font-medium" href="#">Course Management</a>
+            <span class="font-medium">/</span>
+            <a class="hover:text-primary font-medium" href="#"
+              >CS101 - Intro to Algorithms</a
             >
-            <span
-              class="text-dark dark:text-white font-medium"
-              >/</span
-            >
-            <a
-              class="text-dark hover:underline dark:text-white font-medium"
-              href="#"
-              >CS101 - Intro to Computer Science</a
-            >
-            <span
-              class="text-dark dark:text-white font-medium"
-              >/</span
-            >
-            <span class="text-dark dark:text-white font-medium"
+            <span class="font-medium">/</span>
+            <span class="text-[#111811] dark:text-white font-medium"
               >Midterm Exam</span
             >
           </div>
