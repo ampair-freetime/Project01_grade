@@ -300,24 +300,6 @@
         </div>
       </div>
     </main>
-    <div class="fixed bottom-6 right-6 z-50">
-      <button
-        @click="toggleTheme"
-        class="p-3 rounded-full bg-surface-light dark:bg-surface-dark text-gray-500 dark:text-gray-400 hover:text-primary dark:hover:text-primary shadow-lg border border-border-light dark:border-border-dark transition-all duration-300 focus:outline-none"
-        id="theme-toggle"
-      >
-        <span
-          class="material-symbols-outlined text-2xl hidden dark:block"
-          id="theme-icon-dark"
-          >dark_mode</span
-        >
-        <span
-          class="material-symbols-outlined text-2xl block dark:hidden"
-          id="theme-icon-light"
-          >light_mode</span
-        >
-      </button>
-    </div>
   </div>
 </template>
 
@@ -342,28 +324,7 @@ const handleClickOutside = (event) => {
   }
 };
 
-const toggleTheme = () => {
-  const htmlElement = document.documentElement;
-  if (htmlElement.classList.contains("dark")) {
-    htmlElement.classList.remove("dark");
-    localStorage.setItem("color-theme", "light");
-  } else {
-    htmlElement.classList.add("dark");
-    localStorage.setItem("color-theme", "dark");
-  }
-};
-
 onMounted(() => {
-  const htmlElement = document.documentElement;
-  if (
-    localStorage.getItem("color-theme") === "dark" ||
-    (!("color-theme" in localStorage) &&
-      window.matchMedia("(prefers-color-scheme: dark)").matches)
-  ) {
-    htmlElement.classList.add("dark");
-  } else {
-    htmlElement.classList.remove("dark");
-  }
   document.addEventListener("click", handleClickOutside);
 });
 

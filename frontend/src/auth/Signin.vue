@@ -39,7 +39,7 @@
           ></div>
           <div class="pt-10 pb-6 px-8 text-center">
             <h1
-              class="text-text-main dark:text-white tracking-tight text-[28px] sm:text-[32px] font-bold leading-tight mb-2"
+              class="text-[#0f172a] dark:text-white tracking-tight text-[28px] sm:text-[32px] font-bold leading-tight mb-2"
             >
               Create Account
             </h1>
@@ -48,17 +48,17 @@
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
               <div class="flex flex-col gap-1.5">
                 <label
-                  class="text-text-main dark:text-gray-200 text-sm font-semibold leading-normal ml-1"
+                  class="text-[#0f172a] dark:text-gray-200 text-sm font-semibold leading-normal ml-1"
                   >First Name</label
                 >
                 <div class="relative flex items-center group">
                   <div
-                    class="absolute left-4 text-text-muted group-focus-within:text-primary transition-colors pointer-events-none flex items-center justify-center"
+                    class="absolute left-4 text-[#64748b] group-focus-within:text-primary transition-colors pointer-events-none flex items-center justify-center"
                   >
                     <span class="material-symbols-outlined">person</span>
                   </div>
                   <input
-                    class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-text-main dark:text-white placeholder:text-text-muted/60 focus:outline-0 focus:ring-4 focus:ring-primary/10 border border-border-color dark:border-[#0c4a6e] bg-white dark:bg-[#0c4a6e] h-12 pl-11 pr-4 text-base font-normal leading-normal transition-all hover:border-primary/50 focus:border-primary"
+                    class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-text-main dark:text-white placeholder:text-[#64748b]/60 focus:outline-0 focus:ring-4 focus:ring-primary/10 border border-border-color dark:border-[#0c4a6e] bg-white dark:bg-[#0c4a6e] h-12 pl-11 pr-4 text-base font-normal leading-normal transition-all hover:border-primary/50 focus:border-primary"
                     placeholder="John"
                     type="text"
                   />
@@ -66,17 +66,17 @@
               </div>
               <div class="flex flex-col gap-1.5">
                 <label
-                  class="text-text-main dark:text-gray-200 text-sm font-semibold leading-normal ml-1"
+                  class="text-[#0f172a] dark:text-gray-200 text-sm font-semibold leading-normal ml-1"
                   >Last Name</label
                 >
                 <div class="relative flex items-center group">
                   <div
-                    class="absolute left-4 text-text-muted group-focus-within:text-primary transition-colors pointer-events-none flex items-center justify-center"
+                    class="absolute left-4 text-[#64748b] group-focus-within:text-primary transition-colors pointer-events-none flex items-center justify-center"
                   >
                     <span class="material-symbols-outlined">person</span>
                   </div>
                   <input
-                    class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-text-main dark:text-white placeholder:text-text-muted/60 focus:outline-0 focus:ring-4 focus:ring-primary/10 border border-border-color dark:border-[#0c4a6e] bg-white dark:bg-[#0c4a6e] h-12 pl-11 pr-4 text-base font-normal leading-normal transition-all hover:border-primary/50 focus:border-primary"
+                    class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-text-main dark:text-white placeholder:text-[#64748b]/60 focus:outline-0 focus:ring-4 focus:ring-primary/10 border border-border-color dark:border-[#0c4a6e] bg-white dark:bg-[#0c4a6e] h-12 pl-11 pr-4 text-base font-normal leading-normal transition-all hover:border-primary/50 focus:border-primary"
                     placeholder="Doe"
                     type="text"
                   />
@@ -89,18 +89,18 @@
                   class="text-text-main dark:text-gray-200 text-sm font-semibold leading-normal"
                   >Middle Name</label
                 >
-                <span class="text-xs text-text-muted font-normal"
+                <span class="text-xs text-[#64748b] font-normal"
                   >(Optional)</span
                 >
               </div>
               <div class="relative flex items-center group">
                 <div
-                  class="absolute left-4 text-text-muted group-focus-within:text-primary transition-colors pointer-events-none flex items-center justify-center"
+                  class="absolute left-4 text-[#64748b] group-focus-within:text-primary transition-colors pointer-events-none flex items-center justify-center"
                 >
                   <span class="material-symbols-outlined">person</span>
                 </div>
                 <input
-                  class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-text-main dark:text-white placeholder:text-text-muted/60 focus:outline-0 focus:ring-4 focus:ring-primary/10 border border-border-color dark:border-[#0c4a6e] bg-white dark:bg-[#0c4a6e] h-12 pl-11 pr-4 text-base font-normal leading-normal transition-all hover:border-primary/50 focus:border-primary"
+                  class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-text-main dark:text-white placeholder:text-[#64748b]/60 focus:outline-0 focus:ring-4 focus:ring-primary/10 border border-border-color dark:border-[#0c4a6e] bg-white dark:bg-[#0c4a6e] h-12 pl-11 pr-4 text-base font-normal leading-normal transition-all hover:border-primary/50 focus:border-primary"
                   placeholder="Quincy"
                   type="text"
                 />
@@ -108,17 +108,17 @@
             </div>
             <div class="flex flex-col gap-1.5">
               <label
-                class="text-text-main dark:text-gray-200 text-sm font-semibold leading-normal ml-1"
+                class="text-[#0f172a] dark:text-gray-200 text-sm font-semibold leading-normal ml-1"
                 >Email</label
               >
               <div class="relative flex items-center group">
                 <div
-                  class="absolute left-4 text-text-muted group-focus-within:text-primary transition-colors pointer-events-none flex items-center justify-center"
+                  class="absolute left-4 text-[#64748b] group-focus-within:text-primary transition-colors pointer-events-none flex items-center justify-center"
                 >
                   <span class="material-symbols-outlined">mail</span>
                 </div>
                 <input
-                  class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-text-main dark:text-white placeholder:text-text-muted/60 focus:outline-0 focus:ring-4 focus:ring-primary/10 border border-border-color dark:border-[#0c4a6e] bg-white dark:bg-[#0c4a6e] h-12 pl-11 pr-4 text-base font-normal leading-normal transition-all hover:border-primary/50 focus:border-primary"
+                  class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-text-main dark:text-white placeholder:text-[#64748b]/60 focus:outline-0 focus:ring-4 focus:ring-primary/10 border border-border-color dark:border-[#0c4a6e] bg-white dark:bg-[#0c4a6e] h-12 pl-11 pr-4 text-base font-normal leading-normal transition-all hover:border-primary/50 focus:border-primary"
                   placeholder="example@cmu.ac.th"
                   type="email"
                 />
@@ -126,17 +126,17 @@
             </div>
             <div class="flex flex-col gap-1.5">
               <label
-                class="text-text-main dark:text-gray-200 text-sm font-semibold leading-normal ml-1"
+                class="text-[#0f172a] dark:text-gray-200 text-sm font-semibold leading-normal ml-1"
                 >ID</label
               >
               <div class="relative flex items-center group">
                 <div
-                  class="absolute left-4 text-text-muted group-focus-within:text-primary transition-colors pointer-events-none flex items-center justify-center"
+                  class="absolute left-4 text-[#64748b] group-focus-within:text-primary transition-colors pointer-events-none flex items-center justify-center"
                 >
                   <span class="material-symbols-outlined">badge</span>
                 </div>
                 <input
-                  class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-text-main dark:text-white placeholder:text-text-muted/60 focus:outline-0 focus:ring-4 focus:ring-primary/10 border border-border-color dark:border-[#0c4a6e] bg-white dark:bg-[#0c4a6e] h-12 pl-11 pr-4 text-base font-normal leading-normal transition-all hover:border-primary/50 focus:border-primary"
+                  class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-text-main dark:text-white placeholder:text-[#64748b]/60 focus:outline-0 focus:ring-4 focus:ring-primary/10 border border-border-color dark:border-[#0c4a6e] bg-white dark:bg-[#0c4a6e] h-12 pl-11 pr-4 text-base font-normal leading-normal transition-all hover:border-primary/50 focus:border-primary"
                   placeholder="123456789"
                   type="text"
                 />
@@ -149,18 +149,18 @@
               >
               <div class="relative flex items-center group">
                 <div
-                  class="absolute left-4 text-text-muted group-focus-within:text-primary transition-colors pointer-events-none flex items-center justify-center"
+                  class="absolute left-4 text-[#64748b] group-focus-within:text-primary transition-colors pointer-events-none flex items-center justify-center"
                 >
                   <span class="material-symbols-outlined">lock</span>
                 </div>
                 <input
-                  class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-text-main dark:text-white placeholder:text-text-muted/60 focus:outline-0 focus:ring-4 focus:ring-primary/10 border border-border-color dark:border-[#0c4a6e] bg-white dark:bg-[#0c4a6e] h-12 pl-11 pr-11 text-base font-normal leading-normal transition-all hover:border-primary/50 focus:border-primary"
+                  class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-text-main dark:text-white placeholder:text-[#64748b]/60 focus:outline-0 focus:ring-4 focus:ring-primary/10 border border-border-color dark:border-[#0c4a6e] bg-white dark:bg-[#0c4a6e] h-12 pl-11 pr-11 text-base font-normal leading-normal transition-all hover:border-primary/50 focus:border-primary"
                   placeholder="Create a strong password"
                   type="password"
                 />
                 <button
                   aria-label="Toggle password visibility"
-                  class="absolute right-3 p-1.5 rounded-md flex items-center justify-center text-text-muted hover:bg-background-light dark:hover:bg-[#0c4a6e] hover:text-text-main dark:hover:text-white transition-colors cursor-pointer"
+                  class="absolute right-3 p-1.5 rounded-md flex items-center justify-center text-[#64748b]hover:bg-background-light dark:hover:bg-[#0c4a6e] hover:text-text-main dark:hover:text-white transition-colors cursor-pointer"
                   type="button"
                 >
                   <span class="material-symbols-outlined text-[20px]"
@@ -192,7 +192,7 @@
                 <div
                   class="relative bg-surface-light dark:bg-surface-dark px-2"
                 >
-                  <span class="text-xs font-medium text-text-muted">or</span>
+                  <span class="text-xs font-medium text-[#64748b]">or</span>
                 </div>
               </div>
 
@@ -222,11 +222,11 @@
                     fill="#EA4335"
                   ></path>
                 </svg>
-                <span>Sign up with Google</span>
+                <span>Sign in with Google</span>
               </button>
             </div>
             <div class="text-center mt-2">
-              <p class="text-sm text-text-muted">
+              <p class="text-sm text-[#64748b]">
                 Already have an account?
                 <a
                   class="text-primary-dark font-bold hover:underline cursor-pointer"
@@ -237,9 +237,6 @@
             </div>
           </form>
         </div>
-        <p class="text-center text-xs text-text-muted/60 mt-6 font-medium">
-          © 2024 University Grade Portal. All rights reserved.
-        </p>
       </div>
     </main>
   </div>

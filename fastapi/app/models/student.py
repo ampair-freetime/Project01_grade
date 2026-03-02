@@ -24,4 +24,5 @@ class Student(Base, SerializerMixin):
     auth_user_id = Column(Integer, ForeignKey("auth_users.auth_user_id"))
     auth_user = relationship("AuthUser", back_populates="student")
     # เชื่อมต่อกับ score
-    scores = relationship("Score",back_populates="student",cascade="all, delete",passive_deletes=True)
+    scores = relationship("Score", back_populates="student", cascade="all, delete", passive_deletes=True)
+    enrollments = relationship("Enrollment", back_populates="student", cascade="all, delete", passive_deletes=True)

@@ -129,7 +129,7 @@
                   class="flex-grow border-t border-border-color dark:border-[#1e293b]"
                 ></div>
                 <span
-                  class="flex-shrink mx-4 text-xs font-medium text-[#64748b] uppercase tracking-widest"
+                  class="flex-shrink mx-4 text-xs font-medium text-[#64748b] tracking-widest"
                   >or</span
                 >
                 <div
@@ -175,9 +175,6 @@
             </div>
           </form>
         </div>
-        <p class="text-center text-xs text-[#64748b]/60 mt-6 font-medium">
-          © 2024 University Grade Portal. All rights reserved.
-        </p>
       </div>
     </main>
   </div>

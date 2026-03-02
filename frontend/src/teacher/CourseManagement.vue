@@ -494,13 +494,6 @@
       </div>
     </main>
 
-    <footer class="mt-auto py-6">
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-        <p class="text-sm text-text-muted-light dark:text-text-muted-dark">
-          © 2023 University Grade Portal. All rights reserved.
-        </p>
-      </div>
-    </footer>
 
     <div class="fixed bottom-6 left-6 z-50">
       <button
@@ -618,92 +611,93 @@
         </ul>
       </div>
     </div>
-
-    <div class="fixed bottom-6 right-6 z-50">
-      <button
-        @click="toggleTheme"
-        class="p-3 rounded-full bg-surface-light dark:bg-surface-dark text-gray-500 dark:text-gray-400 hover:text-primary dark:hover:text-primary shadow-lg border border-border-light dark:border-border-dark transition-all duration-300 focus:outline-none"
-        id="theme-toggle"
-      >
-        <span
-          class="material-symbols-outlined text-2xl hidden dark:block"
-          id="theme-icon-dark"
-          >dark_mode</span
-        >
-        <span
-          class="material-symbols-outlined text-2xl block dark:hidden"
-          id="theme-icon-light"
-          >light_mode</span
-        >
-      </button>
-    </div>
   </div>
 </template>
 
-<script>
-export default {
+<script setup>
+import { ref, onMounted, onBeforeUnmount } from "vue";
+import { useRouter } from "vue-router";
+
+defineOptions({
   name: "CourseManagement",
+});
 
-  data() {
-    return {
-      showArchiveModal: false,
-      startCreate: false,
-      isOpen: false,
-    };
-  },
+const router = useRouter();
 
-  methods: {
-    toggleDropdown() {
-      this.isOpen = !this.isOpen;
-    },
-    handleClickOutside(event) {
-      if (!this.$refs.dropdownRef.contains(event.target)) {
-        this.isOpen = false;
-      }
-    },
-    openArchive() {
-      this.showArchiveModal = true;
-    },
-    closeArchive() {
-      this.showArchiveModal = false;
-    },
-    createCourse() {
-      this.startCreate = true;
-    },
-    cancleCreate() {
-      this.startCreate = false;
-    },
-    submit() {
-      this.startCreate = false;
-    },
-    toggleTheme() {
-      const htmlElement = document.documentElement;
-      if (htmlElement.classList.contains("dark")) {
-        htmlElement.classList.remove("dark");
-        localStorage.setItem("color-theme", "light");
-      } else {
-        htmlElement.classList.add("dark");
-        localStorage.setItem("color-theme", "dark");
-      }
-    },
-  },
+const showArchiveModal = ref(false);
+const startCreate = ref(false);
+const isOpen = ref(false);
+const dropdownRef = ref(null);
 
-  mounted() {
-    const htmlElement = document.documentElement;
-    if (
-      localStorage.getItem("color-theme") === "dark" ||
-      (!("color-theme" in localStorage) &&
-        window.matchMedia("(prefers-color-scheme: dark)").matches)
-    ) {
-      htmlElement.classList.add("dark");
-    } else {
-      htmlElement.classList.remove("dark");
-    }
-    document.addEventListener("click", this.handleClickOutside);
-  },
 
-  beforeUnmount() {
-    document.removeEventListener("click", this.handleClickOutside);
-  },
+const toggleDropdown = () => {
+  isOpen.value = !isOpen.value;
 };
+
+const handleClickOutside = (event) => {
+  if (dropdownRef.value && !dropdownRef.value.contains(event.target)) {
+    isOpen.value = false;
+  }
+};
+
+
+const openArchive = () => {
+  showArchiveModal.value = true;
+};
+
+const closeArchive = () => {
+  showArchiveModal.value = false;
+};
+
+const createCourse = () => {
+  startCreate.value = true;
+};
+
+const cancelCreate = () => {
+  startCreate.value = false;
+};
+
+const submit = () => {
+  startCreate.value = false;
+};
+
+
+const handleLogout = async () => {
+  try {
+    const response = await fetch("http://localhost:56733/logout", {
+      method: "GET",
+      credentials: "include",
+    });
+
+    if (!response.ok) {
+      throw new Error("Logout request failed");
+    }
+
+    localStorage.removeItem("csrf_token");
+    localStorage.removeItem("role");
+
+    router.push("/login");
+  } catch (error) {
+    console.error("Logout failed:", error);
+  }
+};
+
+onMounted(() => {
+  document.addEventListener("click", handleClickOutside);
+});
+
+onBeforeUnmount(() => {
+  document.removeEventListener("click", handleClickOutside);
+});
 </script>
+
+<style>
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.2s ease;
+}
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+}
+</style>

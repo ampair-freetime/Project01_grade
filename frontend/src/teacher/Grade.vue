@@ -9,7 +9,6 @@
         class="max-w-7xl mx-auto px-4 h-full flex items-center justify-between relative"
         ref="dropdownRef"
       >
-
         <div class="flex items-center gap-2">
           <div class="flex items-center gap-3">
             <div
@@ -58,7 +57,9 @@
                     src="https://lh3.googleusercontent.com/aida-public/AB6AXuA6ks6i0YSsJsdUh4f96EGndBnmP5pOe0jjp_Q9acQEQM11AzaPK7CCc7w-QiLzzN_qmRFO6MoO1BUx0mq50TWJai3AYppjYwm0WmzXNk9gCodOda6Fln53ift0i4aOWutD0QihvMIyWdrlVe9bpfd8iaTyMDGDlVQFeXYITSMNcEaBk_SRw4GQAq2XvI0W-vb8uGMcGqvaS4uYNMiJXtr4p83cjHH_n0uhwOn-HWItnMXbPU3_rAg0HM6wz3pruWbigJmGvuRaYg"
                   />
                   <div>
-                    <p class="font-semibold text-gray-900 dark:text-white break-all">
+                    <p
+                      class="font-semibold text-gray-900 dark:text-white break-all"
+                    >
                       Katarina Bluu
                     </p>
                     <p class="text-sm text-gray-500 break-all">
@@ -102,7 +103,9 @@
             <span>Return</span>
           </a>
           <div class="flex flex-wrap gap-2 text-sm">
-            <a class="hover:text-primary font-medium" href="#">Course Management</a>
+            <a class="hover:text-primary font-medium" href="#"
+              >Course Management</a
+            >
             <span class="font-medium">/</span>
             <a class="hover:text-primary font-medium" href="#"
               >CS101 - Intro to Algorithms</a
@@ -562,74 +565,69 @@
         </div>
       </div>
     </main>
-    <div class="fixed bottom-6 right-6 z-50">
-      <button
-        @click="toggleTheme"
-        class="p-3 rounded-full bg-surface-light dark:bg-surface-dark text-gray-500 dark:text-gray-400 hover:text-primary dark:hover:text-primary shadow-lg border border-border-light dark:border-border-dark transition-all duration-300 focus:outline-none"
-        id="theme-toggle"
-      >
-        <span
-          class="material-symbols-outlined text-2xl hidden dark:block"
-          id="theme-icon-dark"
-          >dark_mode</span
-        >
-        <span
-          class="material-symbols-outlined text-2xl block dark:hidden"
-          id="theme-icon-light"
-          >light_mode</span
-        >
-      </button>
-    </div>
   </div>
 </template>
 
-<script>
-export default {
+<script setup>
+import { ref, onMounted, onBeforeUnmount } from "vue";
+import { useRouter } from "vue-router";
+
+defineOptions({
   name: "Grade",
+});
 
-  data() {
-    return {
-      isOpen: false,
-    };
-  },
+const router = useRouter();
 
-  methods: {
-    toggleDropdown() {
-      this.isOpen = !this.isOpen;
-    },
-    handleClickOutside(event) {
-      if (!this.$refs.dropdownRef.contains(event.target)) {
-        this.isOpen = false;
-      }
-    },
-    toggleTheme() {
-      const htmlElement = document.documentElement;
-      if (htmlElement.classList.contains("dark")) {
-        htmlElement.classList.remove("dark");
-        localStorage.setItem("color-theme", "light");
-      } else {
-        htmlElement.classList.add("dark");
-        localStorage.setItem("color-theme", "dark");
-      }
-    },    
-  },
+const isOpen = ref(false);
+const dropdownRef = ref(null);
 
-  mounted() {
-    const htmlElement = document.documentElement;
-    if (
-      localStorage.getItem("color-theme") === "dark" ||
-      (!("color-theme" in localStorage) &&
-        window.matchMedia("(prefers-color-scheme: dark)").matches)
-    ) {
-      htmlElement.classList.add("dark");
-    } else {
-      htmlElement.classList.remove("dark");
-    }
-    document.addEventListener("click", this.handleClickOutside);
-  },
 
-  beforeUnmount() {
-    document.removeEventListener("click", this.handleClickOutside);
-  },
+const toggleDropdown = () => {
+  isOpen.value = !isOpen.value;
 };
+
+const handleClickOutside = (event) => {
+  if (dropdownRef.value && !dropdownRef.value.contains(event.target)) {
+    isOpen.value = false;
+  }
+};
+
+const handleLogout = async () => {
+  try {
+    const response = await fetch("http://localhost:56733/logout", {
+      method: "GET",
+      credentials: "include",
+    });
+
+    if (!response.ok) {
+      throw new Error("Logout request failed");
+    }
+
+    localStorage.removeItem("csrf_token");
+    localStorage.removeItem("role");
+
+    router.push("/login");
+  } catch (error) {
+    console.error("Logout failed:", error);
+  }
+};
+
+onMounted(() => {
+  document.addEventListener("click", handleClickOutside);
+});
+
+onBeforeUnmount(() => {
+  document.removeEventListener("click", handleClickOutside);
+});
 </script>
+
+<style>
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.2s ease;
+}
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+}
+</style>
