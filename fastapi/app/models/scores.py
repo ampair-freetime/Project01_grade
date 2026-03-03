@@ -18,6 +18,7 @@ class Score(Base, SerializerMixin):
     unread_flag = Column(Boolean, default=True)
     # section
     section = Column(VARCHAR(50))
+    is_deleted = Column(Boolean,default=False)
 
     # เชื่อมต่อกับ quiz
     quiz_id = Column(Integer, ForeignKey("quizzes.quiz_id"))

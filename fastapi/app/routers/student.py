@@ -38,22 +38,27 @@ async def student_dashboard(
     ).all()
 
     # กัน course ซ้ำ
-    course_set = set()
+    course_set = {}
+    unread_count = 0
 
     # relationship : Score -> Quiz -> Course
-    for s in scores :
+    for s in scores:
         if s.quiz and s.quiz.course:
-            course_set.add(s.quiz.course)
+            course_set[s.quiz.course.course_id] = s.quiz.course.course_name
+
+        if s.unread_flag:
+            unread_count += 1
 
     return {
         "student_name": f"{student.first_name} {student.last_name}",
         "student_id": student.student_id,
+        "total_unread_scores" : unread_count,
         "courses": [
             {
-                "course_id": c.course_id,
-                "course_name": c.course_name
+                "course_id": cid,
+                "course_name": cname
             }
-            for c in course_set
+            for cid, cname in course_set.items()
         ]
     }
 
@@ -76,7 +81,7 @@ async def student_course_detail(
 
     if not course:
         raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
+            status_code=404,
             detail="Course not found"
         )
     
@@ -84,7 +89,7 @@ async def student_course_detail(
     has_access = db.query(Score).join(Quiz).filter(
         Quiz.course_id == course_id,
         Score.student_id == student.student_id
-        ).first()
+    ).first()
         
     if not has_access:
         raise HTTPException(
@@ -97,25 +102,27 @@ async def student_course_detail(
         Quiz.course_id == course_id
     ).all()
 
-    assessment = []
-    total_weight_score = 0
-    total_weight = 0
-
     # ดึงคะแนนทั้งหมด
     student_scores = db.query(Score).join(Quiz).filter(
         Quiz.course_id == course_id,
         Score.student_id == student.student_id
-        ).all()
-        
+    ).all()
+
     score_map = {s.quiz_id: s for s in student_scores}
+
+    assessment = []
+    total_weight_score = 0
+    total_weight = 0
     
     for q in quizzes:
         my_score = score_map.get(q.quiz_id)
         score_value = my_score.score if my_score else None
+
+        percent = None
         
-        if score_value is not None:
-            percent = score_value / q.full_mark
-            total_weight_score += percent * q.weight
+        if score_value is not None and q.full_mark > 0:
+            percent = round((score_value / q.full_mark) * 100, 2)
+            total_weight_score += (score_value / q.full_mark) * q.weight
             total_weight += q.weight
 
         assessment.append({
@@ -124,18 +131,19 @@ async def student_course_detail(
             "weight": q.weight,
             "full_mark": q.full_mark,
             "my_score": score_value,
+            "percent": percent,
             "unread_flag": my_score.unread_flag if my_score else False
             })
 
     # คำนวณ weighted average
     weighted_average = 0
     if total_weight > 0:
-        weighted_average = total_weight_score
+        weighted_average = round((total_weight_score / total_weight) * 100, 2)
 
     return {
         "course_id": course.course_id,
         "course_name": course.course_name,
-        "weighted_average": round(weighted_average, 2),
+        "weighted_average": weighted_average,
         "assessments": assessment
     }
 
@@ -160,7 +168,7 @@ async def student_score_detail(
     # ไม่มีคะแนน
     if not my_score:
         raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
+            status_code=404,
             detail="Score not found"
         )
     
@@ -185,7 +193,9 @@ async def student_score_detail(
             "median": 0,
             "std": 0,
             "highest": 0,
-            "lowest": 0
+            "lowest": 0,
+            "total_students": 0,
+            "ranking": None
         }
 
     # คำนวณ mean
@@ -205,18 +215,27 @@ async def student_score_detail(
         median = sort_score[n//2]
 
     # คำนวณ std
-    variance = sum((x - mean) ** 2 for x in score_list) / len(score_list)
+    variance = sum((x - mean) ** 2 for x in score_list) / n
     std = variance ** 0.5
+
     # คำนวณเปอร์เซ็น
-    percent = (my_score.score / my_score.quiz.full_mark) * 100
+    if my_score.quiz.full_mark > 0:
+        percent = round((my_score.score / my_score.quiz.full_mark) * 100, 2)
+    else:
+        percent = 0
+
+    # ranking
+    ranking = sum(1 for s in score_list if s > my_score.score) + 1
 
     return {
         "my_score": my_score.score,
         "full_mark": my_score.quiz.full_mark,
-        "percent": round(percent, 2),
+        "percent": percent,
         "mean": round(mean, 2),
         "median": round(median, 2),
         "std": round(std, 2),
         "highest": highest,
-        "lowest": lowest
+        "lowest": lowest,
+        "total_students": len(score_list),
+        "ranking": ranking
     }
