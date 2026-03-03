@@ -154,18 +154,20 @@
                   <span class="material-symbols-outlined">lock</span>
                 </div>
                 <input
+                  v-model="password"
                   class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-text-main dark:text-white placeholder:text-[#64748b]/60 focus:outline-0 focus:ring-4 focus:ring-primary/10 border border-border-color dark:border-[#0c4a6e] bg-white dark:bg-[#0c4a6e] h-12 pl-11 pr-11 text-base font-normal leading-normal transition-all hover:border-primary/50 focus:border-primary"
                   placeholder="Create a strong password"
-                  type="password"
+                  :type="showPassword ? 'text' : 'password'"
                 />
                 <button
                   aria-label="Toggle password visibility"
-                  class="absolute right-3 p-1.5 rounded-md flex items-center justify-center text-[#64748b]hover:bg-background-light dark:hover:bg-[#0c4a6e] hover:text-text-main dark:hover:text-white transition-colors cursor-pointer"
+                  @click="togglePassword"
                   type="button"
+                  class="absolute right-3 p-1.5 rounded-md flex items-center justify-center text-[#64748b] hover:bg-background-light dark:hover:bg-[#0c4a6e] hover:text-text-main dark:hover:text-white transition-colors cursor-pointer"
                 >
-                  <span class="material-symbols-outlined text-[20px]"
-                    >visibility</span
-                  >
+                  <span class="material-symbols-outlined text-[20px]">
+                    {{ showPassword ? "visibility_off" : "visibility" }}
+                  </span>
                 </button>
               </div>
             </div>
@@ -228,11 +230,12 @@
             <div class="text-center mt-2">
               <p class="text-sm text-[#64748b]">
                 Already have an account?
-                <a
-                  class="text-primary-dark font-bold hover:underline cursor-pointer"
-                  href="#"
-                  >Login</a
+                <router-link
+                  to="/login"
+                  class="font-bold text-sky-600 dark:text-sky-500 hover:text-sky-700 dark:hover:text-sky-400 transition-colors duration-200"
                 >
+                  Log in
+                </router-link>
               </p>
             </div>
           </form>
@@ -242,8 +245,17 @@
   </div>
 </template>
 
-<script>
-export default {
-  name: "Signup",
+<script setup>
+import { ref } from "vue";
+
+defineOptions({
+  name: "SignIn",
+});
+
+const password = ref("");
+const showPassword = ref(false);
+
+const togglePassword = () => {
+  showPassword.value = !showPassword.value;
 };
 </script>
