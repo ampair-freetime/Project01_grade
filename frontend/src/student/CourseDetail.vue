@@ -66,13 +66,13 @@
                 </div>
               </div>
             </transition>
-            <a
+            <button
+              @click="handleLogout"
               class="flex items-center justify-center size-10 rounded-full hover:bg-red-50 dark:hover:bg-red-900/20 text-[#637888] dark:text-[#a0b8cf] hover:text-red-600 dark:hover:text-red-400 transition-colors"
-              href="#"
               title="Log Out"
             >
               <span class="material-symbols-outlined text-[20px]">logout</span>
-            </a>
+            </button>
           </div>
         </div>
       </div>

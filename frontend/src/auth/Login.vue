@@ -79,16 +79,17 @@
                   v-model="password"
                   class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-[#0f172a] dark:text-white placeholder:text-[#64748b]/60 focus:outline-0 focus:ring-4 focus:ring-primary/10 border border-border-color dark:border-[#1e293b] bg-white dark:bg-[#0c1821] h-12 pl-11 pr-11 text-base font-normal leading-normal transition-all hover:border-primary/50 focus:border-primary"
                   placeholder="Enter your password"
-                  type="password"
+                  :type="showPassword ? 'text' : 'password'"
                 />
                 <button
                   aria-label="Toggle password visibility"
                   class="absolute right-3 p-1.5 rounded-md flex items-center justify-center text-[#64748b] hover:bg-background-light dark:hover:bg-[#1e293b] hover:text-[#0f172a] dark:hover:text-white transition-colors cursor-pointer"
                   type="button"
+                  @click="togglePassword"
                 >
-                  <span class="material-symbols-outlined text-[20px]"
-                    >visibility</span
-                  >
+                  <span class="material-symbols-outlined text-[20px]">
+                    {{ showPassword ? "visibility_off" : "visibility" }}
+                  </span>
                 </button>
               </div>
             </div>
@@ -125,7 +126,6 @@
                     class="material-symbols-outlined relative z-10 group-hover:rotate-12 transition-transform duration-300"
                     >login</span
                   >
-
                   <span class="relative z-10">Login</span>
                 </button>
               </form>
@@ -172,11 +172,12 @@
             </div>
             <div class="mt-2 text-center text-sm text-[#64748b]">
               Don't have an account?
-              <a
+              <router-link
+                to="/signin"
                 class="font-bold text-sky-600 dark:text-sky-500 hover:text-sky-700 dark:hover:text-sky-400 transition-colors duration-200"
-                href="#"
-                >Sign up</a
               >
+                Sign up
+              </router-link>
             </div>
           </form>
         </div>
@@ -192,6 +193,12 @@ import { useRouter } from "vue-router";
 const email = ref("");
 const password = ref("");
 const router = useRouter();
+
+const showPassword = ref(false);
+
+const togglePassword = () => {
+  showPassword.value = !showPassword.value;
+};
 
 const handleLogin = async () => {
   try {
