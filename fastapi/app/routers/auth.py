@@ -219,12 +219,12 @@ async def register(signin_data: UserSignin, db: Session = Depends(get_db)):
             raise HTTPException(status_code=401, detail="Yor are not invited")
         #this user not rewrite 2 ขั้น ใช้ password เป็น none และ student_id เทียบกัน
         avatar = f"https://ui-avatars.com/api/?name={signin_data.first_name}&size=128&background=random"
-        if user.password is None and user.student.student_id == signin_data.student_id:
+        if user.student and user.password is None and user.student.student_id == signin_data.student_id:
             user.student.first_name = signin_data.first_name
             user.student.last_name = signin_data.last_name
             user.student.middle_name = signin_data.middle_name
             user.password = password_hash.hash(signin_data.password)
-            user.avatar_url = avatar
+            user.student.avatar_url = avatar
             db.commit()
             return {"message": "Account successful"}
         else:
@@ -249,7 +249,7 @@ async def register(signin_data: UserSignin, db: Session = Depends(get_db)):
             last_name= signin_data.last_name,
             middle_name= signin_data.middle_name,
             auth_user_id=new_auth.auth_user_id,
-            avatar_url=avatar
+            avatar_url=avatar,
         )
         db.add(new_profile)
         db.commit()

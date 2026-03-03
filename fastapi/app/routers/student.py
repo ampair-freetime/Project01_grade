@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from sqlalchemy import func
 from app.db import get_db
-from app.models import Student, Enrollment, Course, Quiz, Score, Teacher
+from app.models import Student, Course, Quiz, Score, Teacher
 from app.models.authuser import AuthUser
 from app.routers.auth import get_current_user
 
@@ -25,79 +25,79 @@ def require_student(db: Session, current_user: AuthUser):
 
 
 # Dashboard 
-@router.get("/dashboard_student")
-async def student_dashboard(
-    db: Session = Depends(get_db),
-    current_user: AuthUser = Depends(get_current_user)
-):
-    # เช็คว่าเป็นนักเรียนจริงไหม
-    student = require_student(db, current_user)
-    # courses ที่ลง
-    courses = (
-        db.query(Course)
-        .join(Enrollment, Enrollment.course_id == Course.course_id)
-        .filter(Enrollment.student_id == student.student_id)
-        .all()
-    )
+# @router.get("/dashboard_student")
+# async def student_dashboard(
+#     db: Session = Depends(get_db),
+#     current_user: AuthUser = Depends(get_current_user)
+# ):
+#     # เช็คว่าเป็นนักเรียนจริงไหม
+#     student = require_student(db, current_user)
+#     # courses ที่ลง
+#     courses = (
+#         db.query(Course)
+#         .join(Enrollment, Enrollment.course_id == Course.course_id)
+#         .filter(Enrollment.student_id == student.student_id)
+#         .all()
+#     )
 
-    return {
-        "student_name": f"{student.first_name} {student.last_name}",
-        "student_id": student.student_id,
-        "courses": [
-            {
-                "course_id": c.course_id,
-                "course_name": c.course_name
-            }
-            for c in courses
-        ]
-    }
+#     return {
+#         "student_name": f"{student.first_name} {student.last_name}",
+#         "student_id": student.student_id,
+#         "courses": [
+#             {
+#                 "course_id": c.course_id,
+#                 "course_name": c.course_name
+#             }
+#             for c in courses
+#         ]
+#     }
 
 
 # รายละเอียด course 
-@router.get("/courses/{course_id}")
-async def student_course_detail(
-    course_id: int,
-    db: Session = Depends(get_db),
-    current_user: AuthUser = Depends(get_current_user)
-):
+# @router.get("/courses/{course_id}")
+# async def student_course_detail(
+#     course_id: int,
+#     db: Session = Depends(get_db),
+#     current_user: AuthUser = Depends(get_current_user)
+# ):
 
-    student = require_student(db, current_user)
+#     student = require_student(db, current_user)
 
-    # เช็คว่าลงทะเบียนวิชานี้ไหม
-    enrollment = db.query(Enrollment).filter(
-        Enrollment.student_id == student.student_id,
-        Enrollment.course_id == course_id
-    ).first()
-    if not enrollment:
-        raise HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN,
-            detail="Not enrolled in this course"
-        )
+#     # เช็คว่าลงทะเบียนวิชานี้ไหม
+#     enrollment = db.query(Enrollment).filter(
+#         Enrollment.student_id == student.student_id,
+#         Enrollment.course_id == course_id
+#     ).first()
+#     if not enrollment:
+#         raise HTTPException(
+#             status_code=status.HTTP_403_FORBIDDEN,
+#             detail="Not enrolled in this course"
+#         )
 
-    # ดึง quiz
-    quizzes = db.query(Quiz).filter(
-        Quiz.course_id == course_id
-    ).all()
+#     # ดึง quiz
+#     quizzes = db.query(Quiz).filter(
+#         Quiz.course_id == course_id
+#     ).all()
 
-    result = []
+#     result = []
 
-    for q in quizzes:
-        my_score = db.query(Score).filter(
-            Score.quiz_id == q.quiz_id,
-            Score.student_id == student.student_id
-        ).first()
+#     for q in quizzes:
+#         my_score = db.query(Score).filter(
+#             Score.quiz_id == q.quiz_id,
+#             Score.student_id == student.student_id
+#         ).first()
 
-        result.append({
-            "quiz_id": q.quiz_id,
-            "quiz_name": q.quiz_name,
-            "weight": q.weight,
-            "my_score": my_score.score if my_score else None
-        })
+#         result.append({
+#             "quiz_id": q.quiz_id,
+#             "quiz_name": q.quiz_name,
+#             "weight": q.weight,
+#             "my_score": my_score.score if my_score else None
+#         })
 
-    return {
-        "course_id": course_id,
-        "assessments": result
-    }
+#     return {
+#         "course_id": course_id,
+#         "assessments": result
+#     }
 
 
 # ดูคะแนน + สถิติ 
