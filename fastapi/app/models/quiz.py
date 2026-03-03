@@ -15,6 +15,8 @@ class Quiz(Base, SerializerMixin):
     quiz_name = Column(VARCHAR(255))
     # คะแนนสูงสุด
     full_mark = Column(Integer, default=100)
+    # น้ำหนักคะแนน 
+    weight = Column(Float, default=1.0)
 
     # update/create/delete
     created_at = Column(DateTime, default=datetime.utcnow)
