@@ -34,14 +34,14 @@
                 <span
                   class="text-sm font-semibold text-gray-900 dark:text-white"
                 >
-                  KATARINABLUU
+                  {{ userProfile?.first_name }}
                 </span>
               </div>
               <div class="relative">
                 <img
                   alt="User profile picture"
                   class="h-10 w-10 rounded-full object-cover border-2 border-primary"
-                  src="https://lh3.googleusercontent.com/aida-public/AB6AXuA6ks6i0YSsJsdUh4f96EGndBnmP5pOe0jjp_Q9acQEQM11AzaPK7CCc7w-QiLzzN_qmRFO6MoO1BUx0mq50TWJai3AYppjYwm0WmzXNk9gCodOda6Fln53ift0i4aOWutD0QihvMIyWdrlVe9bpfd8iaTyMDGDlVQFeXYITSMNcEaBk_SRw4GQAq2XvI0W-vb8uGMcGqvaS4uYNMiJXtr4p83cjHH_n0uhwOn-HWItnMXbPU3_rAg0HM6wz3pruWbigJmGvuRaYg"
+                  :src="userProfile?.avatar_url"
                 />
               </div>
             </button>
@@ -54,16 +54,16 @@
                 <div class="flex items-center space-x-3">
                   <img
                     class="h-12 w-12 rounded-full object-cover"
-                    src="https://lh3.googleusercontent.com/aida-public/AB6AXuA6ks6i0YSsJsdUh4f96EGndBnmP5pOe0jjp_Q9acQEQM11AzaPK7CCc7w-QiLzzN_qmRFO6MoO1BUx0mq50TWJai3AYppjYwm0WmzXNk9gCodOda6Fln53ift0i4aOWutD0QihvMIyWdrlVe9bpfd8iaTyMDGDlVQFeXYITSMNcEaBk_SRw4GQAq2XvI0W-vb8uGMcGqvaS4uYNMiJXtr4p83cjHH_n0uhwOn-HWItnMXbPU3_rAg0HM6wz3pruWbigJmGvuRaYg"
+                    :src="userProfile?.avatar_url"
                   />
                   <div>
                     <p
                       class="font-semibold text-gray-900 dark:text-white break-all"
                     >
-                      Katarina Bluu
+                      {{ userProfile?.first_name }} {{ userProfile?.last_name }}
                     </p>
                     <p class="text-sm text-gray-500 break-all">
-                      Email : katarina.bluu@cmu.ac.th
+                      Email : {{ userProfile?.email }}
                     </p>
                   </div>
                 </div>
@@ -436,9 +436,30 @@ const dropdownRef = ref(null);
 const courseID = ref(route.params.course_id);
 const assignmentTitle = ref("");
 const score = ref("");
+const userProfile = ref(null);
+
+const BASE_URL = "http://localhost:56733";
 
 const toggleDropdown = () => {
   isOpen.value = !isOpen.value;
+};
+
+const fetchUserProfile = async () => {
+  try {
+    const response = await fetch(`${BASE_URL}/me`, {
+      credentials: "include",
+    });
+
+    if (!response.ok) {
+      router.push("/login");
+      return;
+    }
+
+    const data = await response.json();
+    userProfile.value = data;
+  } catch (error) {
+    console.error("Fetch profile error:", error);
+  }
 };
 
 const handleClickOutside = (event) => {
@@ -466,10 +487,13 @@ const cancleCreate = () => {
 const fetchAssignment = async (course_id) => {
   try {
     const token = localStorage.getItem("token");
-    const response = await fetch(`http://localhost:56733/assignment/${course_id}`, {
-      method: "GET",
-      credentials: "include",
-    });
+    const response = await fetch(
+      `${BASE_URL}/teacher/assignment/${course_id}`,
+      {
+        method: "GET",
+        credentials: "include",
+      }
+    );
 
     if (!response.ok) {
       throw new Error("Fetch failed");
@@ -484,11 +508,12 @@ const fetchAssignment = async (course_id) => {
 
 const submit = async () => {
   try {
-    const response = await fetch("http://localhost:56733/created_assign", {
+    const response = await fetch(`${BASE_URL}/teacher/created_assign`, {
       method: "POST",
       credentials: "include",
       headers: {
         "Content-Type": "application/json",
+        "X-CSRF-Token": csrfToken,
       },
       body: JSON.stringify({
         quiz_name: assignmentTitle.value,
@@ -515,17 +540,20 @@ const submit = async () => {
 
 const deleteAssign = async (assign_id) => {
   try {
-    const response = await fetch(`http://localhost:56733//delete_assign/${assign_id}`, {
-      method: "POST",
-      credentials: "include",
-    });
+    const response = await fetch(
+      `http://localhost:56733/delete_assign/${assign_id}`,
+      {
+        method: "POST",
+        credentials: "include",
+      }
+    );
 
     if (!response.ok) {
       throw new Error("Delete failed");
     }
     await fetchAssignment();
   } catch (err) {
-    console.error("Delete failed",err);
+    console.error("Delete failed", err);
   }
 };
 
@@ -552,6 +580,7 @@ const handleLogout = async () => {
 onMounted(() => {
   document.addEventListener("click", handleClickOutside);
   fetchAssignment();
+  fetchUserProfile();
 });
 
 onBeforeUnmount(() => {

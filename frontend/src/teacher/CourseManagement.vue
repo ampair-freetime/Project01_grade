@@ -34,14 +34,14 @@
                 <span
                   class="text-sm font-semibold text-gray-900 dark:text-white"
                 >
-                  {{ teacherName }}
+                  {{ userProfile?.first_name }}
                 </span>
               </div>
               <div class="relative">
                 <img
                   alt="User profile picture"
                   class="h-10 w-10 rounded-full object-cover border-2 border-primary"
-                  src="https://lh3.googleusercontent.com/aida-public/AB6AXuA6ks6i0YSsJsdUh4f96EGndBnmP5pOe0jjp_Q9acQEQM11AzaPK7CCc7w-QiLzzN_qmRFO6MoO1BUx0mq50TWJai3AYppjYwm0WmzXNk9gCodOda6Fln53ift0i4aOWutD0QihvMIyWdrlVe9bpfd8iaTyMDGDlVQFeXYITSMNcEaBk_SRw4GQAq2XvI0W-vb8uGMcGqvaS4uYNMiJXtr4p83cjHH_n0uhwOn-HWItnMXbPU3_rAg0HM6wz3pruWbigJmGvuRaYg"
+                  :src="userProfile?.avatar_url"
                 />
               </div>
             </button>
@@ -54,16 +54,16 @@
                 <div class="flex items-center space-x-3">
                   <img
                     class="h-12 w-12 rounded-full object-cover"
-                    src="https://lh3.googleusercontent.com/aida-public/AB6AXuA6ks6i0YSsJsdUh4f96EGndBnmP5pOe0jjp_Q9acQEQM11AzaPK7CCc7w-QiLzzN_qmRFO6MoO1BUx0mq50TWJai3AYppjYwm0WmzXNk9gCodOda6Fln53ift0i4aOWutD0QihvMIyWdrlVe9bpfd8iaTyMDGDlVQFeXYITSMNcEaBk_SRw4GQAq2XvI0W-vb8uGMcGqvaS4uYNMiJXtr4p83cjHH_n0uhwOn-HWItnMXbPU3_rAg0HM6wz3pruWbigJmGvuRaYg"
+                    :src="userProfile?.avatar_url"
                   />
                   <div>
                     <p
                       class="font-semibold text-gray-900 dark:text-white break-all"
                     >
-                      Katarina Bluu
+                      {{ userProfile?.first_name }} {{ userProfile?.last_name }}
                     </p>
                     <p class="text-sm text-gray-500 break-all">
-                      Email : katarina.bluu@cmu.ac.th
+                      Email : {{ userProfile?.email }}
                     </p>
                   </div>
                 </div>
@@ -400,6 +400,8 @@ const dropdownRef = ref(null);
 const isOpen = ref(false);
 const showArchiveModal = ref(false);
 const archivedCourses = ref([]);
+const userProfile = ref(null);
+
 
 const BASE_URL = "http://localhost:56733";
 
@@ -434,6 +436,25 @@ const filteredCourses = computed(() => {
 
 const toggleDropdown = () => {
   isOpen.value = !isOpen.value;
+};
+
+const fetchUserProfile = async () => {
+  try {
+    const response = await fetch(`${BASE_URL}/me`, {
+      credentials: "include",
+    })
+
+    if (!response.ok) {
+      router.push("/login")
+      return
+    }
+
+    const data = await response.json()
+    userProfile.value = data
+
+  } catch (error) {
+    console.error("Fetch profile error:", error)
+  }
 };
 
 const handleClickOutside = (event) => {
@@ -490,11 +511,18 @@ const deleteCourse = async (id) => {
       credentials: "include",
     });
 
-    if (response.ok) {
-      await fetchDashboard();
+    if (!response.ok) {
+      const err = await response.json();
+      alert(err.detail || "Delete failed");
+      return;
     }
+
+    courses.value = courses.value.filter(
+      (course) => course.course_id !== id
+    );
   } catch (error) {
     console.error("Delete error:", error);
+    alert("Something went wrong");
   }
 };
 
@@ -502,15 +530,24 @@ const goToAssignment = (course_id) => {
   router.push(`/assignment/${course_id}`);
 };
 
-const archiveCourse = async (id) => {
+const archiveCourse = async (course_id) => {
+  if (!confirm("Archive this course?")) return;
+
   try {
-    const response = await fetch(`${BASE_URL}/teacher/archive_course/${id}`, {
+    const response = await fetch(`${BASE_URL}/teacher/archive_course/${course_id}`, {
       method: "POST",
       credentials: "include",
     });
 
     if (response.ok) {
       await fetchDashboard();
+    }
+    const course = courses.value.find(c => c.course_id === course_id)
+    courses.value = courses.value.filter(
+      c => c.course_id !== course_id
+    )
+    if (course) {
+      archivedCourses.value.push(course)
     }
   } catch (error) {
     console.error("Archive error:", error);
@@ -536,6 +573,7 @@ const handleLogout = async () => {
 onMounted(() => {
   document.addEventListener("click", handleClickOutside);
   fetchDashboard();
+  fetchUserProfile();
 });
 
 onBeforeUnmount(() => {
