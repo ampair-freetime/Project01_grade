@@ -64,7 +64,7 @@ async def get_current_user(request: Request, db: Session = Depends(get_db)):
             logger.error("Invalid token: subject missing")
             raise HTTPException(
                 status_code=401, detail="Invalid token: subject missing")
-        user = db.query(AuthUser).filter(AuthUser.id == int(user_id)).first()
+        user = db.query(AuthUser).filter(AuthUser.auth_user_id == int(user_id)).first()
         if user is None:
             logger.error(f"User not found for id: {user_id}")
             raise HTTPException(status_code=401, detail="User not found")
@@ -218,11 +218,13 @@ async def register(signin_data: UserSignin, db: Session = Depends(get_db)):
         if not user:
             raise HTTPException(status_code=401, detail="Yor are not invited")
         #this user not rewrite 2 ขั้น ใช้ password เป็น none และ student_id เทียบกัน
-        if user.password is None and user.student.student_id == signin_data.student_id:
+        avatar = f"https://ui-avatars.com/api/?name={signin_data.first_name}&size=128&background=random"
+        if user.student and user.password is None and user.student.student_id == signin_data.student_id:
             user.student.first_name = signin_data.first_name
             user.student.last_name = signin_data.last_name
-            user.studennt.middle_name = signin_data.middle_name
+            user.student.middle_name = signin_data.middle_name
             user.password = password_hash.hash(signin_data.password)
+            user.student.avatar_url = avatar
             db.commit()
             return {"message": "Account successful"}
         else:
@@ -241,18 +243,20 @@ async def register(signin_data: UserSignin, db: Session = Depends(get_db)):
         db.commit()
         db.refresh(new_auth)
 
+        avatar = f"https://ui-avatars.com/api/?name={signin_data.first_name}&size=128&background=random"
         new_profile = Teacher(
             first_name=signin_data.first_name,
             last_name= signin_data.last_name,
             middle_name= signin_data.middle_name,
-            auth_user_id=new_auth.auth_user_id
+            auth_user_id=new_auth.auth_user_id,
+            avatar_url=avatar,
         )
         db.add(new_profile)
         db.commit()
     #if request.email แยก เป็น 
     #ใช้สมัครสำหรับ นักเรียนใหม่ เพื่อเข้าสู่ระบบ เช็ค database แล้วเปลี่ยนเอา หรือ สร้าง database ใหม่
     #ถ้ามีเวลาให้เอาอันนี้ออก แล้ว ใช้ การ ส่งรหัสผ่าน email (advance)
-    return {"message": "Sign in completed"}
+    return {"message": "Sign up completed"}
 
 @router.get("/logout")
 async def logout(response: Response):
@@ -281,8 +285,18 @@ async def read_users_me(current_user: AuthUser = Depends(get_current_user)):
     Requires a valid JWT token in the `jwt` cookie or Authorization header (logic depends on `get_current_user`).
     """
     logger.info(f"Fetching profile for {current_user.email}")
-    return {"email": current_user.email, "name": current_user.name, "avatar_url": current_user.avatar_url}
-
+    if current_user.student:
+        return {"email": current_user.email, 
+                "first_name": current_user.student.first_name,
+                "middle_name": current_user.student.middle_name,
+                "last_name": current_user.student.last_name,
+                "avatar_url": current_user.avatar_url}
+    else:
+        return {"email": current_user.email, 
+                "first_name": current_user.teacher.first_name,
+                "middle_name": current_user.teacher.middle_name,
+                "last_name": current_user.teacher.last_name,
+                "avatar_url": current_user.avatar_url}
 
 def register_routes(router_instance: APIRouter):
     router_instance.include_router(router)

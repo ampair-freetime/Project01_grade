@@ -604,8 +604,7 @@ const router = useRouter();
 
 const isOpen = ref(false);
 const dropdownRef = ref(null);
-const sortOpen = ref(false);
-const selectedSort = ref("ID");
+
 
 const toggleDropdown = () => {
   isOpen.value = !isOpen.value;
