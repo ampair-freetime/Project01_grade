@@ -70,15 +70,15 @@
               </div>
             </transition>
 
-            <a
+            <button
+              @click="handleLogout"
               class="flex items-center justify-center size-10 rounded-full hover:bg-red-50 dark:hover:bg-red-900/20 text-[#637888] dark:text-[#a0b8cf] hover:text-red-600 dark:hover:text-red-400 transition-colors"
-              href="#"
               title="Log Out"
             >
               <span class="material-symbols-outlined text-[20px]">
                 logout
               </span>
-            </a>
+            </button>
           </div>
         </div>
       </div>
@@ -130,14 +130,15 @@
           </div>
         </div>
         <div class="flex flex-wrap items-center gap-3">
-          <button
+          <label
             class="inline-flex items-center px-4 py-2 bg-white dark:bg-slate-800 border border-gray-300 dark:border-slate-600 rounded-lg text-sm font-medium text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-slate-700 shadow-sm transition-colors"
           >
             <span class="material-symbols-outlined text-lg mr-2"
               >upload_file</span
             >
             Import CSV
-          </button>
+            <input type="file" accept=".csv" class="hidden" @change="handleFileUpload">
+          </label>
           <button
             class="inline-flex items-center px-4 py-2 bg-slate-900 dark:bg-slate-700 border border-transparent rounded-lg text-sm font-medium text-white hover:bg-slate-800 dark:hover:bg-slate-600 shadow-sm transition-colors"
           >
@@ -212,36 +213,20 @@
               class="uppercase text-xs font-bold tracking-wider text-gray-400 dark:text-gray-300"
               >Sort By:</span
             >
-            <button
-              @click="toggleSort"
-              class="flex items-center gap-1 font-semibold text-gray-800 dark:text-white hover:text-sky-500 transition-colors"
+            <select
+              v-model="sortOption"
+              @change="sortPeople"
+              class="border border-gray-300 rounded-md px-2 py-1 text-sm dark:bg-gray-700 dark:border-gray-600"
             >
-              ID
-              <span class="material-symbols-outlined text-sm">expand_more</span>
-            </button>
-            <div
-              v-if="sortOpen"
-              class="absolute top-8 right-0 bg-white shadow-lg rounded-md py-2 w-40 z-20"
-            >
-              <button
-                @click="changeSort('student_id', 'ID')"
-                class="uppercase text-xs font-bold tracking-wider text-gray-400 dark:text-gray-300"
-              >
-                ID
-              </button>
-              <button
-                @click="changeSort('student_name', 'name')"
-                class="uppercase text-xs font-bold tracking-wider text-gray-400 dark:text-gray-300"
-              >
-                name
-              </button>
-              <button
-                @click="changeSort('section', 'section')"
-                class="uppercase text-xs font-bold tracking-wider text-gray-400 dark:text-gray-300"
-              >
-                section
-              </button>
-            </div>
+              <option value="id_lowhigh">ID (Low-High)</option>
+              <option value="id_highlow">ID (High-Low)</option>
+
+              <option value="name_atoz">Name (A-Z)</option>
+              <option value="name_ztoa">Name (Z-A)</option>
+
+              <option value="section_lowhigh">section (Low-High)</option>
+              <option value="section_highlow">section (High-Low)</option>
+            </select>
           </div>
         </div>
       </div>
@@ -278,6 +263,8 @@
             </thead>
             <tbody class="divide-y divide-border-light dark:divide-border-dark">
               <tr
+                v-for="student in students"
+                :key="student.student_id"
                 class="group hover:bg-gray-50 dark:hover:bg-slate-800/50 transition-colors"
               >
                 <td class="p-4 pl-6">
@@ -293,12 +280,12 @@
                     </div>
                     <div>
                       <div class="font-semibold text-gray-900 dark:text-white">
-                        Alice Johnson
+                        {{ student.student_name }}
                       </div>
                       <div
                         class="text-xs text-text-muted-light dark:text-text-muted-dark"
                       >
-                        ID: 2023001
+                        ID: {{ student.student_id }}
                       </div>
                     </div>
                   </div>
@@ -307,7 +294,7 @@
                   <div
                     class="w-16 h-10 mx-auto border border-gray-200 dark:border-slate-600 rounded-lg flex items-center justify-center font-semibold text-gray-900 dark:text-white bg-white dark:bg-slate-900"
                   >
-                    92
+                    {{ student.score }}
                   </div>
                 </td>
                 <td class="p-4 text-center">
@@ -315,7 +302,7 @@
                     class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-sky-100 dark:bg-sky-700/40 text-sky-700 dark:text-sky-200"
                   >
                     <span class="w-1.5 h-1.5 rounded-full bg-sky-500"></span>
-                    Read
+                    {{ student.status }}
                   </span>
                 </td>
                 <td class="p-4 text-center">
@@ -593,18 +580,23 @@
 </template>
 
 <script setup>
-import { ref, onMounted, onBeforeUnmount } from "vue";
-import { useRouter } from "vue-router";
+import { ref, onMounted, onBeforeUnmount, computed } from "vue";
+import { useRouter, useRoute } from "vue-router";
 
 defineOptions({
   name: "Grade",
 });
 
 const router = useRouter();
-
+const route = useRoute();
 const isOpen = ref(false);
 const dropdownRef = ref(null);
 
+const students = ref([]);
+const sortKey = ref("");
+const sortOption = ref("id_lowhigh");
+const sortOpen = ref(false);
+const quizID = route.params.quiz_id;
 
 const toggleDropdown = () => {
   isOpen.value = !isOpen.value;
@@ -613,6 +605,51 @@ const toggleDropdown = () => {
 const handleClickOutside = (event) => {
   if (dropdownRef.value && !dropdownRef.value.contains(event.target)) {
     isOpen.value = false;
+  }
+};
+
+const fetchStudentScore = async () => {
+  try {
+    const token = localStorage.getItem("token");
+
+    const response = await fetch(`http://localhost:56733/stu_score/${quizID}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    const data = await response.json();
+
+    sortPeople();
+  } catch (err) {
+    console.error(err);
+  }
+};
+
+const handleFileUpload = async (event) => {
+  const file = event.target.files[0];
+  if (!file){
+    return;
+  }
+  const formdata = new FormData();
+  formdata.append("file", file);
+
+  try{
+    const token = localStorage.getItem("csrf_token");
+    const response = await fetch(`http://localhost:56733/upload/${quizID}`,{
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${token}`
+      },
+      body: formdata
+    });
+    if (!response.ok) {
+      const errorData = await response.json();
+      alert(errorData.detail || "Upload failed")
+    }
+    alert("CSV uploaded successfully")
+    fetchStudentScore();
+  } catch(err){
+    console.error(err);
   }
 };
 
@@ -636,8 +673,45 @@ const handleLogout = async () => {
   }
 };
 
+const sortPeople = () => {
+  switch (sortOption.value) {
+    case "id_lowhigh":
+      students.value.sort(
+        (a, b) => Number(a.student_id) - Number(b.student_id)
+      );
+      break;
+
+    case "id_highlow":
+      students.value.sort(
+        (a, b) => Number(b.student_id) - Number(a.student_id)
+      );
+      break;
+
+    case "name_atoz":
+      students.value.sort((a, b) =>
+        a.student_name.localeCompare(b.student_name)
+      );
+      break;
+
+    case "name_ztoa":
+      students.value.sort((a, b) =>
+        b.student_name.localeCompare(a.student_name)
+      );
+      break;
+
+    case "section_lowhigh":
+      students.value.sort((a, b) => a.section.localeCompare(b.section));
+      break;
+
+    case "section_highlow":
+      students.value.sort((a, b) => b.section.localeCompare(a.section));
+      break;
+  }
+};
+
 onMounted(() => {
   document.addEventListener("click", handleClickOutside);
+  fetchStudentScore();
 });
 
 onBeforeUnmount(() => {

@@ -60,9 +60,6 @@
                     <p
                       class="font-semibold text-gray-900 dark:text-white break-all"
                     >
-                    <p
-                      class="font-semibold text-gray-900 dark:text-white break-all"
-                    >
                       Katarina Bluu
                     </p>
                     <p class="text-sm text-gray-500 break-all">
@@ -141,7 +138,7 @@
           </div>
           <div>
             <button
-              @click="CreateAssignment"
+              @click="createAssignment"
               class="inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-primary hover:bg-primary-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary transition-colors whitespace-nowrap"
             >
               <span class="material-symbols-outlined mr-2 text-lg">add</span>
@@ -167,7 +164,7 @@
               <div class="mb-4">
                 <label class="block text-lg py-1">Assignment Title</label>
                 <input
-                  v-model="courseID"
+                  v-model="assignmentTitle"
                   type="text"
                   class="w-full border border-gray-300 dark:border-gray-800 rounded-md dark:bg-gray-700 px-3 py-2 focus:outline-none focus:ring-green-200"
                   placeholder="e.g., HW01 - Python001"
@@ -176,7 +173,7 @@
               <div class="mb-4">
                 <label class="block text-lg py-1">Score</label>
                 <input
-                  v-model="courseName"
+                  v-model="score"
                   type="number"
                   class="w-full border border-gray-300 dark:border-gray-800 rounded-md dark:bg-gray-700 px-3 py-2 focus:outline-none focus:ring-green-200"
                   placeholder="e.g., 30"
@@ -424,21 +421,21 @@
 
 <script setup>
 import { ref, onMounted, onBeforeUnmount } from "vue";
-import { useRouter } from "vue-router";
+import { useRouter, useRoute } from "vue-router";
 
 defineOptions({
   name: "AssignmentManagement",
 });
 
 const router = useRouter();
-
+const route = useRoute();
 const showArchiveModal = ref(false);
-
 const startCreate = ref(false);
-
 const isOpen = ref(false);
-
 const dropdownRef = ref(null);
+const courseID = ref(route.params.course_id);
+const assignmentTitle = ref("");
+const score = ref("");
 
 const toggleDropdown = () => {
   isOpen.value = !isOpen.value;
@@ -462,12 +459,74 @@ const createAssignment = () => {
   startCreate.value = true;
 };
 
-const cancelCreate = () => {
+const cancleCreate = () => {
   startCreate.value = false;
 };
 
-const submit = () => {
-  startCreate.value = false;
+const fetchAssignment = async (course_id) => {
+  try {
+    const token = localStorage.getItem("token");
+    const response = await fetch(`http://localhost:56733/assignment/${course_id}`, {
+      method: "GET",
+      credentials: "include",
+    });
+
+    if (!response.ok) {
+      throw new Error("Fetch failed");
+    }
+
+    const data = await response.json();
+    console.log(data);
+  } catch (err) {
+    console.error(err);
+  }
+};
+
+const submit = async () => {
+  try {
+    const response = await fetch("http://localhost:56733/created_assign", {
+      method: "POST",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        quiz_name: assignmentTitle.value,
+        full_mark: Number(score.value),
+        course_id: Number(courseID.value),
+      }),
+    });
+
+    if (!response.ok) {
+      throw new Error("Create assignment failed");
+    }
+
+    const data = await response.json();
+    console.log("Created:", data);
+
+    startCreate.value = false;
+
+    assignmentTitle.value = "";
+    score.value = "";
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+const deleteAssign = async (assign_id) => {
+  try {
+    const response = await fetch(`http://localhost:56733//delete_assign/${assign_id}`, {
+      method: "POST",
+      credentials: "include",
+    });
+
+    if (!response.ok) {
+      throw new Error("Delete failed");
+    }
+    await fetchAssignment();
+  } catch (err) {
+    console.error("Delete failed",err);
+  }
 };
 
 const handleLogout = async () => {
@@ -492,6 +551,7 @@ const handleLogout = async () => {
 
 onMounted(() => {
   document.addEventListener("click", handleClickOutside);
+  fetchAssignment();
 });
 
 onBeforeUnmount(() => {

@@ -70,7 +70,7 @@
               </div>
             </transition>
 
-            <a
+            <button
               @click="handleLogout"
               class="flex items-center justify-center size-10 rounded-full hover:bg-red-50 dark:hover:bg-red-900/20 text-[#637888] dark:text-[#a0b8cf] hover:text-red-600 dark:hover:text-red-400 transition-colors"
               title="Log Out"
@@ -78,7 +78,7 @@
               <span class="material-symbols-outlined text-[20px]">
                 logout
               </span>
-            </a>
+            </button>
           </div>
         </div>
       </div>
@@ -146,7 +146,6 @@
                 placeholder="e.g., Intro to Computer Science"
               />
             </div>
-
             <div class="flex justify-end gap-3">
               <button
                 @click="submit"
@@ -186,7 +185,7 @@
             class="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors duration-150"
           >
             <div class="px-6 py-5 flex items-center justify-between">
-              <div class="flex items-center flex-grow">
+              <a class="flex items-center flex-grow" href="#">
                 <div
                   class="flex-shrink-0 h-12 w-12 rounded-xl bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 flex items-center justify-center"
                 >
@@ -204,7 +203,7 @@
                     {{ course.course_name }}
                   </div>
                 </div>
-              </div>
+              </a>
               <div class="flex items-center gap-6">
                 <div class="flex flex-col items-end min-w-[80px]">
                   <div
@@ -214,7 +213,7 @@
                       class="material-symbols-outlined text-text-muted-light dark:text-text-muted-dark mr-1 text-lg"
                       >people</span
                     >
-                    {{ 0 }}
+                    {{ course.student_count ?? 0 }}
                   </div>
                   <div
                     class="text-xs text-text-muted-light dark:text-text-muted-dark uppercase mt-0.5"
@@ -224,8 +223,9 @@
                 </div>
                 <div class="flex items-end min-w-[50px]">
                   <button
-                    @click="deleteCourse(course.id)"
+                    @click="deleteCourse(course.course_id)"
                     class="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-900/30 rounded-full transition-colors duration-200 group"
+                    title="Delete Course"
                   >
                     <span
                       class="material-symbols-outlined text-xl group-hover:text-red-600"
@@ -233,7 +233,196 @@
                     >
                   </button>
                   <button
-                    @click="archiveCourse(course.id)"
+                    @click="archiveCourse(course.course_id)"
+                    class="p-2 text-gray-400 hover:text-yellow-600 hover:bg-yellow-50 dark:hover:bg-yellow-900/30 rounded-full transition-colors duration-200 group"
+                    title="Archive Course"
+                  >
+                    <span
+                      class="material-symbols-outlined text-xl group-hover:text-yellow-600"
+                      >archive</span
+                    >
+                  </button>
+                </div>
+              </div>
+            </div>
+          </li>
+          <li
+            class="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors duration-150"
+          >
+            <div class="px-6 py-5 flex items-center justify-between">
+              <a class="flex items-center flex-grow" href="#">
+                <div
+                  class="flex-shrink-0 h-12 w-12 rounded-xl bg-sky-100 dark:bg-sky-900/30 text-sky-600 dark:text-sky-400 flex items-center justify-center"
+                >
+                  <span class="material-symbols-outlined">science</span>
+                </div>
+                <div class="ml-4">
+                  <div
+                    class="text-base font-bold text-gray-900 dark:text-white"
+                  >
+                    BIO205
+                  </div>
+                  <div
+                    class="text-sm text-text-muted-light dark:text-text-muted-dark"
+                  >
+                    Molecular Biology
+                  </div>
+                </div>
+              </a>
+              <div class="flex items-center gap-6">
+                <div class="flex flex-col items-end min-w-[80px]">
+                  <div
+                    class="flex items-center text-gray-900 dark:text-white font-semibold"
+                  >
+                    <span
+                      class="material-symbols-outlined text-text-muted-light dark:text-text-muted-dark mr-1 text-lg"
+                      >people</span
+                    >
+                    45
+                  </div>
+                  <div
+                    class="text-xs text-text-muted-light dark:text-text-muted-dark uppercase mt-0.5"
+                  >
+                    Students
+                  </div>
+                </div>
+                <div class="flex items-end min-w-[50px]">
+                  <button
+                    class="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-900/30 rounded-full transition-colors duration-200 group"
+                    title="Delete Course"
+                  >
+                    <span
+                      class="material-symbols-outlined text-xl group-hover:text-red-600"
+                      >delete</span
+                    >
+                  </button>
+                  <button
+                    class="p-2 text-gray-400 hover:text-yellow-600 hover:bg-yellow-50 dark:hover:bg-yellow-900/30 rounded-full transition-colors duration-200 group"
+                    title="Archive Course"
+                  >
+                    <span
+                      class="material-symbols-outlined text-xl group-hover:text-yellow-600"
+                      >archive</span
+                    >
+                  </button>
+                </div>
+              </div>
+            </div>
+          </li>
+          <li
+            class="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors duration-150"
+          >
+            <div class="px-6 py-5 flex items-center justify-between">
+              <a class="flex items-center flex-grow" href="#">
+                <div
+                  class="flex-shrink-0 h-12 w-12 rounded-xl bg-purple-100 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400 flex items-center justify-center"
+                >
+                  <span class="material-symbols-outlined">menu_book</span>
+                </div>
+                <div class="ml-4">
+                  <div
+                    class="text-base font-bold text-gray-900 dark:text-white"
+                  >
+                    ENG302
+                  </div>
+                  <div
+                    class="text-sm text-text-muted-light dark:text-text-muted-dark"
+                  >
+                    Creative Writing
+                  </div>
+                </div>
+              </a>
+              <div class="flex items-center gap-6">
+                <div class="flex flex-col items-end min-w-[80px]">
+                  <div
+                    class="flex items-center text-gray-900 dark:text-white font-semibold"
+                  >
+                    <span
+                      class="material-symbols-outlined text-text-muted-light dark:text-text-muted-dark mr-1 text-lg"
+                      >people</span
+                    >
+                    28
+                  </div>
+                  <div
+                    class="text-xs text-text-muted-light dark:text-text-muted-dark uppercase mt-0.5"
+                  >
+                    Students
+                  </div>
+                </div>
+                <div class="flex items-end min-w-[50px]">
+                  <button
+                    class="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-900/30 rounded-full transition-colors duration-200 group"
+                    title="Delete Course"
+                  >
+                    <span
+                      class="material-symbols-outlined text-xl group-hover:text-red-600"
+                      >delete</span
+                    >
+                  </button>
+                  <button
+                    class="p-2 text-gray-400 hover:text-yellow-600 hover:bg-yellow-50 dark:hover:bg-yellow-900/30 rounded-full transition-colors duration-200 group"
+                    title="Archive Course"
+                  >
+                    <span
+                      class="material-symbols-outlined text-xl group-hover:text-yellow-600"
+                      >archive</span
+                    >
+                  </button>
+                </div>
+              </div>
+            </div>
+          </li>
+          <li
+            class="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors duration-150"
+          >
+            <div class="px-6 py-5 flex items-center justify-between">
+              <a class="flex items-center flex-grow" href="#">
+                <div
+                  class="flex-shrink-0 h-12 w-12 rounded-xl bg-orange-100 dark:bg-orange-900/30 text-orange-600 dark:text-orange-400 flex items-center justify-center"
+                >
+                  <span class="material-symbols-outlined">history_edu</span>
+                </div>
+                <div class="ml-4">
+                  <div
+                    class="text-base font-bold text-gray-900 dark:text-white"
+                  >
+                    HIS201
+                  </div>
+                  <div
+                    class="text-sm text-text-muted-light dark:text-text-muted-dark"
+                  >
+                    World History
+                  </div>
+                </div>
+              </a>
+              <div class="flex items-center gap-6">
+                <div class="flex flex-col items-end min-w-[80px]">
+                  <div
+                    class="flex items-center text-gray-900 dark:text-white font-semibold"
+                  >
+                    <span
+                      class="material-symbols-outlined text-text-muted-light dark:text-text-muted-dark mr-1 text-lg"
+                      >people</span
+                    >
+                    89
+                  </div>
+                  <div
+                    class="text-xs text-text-muted-light dark:text-text-muted-dark uppercase mt-0.5"
+                  >
+                    Students
+                  </div>
+                </div>
+                <div class="flex items-end min-w-[50px]">
+                  <button
+                    class="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-900/30 rounded-full transition-colors duration-200 group"
+                    title="Delete Course"
+                  >
+                    <span
+                      class="material-symbols-outlined text-xl group-hover:text-red-600"
+                      >delete</span
+                    >
+                  </button>
+                  <button
                     class="p-2 text-gray-400 hover:text-yellow-600 hover:bg-yellow-50 dark:hover:bg-yellow-900/30 rounded-full transition-colors duration-200 group"
                     title="Archive Course"
                   >
@@ -428,24 +617,6 @@ const courses = ref([]);
 const teacherName = ref("");
 const courseName = ref("");
 
-const fetchDashboard = async () => {
-  try {
-    const response = await fetch("http://localhost:56733/teacher/courses", {
-      credentials: "include",
-    });
-    if (!response.ok) {
-      throw new Error("Fetch failed");
-    }
-
-    const data = await response.json();
-
-    teacherName.value = data.teacher_name;
-    courses.value = data.courses;
-  } catch (err) {
-    console.error(err);
-  }
-};
-
 const toggleDropdown = () => {
   isOpen.value = !isOpen.value;
 };
@@ -472,9 +643,28 @@ const cancleCreate = () => {
   startCreate.value = false;
 };
 
+const fetchDashboard = async () => {
+  try {
+    const response = await fetch("http://localhost:56733/dashboard_teacher", {
+      credentials: "include",
+    });
+
+    if (!response.ok) {
+      throw new Error("Fetch failed");
+    }
+
+    const data = await response.json();
+
+    teacherName.value = data.teacher_name;
+    courses.value = data.courses;
+  } catch (err) {
+    console.error(err);
+  }
+};
+
 const submit = async () => {
   try {
-    const response = await fetch("http://localhost:56733/teacher/courses", {
+    const response = await fetch("http://localhost:56733/create_course", {
       method: "POST",
       credentials: "include",
       headers: {
@@ -494,7 +684,23 @@ const submit = async () => {
 
     fetchDashboard();
   } catch (err) {
-    console.error(err);
+    console.error("Create failed", err);
+  }
+};
+
+const deleteCourse = async (id) => {
+  try {
+    const response = await fetch(`http://localhost:56733/delete_course/${id}`, {
+      method: "POST",
+      credentials: "include",
+    });
+
+    if (!response.ok) {
+      throw new Error("Delete failed");
+    }
+    await fetchDashboard();
+  } catch (err) {
+    console.error("Delete failed", err);
   }
 };
 
