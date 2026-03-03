@@ -213,11 +213,35 @@
               >Sort By:</span
             >
             <button
+              @click="toggleSort"
               class="flex items-center gap-1 font-semibold text-gray-800 dark:text-white hover:text-sky-500 transition-colors"
             >
               ID
               <span class="material-symbols-outlined text-sm">expand_more</span>
             </button>
+            <div
+              v-if="sortOpen"
+              class="absolute top-8 right-0 bg-white shadow-lg rounded-md py-2 w-40 z-20"
+            >
+              <button
+                @click="changeSort('student_id', 'ID')"
+                class="uppercase text-xs font-bold tracking-wider text-gray-400 dark:text-gray-300"
+              >
+                ID
+              </button>
+              <button
+                @click="changeSort('student_name', 'name')"
+                class="uppercase text-xs font-bold tracking-wider text-gray-400 dark:text-gray-300"
+              >
+                name
+              </button>
+              <button
+                @click="changeSort('section', 'section')"
+                class="uppercase text-xs font-bold tracking-wider text-gray-400 dark:text-gray-300"
+              >
+                section
+              </button>
+            </div>
           </div>
         </div>
       </div>
@@ -580,7 +604,8 @@ const router = useRouter();
 
 const isOpen = ref(false);
 const dropdownRef = ref(null);
-
+const sortOpen = ref(false);
+const selectedSort = ref("ID");
 
 const toggleDropdown = () => {
   isOpen.value = !isOpen.value;

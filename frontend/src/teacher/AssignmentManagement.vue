@@ -9,7 +9,6 @@
         class="max-w-7xl mx-auto px-4 h-full flex items-center justify-between relative"
         ref="dropdownRef"
       >
-
         <div class="flex items-center gap-2">
           <div class="flex items-center gap-3">
             <div
@@ -58,7 +57,9 @@
                     src="https://lh3.googleusercontent.com/aida-public/AB6AXuA6ks6i0YSsJsdUh4f96EGndBnmP5pOe0jjp_Q9acQEQM11AzaPK7CCc7w-QiLzzN_qmRFO6MoO1BUx0mq50TWJai3AYppjYwm0WmzXNk9gCodOda6Fln53ift0i4aOWutD0QihvMIyWdrlVe9bpfd8iaTyMDGDlVQFeXYITSMNcEaBk_SRw4GQAq2XvI0W-vb8uGMcGqvaS4uYNMiJXtr4p83cjHH_n0uhwOn-HWItnMXbPU3_rAg0HM6wz3pruWbigJmGvuRaYg"
                   />
                   <div>
-                    <p class="font-semibold text-gray-900 dark:text-white break-all">
+                    <p
+                      class="font-semibold text-gray-900 dark:text-white break-all"
+                    >
                       Katarina Bluu
                     </p>
                     <p class="text-sm text-gray-500 break-all">
@@ -69,15 +70,15 @@
               </div>
             </transition>
 
-            <a
+            <button
+              @click="handleLogout"
               class="flex items-center justify-center size-10 rounded-full hover:bg-red-50 dark:hover:bg-red-900/20 text-[#637888] dark:text-[#a0b8cf] hover:text-red-600 dark:hover:text-red-400 transition-colors"
-              href="#"
               title="Log Out"
             >
               <span class="material-symbols-outlined text-[20px]">
                 logout
               </span>
-            </a>
+            </button>
           </div>
         </div>
       </div>
@@ -101,16 +102,11 @@
             </div>
             <span>Return</span>
           </a>
-           <div class="flex flex-wrap gap-2 text-sm">
-            <a
-              class=" hover:text-primary font-medium"
-              href="#"
-            >
+          <div class="flex flex-wrap gap-2 text-sm">
+            <a class="hover:text-primary font-medium" href="#">
               Course Management
             </a>
-            <span class="font-medium">
-              /
-            </span>
+            <span class="font-medium"> / </span>
             <span class="text-[#111811] dark:text-white font-medium"
               >CS101 - Intro to Algorithms</span
             >
@@ -150,50 +146,50 @@
             </button>
           </div>
           <div
-        v-if="startCreate"
-        class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
-        @click.self="cancleCreate"
-      >
-        <div
-          class="bg-white dark:bg-gray-800 w-[600px] rounded-xl shadow-xl p-6 relative"
-        >
-          <button
-            @click="cancleCreate"
-            class="absolute top-3 right-3 text-2xl text-gray-500 hover:text-red-500"
+            v-if="startCreate"
+            class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+            @click.self="cancleCreate"
           >
-            ✕
-          </button>
-
-          <h2 class="text-2xl font-semibold mb-4">Create New Assignment</h2>
-          <div class="mb-4">
-            <label class="block text-lg py-1">Assignment Title</label>
-            <input
-              v-model="courseID"
-              type="text"
-              class="w-full border border-gray-300 dark:border-gray-800 rounded-md dark:bg-gray-700 px-3 py-2 focus:outline-none focus:ring-green-200"
-              placeholder="e.g., HW01 - Python001"
-            />
-          </div>
-          <div class="mb-4">
-            <label class="block text-lg py-1">Score</label>
-            <input
-              v-model="courseName"
-              type="number"
-              class="w-full border border-gray-300 dark:border-gray-800 rounded-md dark:bg-gray-700 px-3 py-2 focus:outline-none focus:ring-green-200"
-              placeholder="e.g., 30"
-            />
-          </div>
-
-          <div class="flex justify-end gap-3">
-            <button
-              @click="submit"
-              class="px-6 py-3 rounded-md bg-green-600 hover:bg-green-800 text-white text-base"
+            <div
+              class="bg-white dark:bg-gray-800 w-[600px] rounded-xl shadow-xl p-6 relative"
             >
-              Create Assignment
-            </button>
+              <button
+                @click="cancleCreate"
+                class="absolute top-3 right-3 text-2xl text-gray-500 hover:text-red-500"
+              >
+                ✕
+              </button>
+
+              <h2 class="text-2xl font-semibold mb-4">Create New Assignment</h2>
+              <div class="mb-4">
+                <label class="block text-lg py-1">Assignment Title</label>
+                <input
+                  v-model="courseID"
+                  type="text"
+                  class="w-full border border-gray-300 dark:border-gray-800 rounded-md dark:bg-gray-700 px-3 py-2 focus:outline-none focus:ring-green-200"
+                  placeholder="e.g., HW01 - Python001"
+                />
+              </div>
+              <div class="mb-4">
+                <label class="block text-lg py-1">Score</label>
+                <input
+                  v-model="courseName"
+                  type="number"
+                  class="w-full border border-gray-300 dark:border-gray-800 rounded-md dark:bg-gray-700 px-3 py-2 focus:outline-none focus:ring-green-200"
+                  placeholder="e.g., 30"
+                />
+              </div>
+
+              <div class="flex justify-end gap-3">
+                <button
+                  @click="submit"
+                  class="px-6 py-3 rounded-md bg-green-600 hover:bg-green-800 text-white text-base"
+                >
+                  Create Assignment
+                </button>
+              </div>
+            </div>
           </div>
-        </div>
-      </div>
         </div>
       </div>
       <div class="flex flex-col space-y-4">
@@ -441,8 +437,6 @@ const isOpen = ref(false);
 
 const dropdownRef = ref(null);
 
-
-
 const toggleDropdown = () => {
   isOpen.value = !isOpen.value;
 };
@@ -452,7 +446,6 @@ const handleClickOutside = (event) => {
     isOpen.value = false;
   }
 };
-
 
 const openArchive = () => {
   showArchiveModal.value = true;
@@ -474,7 +467,6 @@ const submit = () => {
   startCreate.value = false;
 };
 
-
 const handleLogout = async () => {
   try {
     const response = await fetch("http://localhost:56733/logout", {
@@ -494,7 +486,6 @@ const handleLogout = async () => {
     console.error("Logout failed:", error);
   }
 };
-
 
 onMounted(() => {
   document.addEventListener("click", handleClickOutside);
