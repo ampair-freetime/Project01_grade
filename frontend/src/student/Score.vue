@@ -245,7 +245,6 @@
             </div>
           </div>
         </div>
-        class="text-sm font-semibold text-gray-900 dark:tex
         <div
           class="bg-card-light dark:bg-card-dark rounded-xl shadow-sm border border-border-light dark:border-blue-700 p-8"
         >
