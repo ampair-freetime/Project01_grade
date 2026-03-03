@@ -286,17 +286,19 @@ async def read_users_me(current_user: AuthUser = Depends(get_current_user)):
     """
     logger.info(f"Fetching profile for {current_user.email}")
     if current_user.student:
-        return {"email": current_user.email, 
+        return {"id": current_user.auth_user_id,
+                "email": current_user.email, 
                 "first_name": current_user.student.first_name,
                 "middle_name": current_user.student.middle_name,
                 "last_name": current_user.student.last_name,
-                "avatar_url": current_user.avatar_url}
+                "avatar_url": current_user.student.avatar_url}
     else:
-        return {"email": current_user.email, 
+        return {"id": current_user.auth_user_id,
+                "email": current_user.email, 
                 "first_name": current_user.teacher.first_name,
                 "middle_name": current_user.teacher.middle_name,
                 "last_name": current_user.teacher.last_name,
-                "avatar_url": current_user.avatar_url}
+                "avatar_url": current_user.teacher.avatar_url}
 
 def register_routes(router_instance: APIRouter):
     router_instance.include_router(router)
