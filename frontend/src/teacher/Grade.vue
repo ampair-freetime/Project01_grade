@@ -216,16 +216,13 @@
             <select
               v-model="sortOption"
               @change="sortPeople"
-              class="border border-gray-300 rounded-md px-2 py-1 text-sm dark:bg-gray-700 dark:border-gray-600"
+              class="border border-gray-300 rounded-md pl-3 pr-8 py-1 text-sm dark:bg-gray-700 dark:border-gray-600"
             >
-              <option value="id_lowhigh">ID (Low-High)</option>
-              <option value="id_highlow">ID (High-Low)</option>
+              <option value="id_lowhigh">ID</option>
 
-              <option value="name_atoz">Name (A-Z)</option>
-              <option value="name_ztoa">Name (Z-A)</option>
+              <option value="name_atoz">Name</option>
 
-              <option value="section_lowhigh">section (Low-High)</option>
-              <option value="section_highlow">section (High-Low)</option>
+              <option value="section_lowhigh">section</option>
             </select>
           </div>
         </div>
@@ -681,21 +678,9 @@ const sortPeople = () => {
       );
       break;
 
-    case "id_highlow":
-      students.value.sort(
-        (a, b) => Number(b.student_id) - Number(a.student_id)
-      );
-      break;
-
     case "name_atoz":
       students.value.sort((a, b) =>
         a.student_name.localeCompare(b.student_name)
-      );
-      break;
-
-    case "name_ztoa":
-      students.value.sort((a, b) =>
-        b.student_name.localeCompare(a.student_name)
       );
       break;
 
@@ -703,9 +688,6 @@ const sortPeople = () => {
       students.value.sort((a, b) => a.section.localeCompare(b.section));
       break;
 
-    case "section_highlow":
-      students.value.sort((a, b) => b.section.localeCompare(a.section));
-      break;
   }
 };
 
