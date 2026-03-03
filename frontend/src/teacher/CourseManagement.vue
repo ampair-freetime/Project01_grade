@@ -9,7 +9,6 @@
         class="max-w-7xl mx-auto px-4 h-full flex items-center justify-between relative"
         ref="dropdownRef"
       >
-
         <div class="flex items-center gap-2">
           <div class="flex items-center gap-3">
             <div
@@ -35,7 +34,7 @@
                 <span
                   class="text-sm font-semibold text-gray-900 dark:text-white"
                 >
-                  KATARINABLUU
+                  {{ teacherName }}
                 </span>
               </div>
               <div class="relative">
@@ -58,7 +57,9 @@
                     src="https://lh3.googleusercontent.com/aida-public/AB6AXuA6ks6i0YSsJsdUh4f96EGndBnmP5pOe0jjp_Q9acQEQM11AzaPK7CCc7w-QiLzzN_qmRFO6MoO1BUx0mq50TWJai3AYppjYwm0WmzXNk9gCodOda6Fln53ift0i4aOWutD0QihvMIyWdrlVe9bpfd8iaTyMDGDlVQFeXYITSMNcEaBk_SRw4GQAq2XvI0W-vb8uGMcGqvaS4uYNMiJXtr4p83cjHH_n0uhwOn-HWItnMXbPU3_rAg0HM6wz3pruWbigJmGvuRaYg"
                   />
                   <div>
-                    <p class="font-semibold text-gray-900 dark:text-white break-all">
+                    <p
+                      class="font-semibold text-gray-900 dark:text-white break-all"
+                    >
                       Katarina Bluu
                     </p>
                     <p class="text-sm text-gray-500 break-all">
@@ -69,15 +70,15 @@
               </div>
             </transition>
 
-            <a
+            <button
+              @click="handleLogout"
               class="flex items-center justify-center size-10 rounded-full hover:bg-red-50 dark:hover:bg-red-900/20 text-[#637888] dark:text-[#a0b8cf] hover:text-red-600 dark:hover:text-red-400 transition-colors"
-              href="#"
               title="Log Out"
             >
               <span class="material-symbols-outlined text-[20px]">
                 logout
               </span>
-            </a>
+            </button>
           </div>
         </div>
       </div>
@@ -137,15 +138,6 @@
 
             <h2 class="text-2xl font-semibold mb-4">Create New Course</h2>
             <div class="mb-4">
-              <label class="block py-1">Course ID</label>
-              <input
-                v-model="courseID"
-                type="text"
-                class="w-full border border-gray-300 dark:border-gray-800 rounded-md dark:bg-gray-700 px-3 py-2 focus:outline-none focus:ring-green-200"
-                placeholder="e.g., CS101"
-              />
-            </div>
-            <div class="mb-4">
               <label class="block py-1">Course Name</label>
               <input
                 v-model="courseName"
@@ -154,16 +146,6 @@
                 placeholder="e.g., Intro to Computer Science"
               />
             </div>
-            <div class="mb-4">
-              <label class="block py-1">section</label>
-              <input
-                v-model="section"
-                type="text"
-                class="w-full border border-gray-300 dark:border-gray-800 rounded-md dark:bg-gray-700 px-3 py-2 focus:outline-none focus:ring-green-200"
-                placeholder="e.g., 001"
-              />
-            </div>
-
             <div class="flex justify-end gap-3">
               <button
                 @click="submit"
@@ -198,6 +180,8 @@
         </div>
         <ul class="divide-y divide-border-light dark:divide-border-dark">
           <li
+            v-for="course in courses"
+            :key="course.course_id"
             class="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors duration-150"
           >
             <div class="px-6 py-5 flex items-center justify-between">
@@ -211,12 +195,12 @@
                   <div
                     class="text-base font-bold text-gray-900 dark:text-white"
                   >
-                    CS101
+                    {{ course.course_id }}
                   </div>
                   <div
                     class="text-sm text-text-muted-light dark:text-text-muted-dark"
                   >
-                    Intro to Computer Science
+                    {{ course.course_name }}
                   </div>
                 </div>
               </a>
@@ -229,7 +213,7 @@
                       class="material-symbols-outlined text-text-muted-light dark:text-text-muted-dark mr-1 text-lg"
                       >people</span
                     >
-                    142
+                    {{ course.student_count ?? 0 }}
                   </div>
                   <div
                     class="text-xs text-text-muted-light dark:text-text-muted-dark uppercase mt-0.5"
@@ -239,6 +223,7 @@
                 </div>
                 <div class="flex items-end min-w-[50px]">
                   <button
+                    @click="deleteCourse(course.course_id)"
                     class="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-900/30 rounded-full transition-colors duration-200 group"
                     title="Delete Course"
                   >
@@ -248,6 +233,7 @@
                     >
                   </button>
                   <button
+                    @click="archiveCourse(course.course_id)"
                     class="p-2 text-gray-400 hover:text-yellow-600 hover:bg-yellow-50 dark:hover:bg-yellow-900/30 rounded-full transition-colors duration-200 group"
                     title="Archive Course"
                   >
@@ -494,7 +480,6 @@
       </div>
     </main>
 
-
     <div class="fixed bottom-6 left-6 z-50">
       <button
         @click="openArchive"
@@ -628,7 +613,9 @@ const showArchiveModal = ref(false);
 const startCreate = ref(false);
 const isOpen = ref(false);
 const dropdownRef = ref(null);
-
+const courses = ref([]);
+const teacherName = ref("");
+const courseName = ref("");
 
 const toggleDropdown = () => {
   isOpen.value = !isOpen.value;
@@ -639,7 +626,6 @@ const handleClickOutside = (event) => {
     isOpen.value = false;
   }
 };
-
 
 const openArchive = () => {
   showArchiveModal.value = true;
@@ -653,14 +639,70 @@ const createCourse = () => {
   startCreate.value = true;
 };
 
-const cancelCreate = () => {
+const cancleCreate = () => {
   startCreate.value = false;
 };
 
-const submit = () => {
-  startCreate.value = false;
+const fetchDashboard = async () => {
+  try {
+    const response = await fetch("http://localhost:56733/dashboard_teacher", {
+      credentials: "include",
+    });
+
+    if (!response.ok) {
+      throw new Error("Fetch failed");
+    }
+
+    const data = await response.json();
+
+    teacherName.value = data.teacher_name;
+    courses.value = data.courses;
+  } catch (err) {
+    console.error(err);
+  }
 };
 
+const submit = async () => {
+  try {
+    const response = await fetch("http://localhost:56733/create_course", {
+      method: "POST",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        course_name: courseName.value,
+      }),
+    });
+
+    if (!response.ok) {
+      throw new Error("Create failed");
+    }
+
+    courseName.value = "";
+    startCreate.value = false;
+
+    fetchDashboard();
+  } catch (err) {
+    console.error("Create failed", err);
+  }
+};
+
+const deleteCourse = async (id) => {
+  try {
+    const response = await fetch(`http://localhost:56733/delete_course/${id}`, {
+      method: "POST",
+      credentials: "include",
+    });
+
+    if (!response.ok) {
+      throw new Error("Delete failed");
+    }
+    await fetchDashboard();
+  } catch (err) {
+    console.error("Delete failed", err);
+  }
+};
 
 const handleLogout = async () => {
   try {
@@ -684,6 +726,7 @@ const handleLogout = async () => {
 
 onMounted(() => {
   document.addEventListener("click", handleClickOutside);
+  fetchDashboard();
 });
 
 onBeforeUnmount(() => {
