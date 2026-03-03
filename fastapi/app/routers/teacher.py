@@ -4,7 +4,7 @@ from app.db import get_db
 from app.models import Teacher, Course, Quiz, Score, Student, Upload, AuthUser
 from app.models.authuser import AuthUser
 from app.routers.auth import get_current_user
-from app.schemas.s_teacher import Teacher_Course, T_Assignment
+from app.schemas.teacher import Teacher_Course, T_Assignment
 from datetime import datetime
 import csv
 import io
@@ -73,7 +73,7 @@ async def teacher_assingment(course_id: int,current_user: AuthUser = Depends(get
 async def teacher_score(quiz_id: int,db:Session=Depends(get_db),current_user: AuthUser = Depends(get_current_user)):
     teacher = is_teacher(db,current_user)
     #กรองเอา data score ที่เราเคยนำเข้าไว้มาก
-    assignment = db.query(Quiz).filter(Quiz.quiz_id == quiz_id,Quiz.course.teacher_id == teacher.teacher_id).first()
+    assignment = db.query(Quiz).join(Course).filter(Quiz.quiz_id == quiz_id,Course.teacher_id == teacher.teacher_id).first()
     if not assignment:
         raise HTTPException(status_code=404,detail="score not found")
 
@@ -86,7 +86,8 @@ async def teacher_score(quiz_id: int,db:Session=Depends(get_db),current_user: Au
                 "score_id": s.score_id,
                 "score": s.score,
                 "unread_flag": s.unread_flag,
-                "section": s.section
+                "section": s.section,
+                "stu_id":s.student_id
             })
     return {
         "assignment":{
@@ -95,6 +96,27 @@ async def teacher_score(quiz_id: int,db:Session=Depends(get_db),current_user: Au
         },
         "score":student_score
     }
+#แสดงผล course ที่จัดเก็บไว้
+@router.get("/archive_teacher")
+async def teacher_dashboard(db: Session = Depends(get_db),current_user: AuthUser = Depends(get_current_user)):
+    # ครู?
+    teacher = is_teacher(db, current_user)
+    # วิชาทั้งหมดที่ครูคนนั้นสร้างไว้
+    courses = db.query(Course).filter(Course.teacher_id == teacher.teacher_id,Course.is_deleted == False,Course.is_archive == True).all()
+    # response ชื่อครูกับรายวิชาที่สอน
+    if not courses:
+        raise HTTPException(status_code=404,detail="courses not found")
+    return {
+        "teacher_name": f"{teacher.first_name} {teacher.last_name}",
+        "courses": [
+            {
+                "course_id": c.course_id,
+                "course_name": c.course_name
+            }
+            for c in courses
+        ]
+    }
+
 ###################################################################################################################################
 
 ############################################################### create ############################################################
@@ -118,7 +140,7 @@ async def create_course(course: Teacher_Course,db: Session = Depends(get_db),cur
         "course_id": new_course.course_id
     }
 
-@router.post("/created_assign")
+@router.post("/create_assign")
 async def create_assignments(assign: T_Assignment,db: Session= Depends(get_db),current_user: AuthUser = Depends(get_current_user)):
     teacher = is_teacher(db,current_user)
 
@@ -137,8 +159,8 @@ async def create_assignments(assign: T_Assignment,db: Session= Depends(get_db),c
         "assign_id": new_assignment.quiz_id
     }
 
-####################################################################################################################################
 
+####################################################################################################################################
 #  upload CSV แสดงว่าต้องมีหน้า quiz name อะไรอย่างนี้แล้ว
 @router.post("/upload/{quiz_id}")
 async def upload_csv(quiz_id: int,file: UploadFile = File(...),db: Session = Depends(get_db),current_user: AuthUser = Depends(get_current_user)):
@@ -146,13 +168,15 @@ async def upload_csv(quiz_id: int,file: UploadFile = File(...),db: Session = Dep
     teacher = is_teacher(db, current_user)
     # อ่านละแปลงเป็นข้อความ
     content = await file.read()
-    decoded = content.decode("utf-8")
+    decoded = content.decode("utf-8-sig")
     # แปลงเป็นตาราง
     csv_reader = csv.DictReader(io.StringIO(decoded))
+    # if csv_reader:
+    #     raise HTTPException(status=404,detail=f"Header: {csv_reader.fieldnames}")
 
     for row in csv_reader:
         # ดึงข้อมูลจาก CSV
-        stu_email = str(row["stu_email"])
+        stu_email = str(row["student_email"])
         stu_id = int(row["student_id"])
         score_v = float(row["score"])
         section = str(row["section"])
@@ -219,4 +243,28 @@ async def delete_assignments(assign_id:int,db: Session = Depends(get_db),current
     assignment.is_deleted = True
     db.commit()
     return {"message":"deleted assignment successfully"}
+
+@router.post("/delete_score/{assign_id}/{score_id}")
+async def delete_assignments(score_id:int,assign_id:int,db: Session = Depends(get_db),current_user: AuthUser = Depends(get_current_user)):
+    #ลบ assignment
+    teacher = is_teacher(db,current_user)
+    #หา Quiz ที่เชื่อมกับอาจารคนนี้ก่อน และส่งมาเป็น quiz ไหน
+    assignment = db.query(Quiz).join(Course).filter(Quiz.quiz_id == assign_id,Course.teacher_id == teacher.teacher_id)
+    # เอา quiz ที่หามาได้ไปหา score ใน database อีกที
+    score = db.query(Score).filter(Score.score_id == score_id,Score.quiz_id == assignment.quiz_id)
+    if not score:
+        raise HTTPException(status=404,detail="Score not found")
+    score.is_deleted = True
+    db.commit()
+    return {"message":"deleted score successfully"}
 ###########################################################################################################################################################
+
+@router.post("/archive/{course_id}")
+async def archive(course_id:int, db:Session = Depends(get_db), current_user: AuthUser=Depends(get_current_user)):
+    teacher = is_teacher(db,current_user)
+    course = db.query(Course).filter(Course.course_id == course_id,Course.teacher_id == teacher.teacher_id)
+    #จัดเก็บ course
+    if not course:
+        raise HTTPException(status=404,detail="Course not found")
+    course.is_archive = True
+    return {"message":"Archive course successfully"}

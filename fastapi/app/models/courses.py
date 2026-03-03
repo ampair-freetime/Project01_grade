@@ -15,6 +15,7 @@ class Course(Base, SerializerMixin):
     created_at = Column(DateTime, default=datetime.utcnow)
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
     is_deleted = Column(Boolean, default=False)
+    is_archive = Column(Boolean, default=False)
 
     teacher = relationship("Teacher", back_populates="courses")
     uploads = relationship("Upload", back_populates="course")
