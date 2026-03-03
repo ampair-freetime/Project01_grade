@@ -4,6 +4,7 @@ from app.db import get_db
 from app.models import Teacher, Course, Quiz, Score, Student, Upload, AuthUser
 from app.models.authuser import AuthUser
 from app.routers.auth import get_current_user
+from app.schemas.s_teacher import Teacher_Course, T_Assignment
 from datetime import datetime
 import csv
 import io
@@ -18,15 +19,17 @@ def is_teacher(db: Session, current_user: AuthUser):
 
     return teacher
 
-
+########################################################## แสดงผลต่างๆ ############################################
 # Dashboard 
 @router.get("/dashboard_teacher")
 async def teacher_dashboard(db: Session = Depends(get_db),current_user: AuthUser = Depends(get_current_user)):
     # ครู?
     teacher = is_teacher(db, current_user)
     # วิชาทั้งหมดที่ครูคนนั้นสร้างไว้
-    courses = db.query(Course).filter(Course.teacher_id == teacher.teacher_id).all()
+    courses = db.query(Course).filter(Course.teacher_id == teacher.teacher_id,Course.is_deleted == False).all()
     # response ชื่อครูกับรายวิชาที่สอน
+    if not courses:
+        raise HTTPException(status_code=404,detail="courses not found")
     return {
         "teacher_name": f"{teacher.first_name} {teacher.last_name}",
         "courses": [
@@ -38,14 +41,71 @@ async def teacher_dashboard(db: Session = Depends(get_db),current_user: AuthUser
         ]
     }
 
-# สร้าง course
+@router.get("/assignment/{course_id}")
+async def teacher_assingment(course_id: int,current_user: AuthUser = Depends(get_current_user), db: Session= Depends(get_db)):
+    # teacher check
+    teacher = is_teacher(db, current_user)
+    #ดึง course
+    # #check ว่าถ้า เจอ course แล้ว ใช่ของ teacher นี้ไหม
+    course = db.query(Course).filter(Course.course_id == course_id,Course.teacher_id == teacher.teacher_id).first()
+    if not course:
+        raise HTTPException(status_code=404,detail="assignment not found")
+
+    assignment = []
+    
+    for q in course.quizzes:
+        #check is deleted???
+        if q.is_deleted == False:
+            assignment.append({
+                "assign_id": q.quiz_id,
+                "assign_name": q.quiz_name,
+                "full_mark": q.full_mark
+            })
+    return {
+        "course":{
+            "course_id": course.course_id,
+            "course_name": course.course_name
+        },
+        "assignment":assignment
+    }
+
+@router.get("/stu_score/{quiz_id}")
+async def teacher_score(quiz_id: int,db:Session=Depends(get_db),current_user: AuthUser = Depends(get_current_user)):
+    teacher = is_teacher(db,current_user)
+    #กรองเอา data score ที่เราเคยนำเข้าไว้มาก
+    assignment = db.query(Quiz).filter(Quiz.quiz_id == quiz_id,Quiz.course.teacher_id == teacher.teacher_id).first()
+    if not assignment:
+        raise HTTPException(status_code=404,detail="score not found")
+
+    student_score = []
+    
+    for s in assignment.scores:
+        #check is deleted???
+        if s.is_deleted == False:
+            student_score.append({
+                "score_id": s.score_id,
+                "score": s.score,
+                "unread_flag": s.unread_flag,
+                "section": s.section
+            })
+    return {
+        "assignment":{
+            "assign_id": assignment.quiz_id,
+            "assign_name": assignment.quiz_name
+        },
+        "score":student_score
+    }
+###################################################################################################################################
+
+############################################################### create ############################################################
+# สร้าง course เมื่อ login มาแล้ว
 @router.post("/create_course")
-async def create_course(course_name: str,db: Session = Depends(get_db),current_user: AuthUser = Depends(get_current_user)):
+async def create_course(course: Teacher_Course,db: Session = Depends(get_db),current_user: AuthUser = Depends(get_current_user)):
     # ครู?
     teacher = is_teacher(db, current_user)
     
     new_course = Course(
-        course_name=course_name,
+        course_name=course.course_name,
         teacher_id=teacher.teacher_id
     )
 
@@ -58,6 +118,26 @@ async def create_course(course_name: str,db: Session = Depends(get_db),current_u
         "course_id": new_course.course_id
     }
 
+@router.post("/created_assign")
+async def create_assignments(assign: T_Assignment,db: Session= Depends(get_db),current_user: AuthUser = Depends(get_current_user)):
+    teacher = is_teacher(db,current_user)
+
+    new_assignment = Quiz(
+        quiz_name=assign.quiz_name,
+        full_mark=assign.full_mark,
+        course_id=assign.course_id
+    )
+
+    db.add(new_assignment)
+    db.commit()
+    db.refresh(new_assignment)
+    #สร้าง assignment
+    return {
+        "message":"Assignment created succeddfully",
+        "assign_id": new_assignment.quiz_id
+    }
+
+####################################################################################################################################
 
 #  upload CSV แสดงว่าต้องมีหน้า quiz name อะไรอย่างนี้แล้ว
 @router.post("/upload/{quiz_id}")
@@ -115,20 +195,28 @@ async def upload_csv(quiz_id: int,file: UploadFile = File(...),db: Session = Dep
             db.commit()
 
     return {"message": "CSV uploaded successfully"}
+############################################################################ deleted #####################################################################
+@router.post("/delete_course/{course_id}")
+async def delete_courses(course_id:int,db: Session = Depends(get_db),current_user: AuthUser = Depends(get_current_user)):
+    # ลบ courses แบบ soft deleted'
+    teacher = is_teacher(db,current_user)
+    course = db.query(Course).filter(Course.course_id == course_id,Course.teacher_id == teacher.teacher_id)
+    if not course:
+        raise HTTPException(status=404,detail="course not found")
+    course.is_deleted = True
+    db.commit()
+    return {"message":"deleted course successfully"}
 
-@router.delete("/delete_course")
-async def delete_courses():
-    # ลบ courses แบบ soft deleted
-    return ...
-
-# ? หรือควรสร้าง post อันเดียว แยก course กับ assign ?
-@router.post("/created_assign")
-async def create_assignments():
-    #สร้าง assignment
-    return ...
 
 # ? หรือควรสร้าง delete อันเดียว แยก course กับ assign ?
-@router.delete("/delete_assign")
-async def delete_assignments():
+@router.post("/delete_assign/{assign_id}")
+async def delete_assignments(assign_id:int,db: Session = Depends(get_db),current_user: AuthUser = Depends(get_current_user)):
     #ลบ assignment
-    return ...
+    teacher = is_teacher(db,current_user)
+    assignment = db.query(Quiz).join(Course).filter(Quiz.quiz_id == assign_id,Course.teacher_id == teacher.teacher_id)
+    if not assignment:
+        raise HTTPException(status=404,detail="assignment not found")
+    assignment.is_deleted = True
+    db.commit()
+    return {"message":"deleted assignment successfully"}
+###########################################################################################################################################################

@@ -6,7 +6,7 @@ class UserResponse(BaseModel):
     id: int
     email: EmailStr
     first_name: str
-    middle_name: str
+    middle_name: Optional[str] = None
     last_name: str
     avatar_url: Optional[str] = None
     student_id: Optional[str] = None  # รหัสนักศึกษา
