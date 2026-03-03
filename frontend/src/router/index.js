@@ -2,7 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 
 // auth
 import Login from '../auth/Login.vue'
-import Signin from '../auth/Signin.vue'
+import Signin from '../auth/Signup.vue'
 
 // student
 import Dashboard from '../student/Dashboard.vue'
