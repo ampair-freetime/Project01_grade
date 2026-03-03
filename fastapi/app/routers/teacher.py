@@ -28,8 +28,8 @@ async def teacher_dashboard(db: Session = Depends(get_db),current_user: AuthUser
     # วิชาทั้งหมดที่ครูคนนั้นสร้างไว้
     courses = db.query(Course).filter(Course.teacher_id == teacher.teacher_id,Course.is_deleted == False).all()
     # response ชื่อครูกับรายวิชาที่สอน
-    if not courses:
-        raise HTTPException(status_code=404,detail="courses not found")
+    # if not courses:
+    #     raise HTTPException(status_code=404,detail="courses not found")
     return {
         "teacher_name": f"{teacher.first_name} {teacher.last_name}",
         "courses": [

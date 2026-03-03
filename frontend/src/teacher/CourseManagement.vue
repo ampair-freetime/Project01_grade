@@ -103,6 +103,7 @@
             <span class="material-symbols-outlined text-gray-400">search</span>
           </div>
           <input
+            v-model="searchTerm"
             class="block w-full pl-10 pr-3 py-2 border-none bg-gray-50 dark:bg-gray-800 rounded-lg text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary sm:text-sm"
             id="search"
             name="search"
@@ -180,26 +181,17 @@
         </div>
         <ul class="divide-y divide-border-light dark:divide-border-dark">
           <li
-            v-for="course in courses"
+            v-for="course in filteredCourses"
             :key="course.course_id"
             class="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors duration-150"
           >
             <div class="px-6 py-5 flex items-center justify-between">
-              <a class="flex items-center flex-grow" href="#">
-                <div
-                  class="flex-shrink-0 h-12 w-12 rounded-xl bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 flex items-center justify-center"
-                >
-                  <span class="material-symbols-outlined">laptop_mac</span>
-                </div>
+              <a @click="goToAssignment(course.course_id)" class="block">
                 <div class="ml-4">
-                  <div
-                    class="text-base font-bold text-gray-900 dark:text-white"
-                  >
+                  <!-- <div class="text-base font-bold">
                     {{ course.course_id }}
-                  </div>
-                  <div
-                    class="text-sm text-text-muted-light dark:text-text-muted-dark"
-                  >
+                  </div> -->
+                  <div class="text-l text-bold">
                     {{ course.course_name }}
                   </div>
                 </div>
@@ -246,204 +238,13 @@
               </div>
             </div>
           </li>
-          <li
-            class="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors duration-150"
-          >
-            <div class="px-6 py-5 flex items-center justify-between">
-              <a class="flex items-center flex-grow" href="#">
-                <div
-                  class="flex-shrink-0 h-12 w-12 rounded-xl bg-sky-100 dark:bg-sky-900/30 text-sky-600 dark:text-sky-400 flex items-center justify-center"
-                >
-                  <span class="material-symbols-outlined">science</span>
-                </div>
-                <div class="ml-4">
-                  <div
-                    class="text-base font-bold text-gray-900 dark:text-white"
-                  >
-                    BIO205
-                  </div>
-                  <div
-                    class="text-sm text-text-muted-light dark:text-text-muted-dark"
-                  >
-                    Molecular Biology
-                  </div>
-                </div>
-              </a>
-              <div class="flex items-center gap-6">
-                <div class="flex flex-col items-end min-w-[80px]">
-                  <div
-                    class="flex items-center text-gray-900 dark:text-white font-semibold"
-                  >
-                    <span
-                      class="material-symbols-outlined text-text-muted-light dark:text-text-muted-dark mr-1 text-lg"
-                      >people</span
-                    >
-                    45
-                  </div>
-                  <div
-                    class="text-xs text-text-muted-light dark:text-text-muted-dark uppercase mt-0.5"
-                  >
-                    Students
-                  </div>
-                </div>
-                <div class="flex items-end min-w-[50px]">
-                  <button
-                    class="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-900/30 rounded-full transition-colors duration-200 group"
-                    title="Delete Course"
-                  >
-                    <span
-                      class="material-symbols-outlined text-xl group-hover:text-red-600"
-                      >delete</span
-                    >
-                  </button>
-                  <button
-                    class="p-2 text-gray-400 hover:text-yellow-600 hover:bg-yellow-50 dark:hover:bg-yellow-900/30 rounded-full transition-colors duration-200 group"
-                    title="Archive Course"
-                  >
-                    <span
-                      class="material-symbols-outlined text-xl group-hover:text-yellow-600"
-                      >archive</span
-                    >
-                  </button>
-                </div>
-              </div>
-            </div>
-          </li>
-          <li
-            class="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors duration-150"
-          >
-            <div class="px-6 py-5 flex items-center justify-between">
-              <a class="flex items-center flex-grow" href="#">
-                <div
-                  class="flex-shrink-0 h-12 w-12 rounded-xl bg-purple-100 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400 flex items-center justify-center"
-                >
-                  <span class="material-symbols-outlined">menu_book</span>
-                </div>
-                <div class="ml-4">
-                  <div
-                    class="text-base font-bold text-gray-900 dark:text-white"
-                  >
-                    ENG302
-                  </div>
-                  <div
-                    class="text-sm text-text-muted-light dark:text-text-muted-dark"
-                  >
-                    Creative Writing
-                  </div>
-                </div>
-              </a>
-              <div class="flex items-center gap-6">
-                <div class="flex flex-col items-end min-w-[80px]">
-                  <div
-                    class="flex items-center text-gray-900 dark:text-white font-semibold"
-                  >
-                    <span
-                      class="material-symbols-outlined text-text-muted-light dark:text-text-muted-dark mr-1 text-lg"
-                      >people</span
-                    >
-                    28
-                  </div>
-                  <div
-                    class="text-xs text-text-muted-light dark:text-text-muted-dark uppercase mt-0.5"
-                  >
-                    Students
-                  </div>
-                </div>
-                <div class="flex items-end min-w-[50px]">
-                  <button
-                    class="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-900/30 rounded-full transition-colors duration-200 group"
-                    title="Delete Course"
-                  >
-                    <span
-                      class="material-symbols-outlined text-xl group-hover:text-red-600"
-                      >delete</span
-                    >
-                  </button>
-                  <button
-                    class="p-2 text-gray-400 hover:text-yellow-600 hover:bg-yellow-50 dark:hover:bg-yellow-900/30 rounded-full transition-colors duration-200 group"
-                    title="Archive Course"
-                  >
-                    <span
-                      class="material-symbols-outlined text-xl group-hover:text-yellow-600"
-                      >archive</span
-                    >
-                  </button>
-                </div>
-              </div>
-            </div>
-          </li>
-          <li
-            class="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors duration-150"
-          >
-            <div class="px-6 py-5 flex items-center justify-between">
-              <a class="flex items-center flex-grow" href="#">
-                <div
-                  class="flex-shrink-0 h-12 w-12 rounded-xl bg-orange-100 dark:bg-orange-900/30 text-orange-600 dark:text-orange-400 flex items-center justify-center"
-                >
-                  <span class="material-symbols-outlined">history_edu</span>
-                </div>
-                <div class="ml-4">
-                  <div
-                    class="text-base font-bold text-gray-900 dark:text-white"
-                  >
-                    HIS201
-                  </div>
-                  <div
-                    class="text-sm text-text-muted-light dark:text-text-muted-dark"
-                  >
-                    World History
-                  </div>
-                </div>
-              </a>
-              <div class="flex items-center gap-6">
-                <div class="flex flex-col items-end min-w-[80px]">
-                  <div
-                    class="flex items-center text-gray-900 dark:text-white font-semibold"
-                  >
-                    <span
-                      class="material-symbols-outlined text-text-muted-light dark:text-text-muted-dark mr-1 text-lg"
-                      >people</span
-                    >
-                    89
-                  </div>
-                  <div
-                    class="text-xs text-text-muted-light dark:text-text-muted-dark uppercase mt-0.5"
-                  >
-                    Students
-                  </div>
-                </div>
-                <div class="flex items-end min-w-[50px]">
-                  <button
-                    class="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-900/30 rounded-full transition-colors duration-200 group"
-                    title="Delete Course"
-                  >
-                    <span
-                      class="material-symbols-outlined text-xl group-hover:text-red-600"
-                      >delete</span
-                    >
-                  </button>
-                  <button
-                    class="p-2 text-gray-400 hover:text-yellow-600 hover:bg-yellow-50 dark:hover:bg-yellow-900/30 rounded-full transition-colors duration-200 group"
-                    title="Archive Course"
-                  >
-                    <span
-                      class="material-symbols-outlined text-xl group-hover:text-yellow-600"
-                      >archive</span
-                    >
-                  </button>
-                </div>
-              </div>
-            </div>
-          </li>
         </ul>
         <div
           class="px-6 py-4 border-t border-border-light dark:border-border-dark flex items-center justify-between"
         >
           <div class="text-sm text-text-muted-light dark:text-text-muted-dark">
-            Showing
-            <span class="font-bold text-gray-900 dark:text-white">1-4</span> of
-            <span class="font-bold text-gray-900 dark:text-white">12</span>
-            courses
+            <span class="font-bold text-gray-900 dark:text-white"></span>
+            <span class="font-bold text-gray-900 dark:text-white"></span>
           </div>
           <div class="flex space-x-2">
             <button
@@ -452,21 +253,6 @@
               <span class="material-symbols-outlined text-sm"
                 >chevron_left</span
               >
-            </button>
-            <button
-              class="px-3 py-1 border border-primary bg-primary text-white text-sm font-medium rounded-md"
-            >
-              1
-            </button>
-            <button
-              class="px-3 py-1 border border-border-light dark:border-border-dark bg-white dark:bg-surface-dark text-gray-700 dark:text-gray-200 text-sm font-medium rounded-md hover:bg-gray-50 dark:hover:bg-gray-700"
-            >
-              2
-            </button>
-            <button
-              class="px-3 py-1 border border-border-light dark:border-border-dark bg-white dark:bg-surface-dark text-gray-700 dark:text-gray-200 text-sm font-medium rounded-md hover:bg-gray-50 dark:hover:bg-gray-700"
-            >
-              3
             </button>
             <button
               class="p-2 border border-border-light dark:border-border-dark rounded-md text-gray-400 hover:text-gray-500 dark:hover:text-gray-300 bg-white dark:bg-surface-dark hover:bg-gray-50 dark:hover:bg-gray-700"
@@ -600,22 +386,51 @@
 </template>
 
 <script setup>
-import { ref, onMounted, onBeforeUnmount } from "vue";
+import { ref, onMounted, onBeforeUnmount, computed } from "vue";
 import { useRouter } from "vue-router";
-
-defineOptions({
-  name: "CourseManagement",
-});
 
 const router = useRouter();
 
-const showArchiveModal = ref(false);
-const startCreate = ref(false);
-const isOpen = ref(false);
-const dropdownRef = ref(null);
-const courses = ref([]);
 const teacherName = ref("");
+const courses = ref([]);
+const searchTerm = ref("");
 const courseName = ref("");
+const startCreate = ref(false);
+const dropdownRef = ref(null);
+const isOpen = ref(false);
+const showArchiveModal = ref(false);
+const archivedCourses = ref([]);
+
+const BASE_URL = "http://localhost:56733";
+
+const fetchDashboard = async () => {
+  try {
+    const response = await fetch(`${BASE_URL}/teacher/dashboard_teacher`, {
+      credentials: "include",
+    });
+
+    if (!response.ok) {
+      router.push("/login");
+      return;
+    }
+
+    const data = await response.json();
+    teacherName.value = data.teacher_name;
+    courses.value = data.courses;
+  } catch (error) {
+    console.error("Fetch dashboard error:", error);
+  }
+};
+
+const filteredCourses = computed(() => {
+  if (!searchTerm.value) return courses.value;
+
+  return courses.value.filter(
+    (c) =>
+      c.course_name.toLowerCase().includes(searchTerm.value.toLowerCase()) ||
+      String(c.course_id).includes(searchTerm.value),
+  );
+});
 
 const toggleDropdown = () => {
   isOpen.value = !isOpen.value;
@@ -643,81 +458,75 @@ const cancleCreate = () => {
   startCreate.value = false;
 };
 
-const fetchDashboard = async () => {
-  try {
-    const response = await fetch("http://localhost:56733/dashboard_teacher", {
-      credentials: "include",
-    });
-
-    if (!response.ok) {
-      throw new Error("Fetch failed");
-    }
-
-    const data = await response.json();
-
-    teacherName.value = data.teacher_name;
-    courses.value = data.courses;
-  } catch (err) {
-    console.error(err);
-  }
-};
-
 const submit = async () => {
+  if (!courseName.value) return;
+
   try {
-    const response = await fetch("http://localhost:56733/create_course", {
+    const response = await fetch(`${BASE_URL}/teacher/create_course`, {
       method: "POST",
       credentials: "include",
-      headers: {
-        "Content-Type": "application/json",
-      },
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         course_name: courseName.value,
       }),
     });
 
-    if (!response.ok) {
-      throw new Error("Create failed");
+    if (response.ok) {
+      courseName.value = "";
+      startCreate.value = false;
+      await fetchDashboard();
     }
-
-    courseName.value = "";
-    startCreate.value = false;
-
-    fetchDashboard();
-  } catch (err) {
-    console.error("Create failed", err);
+  } catch (error) {
+    console.error("Create course error:", error);
   }
 };
 
 const deleteCourse = async (id) => {
+  if (!confirm("Delete this course?")) return;
+
   try {
-    const response = await fetch(`http://localhost:56733/delete_course/${id}`, {
+    const response = await fetch(`${BASE_URL}/teacher/delete_course/${id}`, {
       method: "POST",
       credentials: "include",
     });
 
-    if (!response.ok) {
-      throw new Error("Delete failed");
+    if (response.ok) {
+      await fetchDashboard();
     }
-    await fetchDashboard();
-  } catch (err) {
-    console.error("Delete failed", err);
+  } catch (error) {
+    console.error("Delete error:", error);
+  }
+};
+
+const goToAssignment = (course_id) => {
+  router.push(`/assignment/${course_id}`);
+};
+
+const archiveCourse = async (id) => {
+  try {
+    const response = await fetch(`${BASE_URL}/teacher/archive_course/${id}`, {
+      method: "POST",
+      credentials: "include",
+    });
+
+    if (response.ok) {
+      await fetchDashboard();
+    }
+  } catch (error) {
+    console.error("Archive error:", error);
   }
 };
 
 const handleLogout = async () => {
   try {
-    const response = await fetch("http://localhost:56733/logout", {
+    const response = await fetch(`${BASE_URL}/logout`, {
       method: "GET",
       credentials: "include",
     });
 
-    if (!response.ok) {
-      throw new Error("Logout request failed");
-    }
+    if (!response.ok) throw new Error();
 
-    localStorage.removeItem("csrf_token");
-    localStorage.removeItem("role");
-
+    localStorage.clear();
     router.push("/login");
   } catch (error) {
     console.error("Logout failed:", error);
