@@ -57,6 +57,7 @@
                   <span class="material-symbols-outlined">mail</span>
                 </div>
                 <input
+                  v-model="email"
                   class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-[#0f172a] dark:text-white placeholder:text-[#64748b]/60 focus:outline-0 focus:ring-4 focus:ring-primary/10 border border-border-color dark:border-[#1e293b] bg-white dark:bg-[#0c1821] h-12 pl-11 pr-4 text-base font-normal leading-normal transition-all hover:border-primary/50 focus:border-primary"
                   placeholder="example@cmu.ac.th"
                   type="email"
@@ -75,6 +76,7 @@
                   <span class="material-symbols-outlined">lock</span>
                 </div>
                 <input
+                  v-model="password"
                   class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-[#0f172a] dark:text-white placeholder:text-[#64748b]/60 focus:outline-0 focus:ring-4 focus:ring-primary/10 border border-border-color dark:border-[#1e293b] bg-white dark:bg-[#0c1821] h-12 pl-11 pr-11 text-base font-normal leading-normal transition-all hover:border-primary/50 focus:border-primary"
                   placeholder="Enter your password"
                   type="password"
@@ -111,19 +113,28 @@
               </label>
             </div>
             <div class="flex flex-col gap-4 mt-2">
-              <button
-                class="group relative w-full h-12 bg-primary hover:bg-primary-dark text-white text-base font-bold rounded-lg shadow-[0_2px_10px_rgba(56,189,248,0.2)] hover:shadow-glow hover:-translate-y-0.5 active:translate-y-0 transition-all duration-200 flex items-center justify-center gap-2 overflow-hidden"
-                type="submit"
-              >
-                <span
-                  class="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300 ease-out"
-                ></span>
-                <span
-                  class="material-symbols-outlined relative z-10 group-hover:rotate-12 transition-transform duration-300"
-                  >login</span
+              <form @submit.prevent="handleLogin">
+                <button
+                  class="group relative w-full h-12 bg-primary hover:bg-primary-dark text-white text-base font-bold rounded-lg shadow-[0_2px_10px_rgba(56,189,248,0.2)] hover:shadow-glow hover:-translate-y-0.5 active:translate-y-0 transition-all duration-200 flex items-center justify-center gap-2 overflow-hidden"
+                  type="submit"
                 >
-                <span class="relative z-10">Login</span>
-              </button>
+                  <span
+                    class="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300 ease-out"
+                  ></span>
+                  <span
+                    class="material-symbols-outlined relative z-10 group-hover:rotate-12 transition-transform duration-300"
+                    >login</span
+                  >
+                  <span
+                    class="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300 ease-out"
+                  ></span>
+                  <span
+                    class="material-symbols-outlined relative z-10 group-hover:rotate-12 transition-transform duration-300"
+                    >login</span
+                  >
+                  <span class="relative z-10">Login</span>
+                </button>
+              </form>
               <div class="relative flex items-center py-2">
                 <div
                   class="flex-grow border-t border-border-color dark:border-[#1e293b]"
@@ -181,45 +192,44 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
-import { useRouter } from 'vue-router';
+import { ref } from "vue";
+import { useRouter } from "vue-router";
 
-const email = ref('');
-const password = ref('');
+const email = ref("");
+const password = ref("");
 const router = useRouter();
 
 const handleLogin = async () => {
-  try{
-    const response = await fetch('http://localhost:56733/login',{
-      method: 'POST',
+  try {
+    const response = await fetch("http://localhost:56733/login", {
+      method: "POST",
       headers: {
-        'Content-Type': 'application/json'
+        "Content-Type": "application/json",
       },
-      credentials: 'include',
+      credentials: "include",
       body: JSON.stringify({
         email: email.value,
-        password: password.value 
-      })
+        password: password.value,
+      }),
     });
-    if (!response.ok){
-      alert("not complete")
+    if (!response.ok) {
+      alert("not complete");
       const errorData = await response.json();
-      throw new Error(errorData.detail || "error for login")
+      throw new Error(errorData.detail || "error for login");
     }
 
     const data = await response.json();
-    localStorage.setItem('csrf_token', data.csrf_token);
-    localStorage.setItem('role', data.role);
+    localStorage.setItem("csrf_token", data.csrf_token);
+    localStorage.setItem("role", data.role);
 
-    if (data.role === 'student') {
-      router.push('/student/dashboard');
-    }else{
-      router.push('/teacher/courses');
+    if (data.role === "student") {
+      router.push("/student/dashboard");
+    } else {
+      router.push("/teacher/courses");
     }
-  } catch (error){
-    alert(error.message)
+  } catch (error) {
+    alert(error.message);
   }
 };
-  name: "Login"
-
+name: "Login";
 </script>

@@ -5,13 +5,14 @@ from typing import Optional
 class UserResponse(BaseModel):
     id: int
     email: EmailStr
-    name: str
+    first_name: str
+    middle_name: str
+    last_name: str
     avatar_url: Optional[str] = None
-    role: str              # เพิ่ม: student หรือ teacher
-    student_id: Optional[str] = None  # เพิ่ม: รหัสนักศึกษา (ถ้ามี)
+    student_id: Optional[str] = None  # รหัสนักศึกษา
 
     class Config:
-        from_attributes = True  # เพื่อให้อ่านค่าจาก SQLAlchemy Model ได้
+        from_attributes = True
 
 class Message(BaseModel):
     message: str
