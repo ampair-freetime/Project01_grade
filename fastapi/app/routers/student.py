@@ -1,8 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
-from sqlalchemy import func
 from app.db import get_db
-from app.models import Student, Course, Quiz, Score, Teacher
+from app.models import Student, Course, Quiz, Score
 from app.models.authuser import AuthUser
 from app.routers.auth import get_current_user
 
@@ -25,79 +24,120 @@ def require_student(db: Session, current_user: AuthUser):
 
 
 # Dashboard 
-# @router.get("/dashboard_student")
-# async def student_dashboard(
-#     db: Session = Depends(get_db),
-#     current_user: AuthUser = Depends(get_current_user)
-# ):
-#     # เช็คว่าเป็นนักเรียนจริงไหม
-#     student = require_student(db, current_user)
-#     # courses ที่ลง
-#     courses = (
-#         db.query(Course)
-#         .join(Enrollment, Enrollment.course_id == Course.course_id)
-#         .filter(Enrollment.student_id == student.student_id)
-#         .all()
-#     )
+@router.get("/dashboard_student")
+async def student_dashboard(
+    db: Session = Depends(get_db),
+    current_user: AuthUser = Depends(get_current_user)
+):
+    # เช็คว่าเป็นนักเรียนจริงไหม
+    student = require_student(db, current_user)
 
-#     return {
-#         "student_name": f"{student.first_name} {student.last_name}",
-#         "student_id": student.student_id,
-#         "courses": [
-#             {
-#                 "course_id": c.course_id,
-#                 "course_name": c.course_name
-#             }
-#             for c in courses
-#         ]
-#     }
+    # ดึงคะแนนทั้งหมดของนักเรียน
+    scores = db.query(Score).filter(
+        Score.student_id == student.student_id
+    ).all()
+
+    # กัน course ซ้ำ
+    course_set = set()
+
+    # relationship : Score -> Quiz -> Course
+    for s in scores :
+        if s.quiz and s.quiz.course:
+            course_set.add(s.quiz.course)
+
+    return {
+        "student_name": f"{student.first_name} {student.last_name}",
+        "student_id": student.student_id,
+        "courses": [
+            {
+                "course_id": c.course_id,
+                "course_name": c.course_name
+            }
+            for c in course_set
+        ]
+    }
 
 
-# รายละเอียด course 
-# @router.get("/courses/{course_id}")
-# async def student_course_detail(
-#     course_id: int,
-#     db: Session = Depends(get_db),
-#     current_user: AuthUser = Depends(get_current_user)
-# ):
+# รายละเอียด course + คะแนนรวม
+@router.get("/course/{course_id}")
+async def student_course_detail(
+    course_id: int,
+    db: Session = Depends(get_db),
+    current_user: AuthUser = Depends(get_current_user)
+):
 
-#     student = require_student(db, current_user)
+    # เช็คว่าเป็นนักเรียนจริงไหม
+    student = require_student(db, current_user)
 
-#     # เช็คว่าลงทะเบียนวิชานี้ไหม
-#     enrollment = db.query(Enrollment).filter(
-#         Enrollment.student_id == student.student_id,
-#         Enrollment.course_id == course_id
-#     ).first()
-#     if not enrollment:
-#         raise HTTPException(
-#             status_code=status.HTTP_403_FORBIDDEN,
-#             detail="Not enrolled in this course"
-#         )
+    # เช็คว่า course มีอยู่จริงไหม
+    course = db.query(Course).filter(
+        Course.course_id == course_id
+    ).first()
 
-#     # ดึง quiz
-#     quizzes = db.query(Quiz).filter(
-#         Quiz.course_id == course_id
-#     ).all()
+    if not course:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Course not found"
+        )
+    
+    # ตรวจสอบว่านักเรียนมีคะแนนใน course นี้ไหม
+    has_access = db.query(Score).join(Quiz).filter(
+        Quiz.course_id == course_id,
+        Score.student_id == student.student_id
+        ).first()
+        
+    if not has_access:
+        raise HTTPException(
+            status_code=403,
+            detail="Not enrolled in this course"
+        )
 
-#     result = []
+    # ดึง quiz ทั้งหมดใน course 
+    quizzes = db.query(Quiz).filter(
+        Quiz.course_id == course_id
+    ).all()
 
-#     for q in quizzes:
-#         my_score = db.query(Score).filter(
-#             Score.quiz_id == q.quiz_id,
-#             Score.student_id == student.student_id
-#         ).first()
+    assessment = []
+    total_weight_score = 0
+    total_weight = 0
 
-#         result.append({
-#             "quiz_id": q.quiz_id,
-#             "quiz_name": q.quiz_name,
-#             "weight": q.weight,
-#             "my_score": my_score.score if my_score else None
-#         })
+    # ดึงคะแนนทั้งหมด
+    student_scores = db.query(Score).join(Quiz).filter(
+        Quiz.course_id == course_id,
+        Score.student_id == student.student_id
+        ).all()
+        
+    score_map = {s.quiz_id: s for s in student_scores}
+    
+    for q in quizzes:
+        my_score = score_map.get(q.quiz_id)
+        score_value = my_score.score if my_score else None
+        
+        if score_value is not None:
+            percent = score_value / q.full_mark
+            total_weight_score += percent * q.weight
+            total_weight += q.weight
 
-#     return {
-#         "course_id": course_id,
-#         "assessments": result
-#     }
+        assessment.append({
+            "quiz_id": q.quiz_id,
+            "quiz_name": q.quiz_name,
+            "weight": q.weight,
+            "full_mark": q.full_mark,
+            "my_score": score_value,
+            "unread_flag": my_score.unread_flag if my_score else False
+            })
+
+    # คำนวณ weighted average
+    weighted_average = 0
+    if total_weight > 0:
+        weighted_average = total_weight_score
+
+    return {
+        "course_id": course.course_id,
+        "course_name": course.course_name,
+        "weighted_average": round(weighted_average, 2),
+        "assessments": assessment
+    }
 
 
 # ดูคะแนน + สถิติ 
@@ -108,19 +148,26 @@ async def student_score_detail(
     current_user: AuthUser = Depends(get_current_user)
 ):
 
+    # เช็คว่าเป็นนักเรียนจริงไหม
     student = require_student(db, current_user)
 
-    # คะแนนของตัวเอง
+    # ดึงคะแนนของตัวเอง
     my_score = db.query(Score).filter(
         Score.quiz_id == quiz_id,
         Score.student_id == student.student_id
     ).first()
 
+    # ไม่มีคะแนน
     if not my_score:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Score not found"
         )
+    
+    # mark read
+    if my_score.unread_flag:
+        my_score.unread_flag = False
+        db.commit()
 
     # คะแนนของทุกคน 
     all_scores = db.query(Score).filter(
