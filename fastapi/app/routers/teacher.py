@@ -35,7 +35,8 @@ async def teacher_dashboard(db: Session = Depends(get_db),current_user: AuthUser
         "courses": [
             {
                 "course_id": c.course_id,
-                "course_name": c.course_name
+                "course_name": c.course_name,
+                "course_stu_number":c.number_student
             }
             for c in courses
         ]
@@ -81,13 +82,17 @@ async def teacher_score(quiz_id: int,db:Session=Depends(get_db),current_user: Au
 
     for s in assignment.scores:
         #check is deleted???
+        stu = db.query(Student).filter(Student.student_id==s.student_id).first()
         if s.is_deleted == False:
             student_score.append({
                 "score_id": s.score_id,
                 "score": s.score,
                 "unread_flag": s.unread_flag,
                 "section": s.section,
-                "stu_id":s.student_id
+                "stu_id":s.student_id,
+                "stu_fname": stu.first_name,
+                "stu_mname": stu.middle_name,
+                "stu_lname": stu.last_name
             })
     return {
         "assignment":{
@@ -178,6 +183,7 @@ async def upload_csv(quiz_id: int,course_id: int,file: UploadFile = File(...),db
     csv_reader = csv.DictReader(io.StringIO(decoded))
     # if csv_reader:
     #     raise HTTPException(status=404,detail=f"Header: {csv_reader.fieldnames}")
+    number_student = 0
 
     for row in csv_reader:
         # ดึงข้อมูลจาก CSV
@@ -185,7 +191,7 @@ async def upload_csv(quiz_id: int,course_id: int,file: UploadFile = File(...),db
         stu_id = int(row["student_id"])
         score_v = float(row["score"])
         section = str(row["section"])
-
+        number_student += 1
         # เช็ค student มีจริงไหม ถ้าไม่มีใฟ้สร้างใหม่เลย
         user = db.query(AuthUser).filter(AuthUser.email == stu_email).first()
 
@@ -222,6 +228,12 @@ async def upload_csv(quiz_id: int,course_id: int,file: UploadFile = File(...),db
             )
             db.add(new_score)
             db.commit()
+    #update number of student
+    course = db.query(Course).filter(Course.course_id==course_id,Course.teacher_id==teacher.teacher_id).first()
+    if not course:
+        raise HTTPException(status_code=404,detail="course not found")
+    course.number_student = number_student
+    db.commit()
 
     return {"message": "CSV uploaded successfully"}
 ############################################################################ deleted #####################################################################
@@ -278,10 +290,7 @@ async def archive(course_id:int, db:Session = Depends(get_db), current_user: Aut
 @router.post("/restore_to_dash/{course_id}")
 async def restore_course(course_id: int, db: Session = Depends(get_db), current_user: AuthUser = Depends(get_current_user)):
     teacher = is_teacher(db, current_user)
-    course = db.query(Course).filter(
-        Course.course_id == course_id,
-        Course.teacher_id == teacher.teacher_id,
-    ).first()
+    course = db.query(Course).filter(Course.course_id == course_id,Course.teacher_id == teacher.teacher_id,).first()
     if not course:
         raise HTTPException(status_code=404, detail="Course not found")
     course.is_archive = False
