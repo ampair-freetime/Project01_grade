@@ -26,7 +26,7 @@ async def teacher_dashboard(db: Session = Depends(get_db),current_user: AuthUser
     # ครู?
     teacher = is_teacher(db, current_user)
     # วิชาทั้งหมดที่ครูคนนั้นสร้างไว้
-    courses = db.query(Course).filter(Course.teacher_id == teacher.teacher_id,Course.is_deleted == False).all()
+    courses = db.query(Course).filter(Course.teacher_id == teacher.teacher_id,Course.is_deleted == False,Course.is_archive == False).all()
     # response ชื่อครูกับรายวิชาที่สอน
     # if not courses:
     #     raise HTTPException(status_code=404,detail="courses not found")
@@ -52,7 +52,7 @@ async def teacher_assingment(course_id: int,current_user: AuthUser = Depends(get
         raise HTTPException(status_code=404,detail="assignment not found")
 
     assignment = []
-    
+
     for q in course.quizzes:
         #check is deleted???
         if q.is_deleted == False:
@@ -78,7 +78,7 @@ async def teacher_score(quiz_id: int,db:Session=Depends(get_db),current_user: Au
         raise HTTPException(status_code=404,detail="score not found")
 
     student_score = []
-    
+
     for s in assignment.scores:
         #check is deleted???
         if s.is_deleted == False:
@@ -125,7 +125,7 @@ async def teacher_dashboard(db: Session = Depends(get_db),current_user: AuthUser
 async def create_course(course: Teacher_Course,db: Session = Depends(get_db),current_user: AuthUser = Depends(get_current_user)):
     # ครู?
     teacher = is_teacher(db, current_user)
-    
+
     new_course = Course(
         course_name=course.course_name,
         teacher_id=teacher.teacher_id
@@ -162,10 +162,19 @@ async def create_assignments(assign: T_Assignment,db: Session= Depends(get_db),c
 
 ####################################################################################################################################
 #  upload CSV แสดงว่าต้องมีหน้า quiz name อะไรอย่างนี้แล้ว
-@router.post("/upload/{quiz_id}")
-async def upload_csv(quiz_id: int,file: UploadFile = File(...),db: Session = Depends(get_db),current_user: AuthUser = Depends(get_current_user)):
+@router.post("/upload/{course_id}/{quiz_id}")
+async def upload_csv(quiz_id: int,course_id: int,file: UploadFile = File(...),db: Session = Depends(get_db),current_user: AuthUser = Depends(get_current_user)):
 
     teacher = is_teacher(db, current_user)
+    file_name = file.filename
+    new_upload = Upload(
+        file_name=file_name,
+        teacher_id = teacher.teacher_id,
+        course_id=course_id
+    )
+    db.add(new_upload)
+    db.commit()
+    db.refresh(new_upload)
     # อ่านละแปลงเป็นข้อความ
     content = await file.read()
     decoded = content.decode("utf-8-sig")
@@ -224,7 +233,7 @@ async def upload_csv(quiz_id: int,file: UploadFile = File(...),db: Session = Dep
 async def delete_courses(course_id:int,db: Session = Depends(get_db),current_user: AuthUser = Depends(get_current_user)):
     # ลบ courses แบบ soft deleted'
     teacher = is_teacher(db,current_user)
-    course = db.query(Course).filter(Course.course_id == course_id,Course.teacher_id == teacher.teacher_id)
+    course = db.query(Course).filter(Course.course_id == course_id,Course.teacher_id == teacher.teacher_id).first()
     if not course:
         raise HTTPException(status=404,detail="course not found")
     course.is_deleted = True
@@ -237,7 +246,7 @@ async def delete_courses(course_id:int,db: Session = Depends(get_db),current_use
 async def delete_assignments(assign_id:int,db: Session = Depends(get_db),current_user: AuthUser = Depends(get_current_user)):
     #ลบ assignment
     teacher = is_teacher(db,current_user)
-    assignment = db.query(Quiz).join(Course).filter(Quiz.quiz_id == assign_id,Course.teacher_id == teacher.teacher_id)
+    assignment = db.query(Quiz).join(Course).filter(Quiz.quiz_id == assign_id,Course.teacher_id == teacher.teacher_id).first()
     if not assignment:
         raise HTTPException(status=404,detail="assignment not found")
     assignment.is_deleted = True
@@ -249,7 +258,7 @@ async def delete_assignments(score_id:int,assign_id:int,db: Session = Depends(ge
     #ลบ assignment
     teacher = is_teacher(db,current_user)
     #หา Quiz ที่เชื่อมกับอาจารคนนี้ก่อน และส่งมาเป็น quiz ไหน
-    assignment = db.query(Quiz).join(Course).filter(Quiz.quiz_id == assign_id,Course.teacher_id == teacher.teacher_id)
+    assignment = db.query(Quiz).join(Course).filter(Quiz.quiz_id == assign_id,Course.teacher_id == teacher.teacher_id).first()
     # เอา quiz ที่หามาได้ไปหา score ใน database อีกที
     score = db.query(Score).filter(Score.score_id == score_id,Score.quiz_id == assignment.quiz_id)
     if not score:
@@ -262,9 +271,21 @@ async def delete_assignments(score_id:int,assign_id:int,db: Session = Depends(ge
 @router.post("/archive/{course_id}")
 async def archive(course_id:int, db:Session = Depends(get_db), current_user: AuthUser=Depends(get_current_user)):
     teacher = is_teacher(db,current_user)
-    course = db.query(Course).filter(Course.course_id == course_id,Course.teacher_id == teacher.teacher_id)
+    course = db.query(Course).filter(Course.course_id == course_id,Course.teacher_id == teacher.teacher_id).first()
     #จัดเก็บ course
     if not course:
         raise HTTPException(status=404,detail="Course not found")
     course.is_archive = True
+    db.commit()
     return {"message":"Archive course successfully"}
+
+@router.post("/restore_to_dash/{course_id}")
+async def archive(course_id:int, db:Session = Depends(get_db), current_user: AuthUser=Depends(get_current_user)):
+    teacher = is_teacher(db,current_user)
+    course = db.query(Course).filter(Course.course_id == course_id,Course.teacher_id == teacher.teacher_id).first()
+    #จัดเก็บ course
+    if not course:
+        raise HTTPException(status=404,detail="Course not found")
+    course.is_archive = False
+    db.commit()
+    return {"message":"Restore course successfully"}

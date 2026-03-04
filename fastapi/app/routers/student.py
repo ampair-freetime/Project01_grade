@@ -25,17 +25,12 @@ def require_student(db: Session, current_user: AuthUser):
 
 # Dashboard 
 @router.get("/dashboard_student")
-async def student_dashboard(
-    db: Session = Depends(get_db),
-    current_user: AuthUser = Depends(get_current_user)
-):
+async def student_dashboard(db: Session = Depends(get_db),current_user: AuthUser = Depends(get_current_user)):
     # เช็คว่าเป็นนักเรียนจริงไหม
     student = require_student(db, current_user)
 
     # ดึงคะแนนทั้งหมดของนักเรียน
-    scores = db.query(Score).filter(
-        Score.student_id == student.student_id
-    ).all()
+    scores = db.query(Score).filter(Score.student_id == student.student_id).all()
 
     # กัน course ซ้ำ
     course_set = {}

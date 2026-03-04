@@ -171,11 +171,8 @@
             </div>
             <div class="mt-2 text-center text-sm text-[#64748b]">
               Don't have an account?
-              <a
-                class="font-bold text-sky-600 dark:text-sky-500 hover:text-sky-700 dark:hover:text-sky-400 transition-colors duration-200"
-                href="#"
-                >Sign up</a
-              >
+              <router-link to="/signin"
+                class="font-bold text-sky-600 dark:text-sky-500 hover:text-sky-700 dark:hover:text-sky-400 transition-colors duration-200">Sign up</router-link>
             </div>
           </form>
         </div>
