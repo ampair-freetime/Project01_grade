@@ -189,9 +189,7 @@
           <div
             class="flex items-center gap-4 w-full md:w-auto justify-between md:justify-end overflow-x-auto pb-2 md:pb-0"
           >
-            <div
-              class="flex items-center gap-2 text-sm text-text-muted-light dark:text-text-muted-dark whitespace-nowrap"
-            >
+            <div class="flex flex-wrap items-center gap-2 text-sm">
               <span
                 class="uppercase text-xs font-bold tracking-wider mr-1 text-gray-500 dark:text-gray-300"
                 >Status :</span
@@ -246,32 +244,24 @@
           class="bg-surface-light dark:bg-surface-dark rounded-xl border border-border-light dark:border-border-dark shadow-sm overflow-hidden"
         >
           <div class="overflow-x-auto">
-            <table class="w-full table-auto text-left">
+            <table class="w-full table-fixed text-left">
               <thead>
                 <tr
                   class="border-b border-border-light dark:border-border-dark bg-gray-50/50 dark:bg-slate-800/50"
                 >
-                  <th
-                    class="w-[45%] p-4 text-xs font-bold text-gray-500 dark:text-gray-300 uppercase tracking-wider pl-6"
-                  >
+                  <th class="min-w-[120px] p-4 text-xs font-bold text-gray-500 text-center">
                     Student Info
                   </th>
 
-                  <th
-                    class="w-[15%] p-4 text-xs font-bold text-gray-500 dark:text-gray-300 uppercase tracking-wider text-center"
-                  >
+                  <th class="min-w-[120px] p-4 text-xs font-bold text-gray-500 text-center">
                     Score
                   </th>
 
-                  <th
-                    class="w-[20%] p-4 text-xs font-bold text-gray-500 dark:text-gray-300 uppercase tracking-wider text-center"
-                  >
+                  <th class="min-w-[120px] p-4 text-xs font-bold text-gray-500 text-center">
                     Status
                   </th>
 
-                  <th
-                    class="w-[20%] p-4 text-xs font-bold text-gray-500 dark:text-gray-300 uppercase tracking-wider text-center"
-                  >
+                  <th class="min-w-[120px] p-4 text-xs font-bold text-gray-500 text-center">
                     Actions
                   </th>
                 </tr>
