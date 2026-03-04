@@ -125,13 +125,6 @@
                     class="material-symbols-outlined relative z-10 group-hover:rotate-12 transition-transform duration-300"
                     >login</span
                   >
-                  <span
-                    class="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300 ease-out"
-                  ></span>
-                  <span
-                    class="material-symbols-outlined relative z-10 group-hover:rotate-12 transition-transform duration-300"
-                    >login</span
-                  >
                   <span class="relative z-10">Login</span>
                 </button>
               </form>
