@@ -15,7 +15,7 @@ def seed_data():
 
     hashed_password = password_hash.hash("123456")
 
-    teacher_auth = AuthUser(email="teacher@cmu.ac.th", password=hashed_password)
+    teacher_auth = AuthUser(email="som.jai@cmu.ac.th", password=hashed_password)
     db.add(teacher_auth)
     db.commit()
     db.refresh(teacher_auth)
@@ -25,15 +25,25 @@ def seed_data():
     db.commit()
     db.refresh(teacher_profile)
 
-    student_auth = AuthUser(email="student@cmu.ac.th", password=hashed_password)
+    student_auth = AuthUser(email="som_r@cmu.ac.th", password=hashed_password)
     db.add(student_auth)
     db.commit()
     db.refresh(student_auth)
 
-    student_profile = Student(student_id=650510001, first_name="Nong Som", last_name="Student", auth_user_id=student_auth.auth_user_id)
+    student_profile = Student(student_id=650510001, first_name="Nong Som", last_name="Roy", auth_user_id=student_auth.auth_user_id)
     db.add(student_profile)
     db.commit()
     db.refresh(student_profile)
+
+    student_auth2 = AuthUser(email="nudee_k@cmu.ac.th", password=hashed_password)
+    db.add(student_auth2)
+    db.commit()
+    db.refresh(student_auth2)
+
+    student_profile2 = Student(student_id=650510555, first_name="Nu dee", last_name="kimnum", auth_user_id=student_auth2.auth_user_id)
+    db.add(student_profile2)
+    db.commit()
+    db.refresh(student_profile2)
 
     course_cs101 = Course(course_name="Intro to Computer Science", teacher_id=teacher_profile.teacher_id)
     db.add(course_cs101)
@@ -59,6 +69,15 @@ def seed_data():
     db.add(student_score)
     db.commit()
 
+    student_score2 = Score(
+        score=28.0,
+        unread_flag=True, 
+        section="001", 
+        student_id=student_profile2.student_id, 
+        quiz_id=assignment_1.quiz_id
+    )
+    db.add(student_score2)
+    db.commit()
     print("Seeding Complete!")
     db.close()
 

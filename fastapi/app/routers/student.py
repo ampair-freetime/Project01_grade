@@ -10,15 +10,10 @@ router = APIRouter()
 # ตรวจสอบว่าเป็นนักเรียนจริงไหม
 def require_student(db: Session, current_user: AuthUser):
 
-    student = db.query(Student).filter(
-        Student.auth_user_id == current_user.auth_user_id
-    ).first()
+    student = db.query(Student).filter(Student.auth_user_id == current_user.auth_user_id).first()
 
     if not student:
-        raise HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN,
-            detail="You are not registered as a student"
-        )
+        raise HTTPException(status_code=403,detail="You are not registered as a student")
 
     return student
 
@@ -30,7 +25,7 @@ async def student_dashboard(db: Session = Depends(get_db),current_user: AuthUser
     student = require_student(db, current_user)
 
     # ดึงคะแนนทั้งหมดของนักเรียน
-    scores = db.query(Score).filter(Score.student_id == student.student_id).all()
+    scores = db.query(Score).filter(Score.student_id == student.student_id,Score.is_deleted == False).all()
 
     # กัน course ซ้ำ
     course_set = {}
@@ -60,48 +55,28 @@ async def student_dashboard(db: Session = Depends(get_db),current_user: AuthUser
 
 # รายละเอียด course + คะแนนรวม
 @router.get("/course/{course_id}")
-async def student_course_detail(
-    course_id: int,
-    db: Session = Depends(get_db),
-    current_user: AuthUser = Depends(get_current_user)
-):
+async def student_course_detail(course_id: int,db: Session = Depends(get_db),current_user: AuthUser = Depends(get_current_user)):
 
     # เช็คว่าเป็นนักเรียนจริงไหม
     student = require_student(db, current_user)
 
     # เช็คว่า course มีอยู่จริงไหม
-    course = db.query(Course).filter(
-        Course.course_id == course_id
-    ).first()
+    course = db.query(Course).filter(Course.course_id == course_id).first()
 
     if not course:
-        raise HTTPException(
-            status_code=404,
-            detail="Course not found"
-        )
+        raise HTTPException(status_code=404,detail="Course not found")
     
     # ตรวจสอบว่านักเรียนมีคะแนนใน course นี้ไหม
-    has_access = db.query(Score).join(Quiz).filter(
-        Quiz.course_id == course_id,
-        Score.student_id == student.student_id
-    ).first()
-        
+    has_access = db.query(Score).join(Quiz).filter(Quiz.course_id == course_id,Score.student_id == student.student_id,Score.is_deleted == False,Quiz.is_deleted==False).first()
+
     if not has_access:
-        raise HTTPException(
-            status_code=403,
-            detail="Not enrolled in this course"
-        )
+        raise HTTPException(status_code=403,detail="Not enrolled in this course")
 
     # ดึง quiz ทั้งหมดใน course 
-    quizzes = db.query(Quiz).filter(
-        Quiz.course_id == course_id
-    ).all()
+    quizzes = db.query(Quiz).filter(Quiz.course_id == course_id).all()
 
     # ดึงคะแนนทั้งหมด
-    student_scores = db.query(Score).join(Quiz).filter(
-        Quiz.course_id == course_id,
-        Score.student_id == student.student_id
-    ).all()
+    student_scores = db.query(Score).join(Quiz).filter(Quiz.course_id == course_id,Score.student_id == student.student_id,Score.is_deleted == False,Quiz.is_deleted==False).all()
 
     score_map = {s.quiz_id: s for s in student_scores}
 
@@ -145,27 +120,17 @@ async def student_course_detail(
 
 # ดูคะแนน + สถิติ 
 @router.get("/score/{quiz_id}")
-async def student_score_detail(
-    quiz_id: int,
-    db: Session = Depends(get_db),
-    current_user: AuthUser = Depends(get_current_user)
-):
+async def student_score_detail(quiz_id: int,db: Session = Depends(get_db),current_user: AuthUser = Depends(get_current_user)):
 
     # เช็คว่าเป็นนักเรียนจริงไหม
     student = require_student(db, current_user)
 
     # ดึงคะแนนของตัวเอง
-    my_score = db.query(Score).filter(
-        Score.quiz_id == quiz_id,
-        Score.student_id == student.student_id
-    ).first()
+    my_score = db.query(Score).filter(Score.quiz_id == quiz_id,Score.student_id == student.student_id,Score.is_deleted==False).first()
 
     # ไม่มีคะแนน
     if not my_score:
-        raise HTTPException(
-            status_code=404,
-            detail="Score not found"
-        )
+        raise HTTPException(status_code=404,detail="Score not found")
     
     # mark read
     if my_score.unread_flag:
@@ -173,9 +138,7 @@ async def student_score_detail(
         db.commit()
 
     # คะแนนของทุกคน 
-    all_scores = db.query(Score).filter(
-        Score.quiz_id == quiz_id
-    ).all()
+    all_scores = db.query(Score).filter(Score.quiz_id == quiz_id,Score.is_deleted==False).all()
 
     score_list = [s.score for s in all_scores if s.score is not None]
 

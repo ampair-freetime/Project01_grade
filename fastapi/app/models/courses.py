@@ -11,6 +11,7 @@ class Course(Base, SerializerMixin):
 
     course_name = Column(VARCHAR(255))
     teacher_id = Column(Integer, ForeignKey("teachers.teacher_id"), nullable=False)
+    number_student = Column(Integer, default=0)
 
     created_at = Column(DateTime, default=datetime.utcnow)
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
