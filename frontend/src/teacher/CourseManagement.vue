@@ -538,7 +538,7 @@ const archiveCourse = async (course_id) => {
   if (!confirm("Archive this course?")) return;
 
   try {
-    const response = await fetch(`${BASE_URL}/teacher/archive_course/${course_id}`, {
+    const response = await fetch(`${BASE_URL}/teacher/archive/${course_id}`, {
       headers:{'X-CSRF-Token': csrf_token},
       method: "POST",
       credentials: "include",
