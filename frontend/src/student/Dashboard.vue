@@ -82,9 +82,6 @@
       </div>
     </header>
     <main class="flex-1 flex flex-col h-full overflow-hidden relative">
-      <div
-        class="absolute top-0 left-0 w-full h-32  pointer-events-none"
-      ></div>
       <div class="flex-1 overflow-y-auto p-8 lg:p-12">
         <div class="max-w-5xl mx-auto flex flex-col gap-8">
           <header
