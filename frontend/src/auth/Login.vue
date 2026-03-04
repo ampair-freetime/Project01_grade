@@ -44,7 +44,10 @@
               Login
             </h1>
           </div>
-          <form class="px-6 sm:px-8 pb-10 flex flex-col gap-5">
+          <form
+            class="px-6 sm:px-8 pb-10 flex flex-col gap-5"
+            @submit.prevent="handleLogin"
+          >
             <div class="flex flex-col gap-1.5">
               <label
                 class="text-[#0f172a] dark:text-gray-200 text-sm font-semibold leading-normal ml-1"
@@ -79,16 +82,17 @@
                   v-model="password"
                   class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-[#0f172a] dark:text-white placeholder:text-[#64748b]/60 focus:outline-0 focus:ring-4 focus:ring-primary/10 border border-border-color dark:border-[#1e293b] bg-white dark:bg-[#0c1821] h-12 pl-11 pr-11 text-base font-normal leading-normal transition-all hover:border-primary/50 focus:border-primary"
                   placeholder="Enter your password"
-                  type="password"
+                  :type="showPassword ? 'text' : 'password'"
                 />
                 <button
                   aria-label="Toggle password visibility"
                   class="absolute right-3 p-1.5 rounded-md flex items-center justify-center text-[#64748b] hover:bg-background-light dark:hover:bg-[#1e293b] hover:text-[#0f172a] dark:hover:text-white transition-colors cursor-pointer"
                   type="button"
+                  @click="togglePassword"
                 >
-                  <span class="material-symbols-outlined text-[20px]"
-                    >visibility</span
-                  >
+                  <span class="material-symbols-outlined text-[20px]">
+                    {{ showPassword ? "visibility_off" : "visibility" }}
+                  </span>
                 </button>
               </div>
             </div>
@@ -113,7 +117,6 @@
               </label>
             </div>
             <div class="flex flex-col gap-4 mt-2">
-              <form @submit.prevent="handleLogin">
                 <button
                   class="group relative w-full h-12 bg-primary hover:bg-primary-dark text-white text-base font-bold rounded-lg shadow-[0_2px_10px_rgba(56,189,248,0.2)] hover:shadow-glow hover:-translate-y-0.5 active:translate-y-0 transition-all duration-200 flex items-center justify-center gap-2 overflow-hidden"
                   type="submit"
@@ -127,7 +130,6 @@
                   >
                   <span class="relative z-10">Login</span>
                 </button>
-              </form>
               <div class="relative flex items-center py-2">
                 <div
                   class="flex-grow border-t border-border-color dark:border-[#1e293b]"
@@ -171,8 +173,11 @@
             </div>
             <div class="mt-2 text-center text-sm text-[#64748b]">
               Don't have an account?
-              <router-link to="/signin"
-                class="font-bold text-sky-600 dark:text-sky-500 hover:text-sky-700 dark:hover:text-sky-400 transition-colors duration-200">Sign up</router-link>
+              <router-link
+                to="/signin"
+                class="font-bold text-sky-600 dark:text-sky-500 hover:text-sky-700 dark:hover:text-sky-400 transition-colors duration-200"
+                >Sign up</router-link
+              >
             </div>
           </form>
         </div>
@@ -189,6 +194,12 @@ const email = ref("");
 const password = ref("");
 
 const router = useRouter();
+
+const showPassword = ref(false);
+
+const togglePassword = () => {
+  showPassword.value = !showPassword.value;
+};
 
 const handleLogin = async () => {
   try {
