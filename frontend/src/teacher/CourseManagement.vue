@@ -60,7 +60,8 @@
                     <p
                       class="font-semibold text-gray-900 dark:text-white break-all"
                     >
-                      {{ userProfile?.first_name }} {{ userProfile?.last_name }}
+                      {{ userProfile?.first_name }} {{ userProfile?.middle }}
+                      {{ userProfile?.last_name }}
                     </p>
                     <p class="text-sm text-gray-500 break-all">
                       Email : {{ userProfile?.email }}
@@ -83,9 +84,9 @@
         </div>
       </div>
     </header>
-    <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      <div class="md:flex md:items-center md:justify-between mb-8">
-        <div class="flex-1 min-w-0">
+    <main class="flex-1 flex-row flex-col h-full overflow-hidden relative">
+      <div class="flex-1 overflow-y-auto p-8 lg:p-12">
+        <div class="max-w-5xl mx-auto flex flex-col gap-8">
           <h1
             class="text-3xl font-bold leading-7 text-gray-900 dark:text-white sm:text-3xl sm:truncate"
           >
@@ -150,7 +151,7 @@
             <div class="flex justify-end gap-3">
               <button
                 @click="submit"
-                class="px-6 py-3 rounded-md bg-green-600 hover:bg-green-800 text-white text-base"
+                class="px-6 py-3 rounded-md bg-primary hover:bg-primary-dark text-white text-base"
               >
                 Create Course
               </button>
@@ -185,22 +186,29 @@
             :key="course.course_id"
             class="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors duration-150"
           >
-            <div class="px-6 py-5 flex items-center justify-between">
+            <div
+              class="px-6 py-5 flex items-center justify-between cursor-pointer"
+            >
               <a
                 href="#"
                 class="block cursor-pointer"
                 @click.prevent="goToAssignment(course.course_id)"
               >
-                <div class="ml-4">
+                <div class="flex-1 min-w-0">
                   <!-- <div class="text-base font-bold">
                     {{ course.course_id }}
                   </div> -->
-                  <div class="text-l text-bold">
+                  <div class="text-l font-bold dark:text-primary-light uppercase tracking-wide">
                     {{ course.course_name }}
+                  </div>
+                  <div
+                    class="text-xs text-gray-500 dark:text-gray-400tracking-wide"
+                  >
+                    Course ID: {{ course.course_id }}
                   </div>
                 </div>
               </a>
-              <div class="flex items-center gap-6">
+              <div class="flex items-center gap-6 shrink-0">
                 <div class="flex flex-col items-end min-w-[80px]">
                   <div
                     class="flex items-center text-gray-900 dark:text-white font-semibold"
@@ -219,7 +227,7 @@
                 </div>
                 <div class="flex items-end min-w-[50px]">
                   <button
-                    @click="deleteCourse(course.course_id)"
+                    @click.stop="deleteCourse(course.course_id)"
                     class="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-900/30 rounded-full transition-colors duration-200 group"
                     title="Delete Course"
                   >
@@ -372,7 +380,7 @@ const isOpen = ref(false);
 const showArchiveModal = ref(false);
 const archivedCourses = ref([]);
 const userProfile = ref(null);
-const csrf_token = localStorage.getItem("csrf_token")
+const csrf_token = localStorage.getItem("csrf_token");
 const randomAvatar = ref("");
 
 const BASE_URL = "http://localhost:56733";
@@ -402,18 +410,17 @@ const fetchUserProfile = async () => {
   try {
     const response = await fetch(`${BASE_URL}/me`, {
       credentials: "include",
-    })
+    });
 
     if (!response.ok) {
-      router.push("/login")
-      return
+      router.push("/login");
+      return;
     }
 
-    const data = await response.json()
-    userProfile.value = data
-
+    const data = await response.json();
+    userProfile.value = data;
   } catch (error) {
-    console.error("Fetch profile error:", error)
+    console.error("Fetch profile error:", error);
   }
 };
 
@@ -480,7 +487,9 @@ const restoreCourse = async (course_id) => {
       const err = await response.json();
       alert(err.detail || "Restore failed");
     }
-    archivedCourses.value = archivedCourses.value.filter((c) => c.course_id !== course_id);
+    archivedCourses.value = archivedCourses.value.filter(
+      (c) => c.course_id !== course_id
+    );
 
     await fetchDashboard();
   } catch (error) {
@@ -492,16 +501,21 @@ const restoreCourse = async (course_id) => {
 const deleteArchivedCourse = async (course_id) => {
   if (!confirm("Delete this archived course?")) return;
   try {
-    const response = await fetch(`${BASE_URL}/teacher/delete_course/${course_id}`, {
-      headers: { "X-CSRF-Token": csrf_token },
-      method: "POST",
-      credentials: "include",
-    });
+    const response = await fetch(
+      `${BASE_URL}/teacher/delete_course/${course_id}`,
+      {
+        headers: { "X-CSRF-Token": csrf_token },
+        method: "POST",
+        credentials: "include",
+      }
+    );
     if (!response.ok) {
       const err = await response.json();
       alert(err.detail || "Delete failed");
     }
-    archivedCourses.value = archivedCourses.value.filter((c) => c.course_id !== course_id);
+    archivedCourses.value = archivedCourses.value.filter(
+      (c) => c.course_id !== course_id
+    );
   } catch (error) {
     console.error("Delete error:", error);
   }
@@ -516,7 +530,7 @@ const filteredCourses = computed(() => {
   return courses.value.filter(
     (c) =>
       c.course_name.toLowerCase().includes(searchTerm.value.toLowerCase()) ||
-      String(c.course_id).includes(searchTerm.value),
+      String(c.course_id).includes(searchTerm.value)
   );
 });
 
@@ -528,8 +542,9 @@ const submit = async () => {
     const response = await fetch(`${BASE_URL}/teacher/create_course`, {
       method: "POST",
       credentials: "include",
-      headers: { "Content-Type": "application/json",
-         'X-CSRF-Token': csrf_token
+      headers: {
+        "Content-Type": "application/json",
+        "X-CSRF-Token": csrf_token,
       },
       body: JSON.stringify({
         course_name: courseName.value,
@@ -580,7 +595,7 @@ const deleteCourse = async (id) => {
 
   try {
     const response = await fetch(`${BASE_URL}/teacher/delete_course/${id}`, {
-      headers:{'X-CSRF-Token': csrf_token},
+      headers: { "X-CSRF-Token": csrf_token },
       method: "POST",
       credentials: "include",
     });
@@ -591,9 +606,7 @@ const deleteCourse = async (id) => {
       return;
     }
 
-    courses.value = courses.value.filter(
-      (course) => course.course_id !== id
-    );
+    courses.value = courses.value.filter((course) => course.course_id !== id);
   } catch (error) {
     console.error("Delete error:", error);
     alert("Something went wrong");
@@ -614,7 +627,7 @@ const handleLogout = async () => {
       credentials: "include",
     });
 
-    if (!response.ok){
+    if (!response.ok) {
       throw new Error();
     }
 
