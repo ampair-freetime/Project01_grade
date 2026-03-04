@@ -310,7 +310,8 @@ async def read_users_me(current_user: AuthUser = Depends(get_current_user)):
                 "first_name": current_user.student.first_name,
                 "middle_name": current_user.student.middle_name,
                 "last_name": current_user.student.last_name,
-                "avatar_url": current_user.student.avatar_url}
+                "avatar_url": current_user.student.avatar_url,
+                "student_id": current_user.student.student_id}
     else:
         return {"id": current_user.auth_user_id,
                 "email": current_user.email, 

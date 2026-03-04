@@ -9,7 +9,6 @@
         class="max-w-7xl mx-auto px-4 h-full flex items-center justify-between relative"
         ref="dropdownRef"
       >
-
         <div class="flex items-center gap-2">
           <div class="flex items-center gap-3">
             <div
@@ -33,7 +32,7 @@
               <div class="hidden md:flex flex-col items-end mr-1">
                 <span
                   class="text-sm font-semibold text-gray-900 dark:text-white"
-                  >Giselle</span
+                  >{{userProfile?.first_name}}</span
                 >
               </div>
               <div class="relative">
@@ -52,19 +51,21 @@
                 <div class="flex items-center space-x-3">
                   <img
                     class="h-12 w-12 rounded-full object-cover"
-                    src="https://lh3.googleusercontent.com/aida-public/AB6AXuAfs56wd3ZKem_c5viO2sbQi6QqagsAHOE_1vjyHa7ZI8VHLknmGt20_hlaSVETqWYOsJL90qkBypXOjJp3RLSZRVCCQdcfaZh5kBgmGKpB2H1ljdV46tJTVLrSN0GurDyMvTs3Rbs4iUT-JQEizgeI8EIRbyNIvgzgmld5oKsHWGOuXctpZU9YajqdkAw1xoCp7REQvLbXOz8A9iuN2iz7maCHA50bOTOwjKS5ivvz9hojTaRSN6jd9o2cDN90A2qviBCKcL1ugg"
+                    :src="userProfile?.avatar_url"
                   />
                   <div>
                     <p
                       class="font-semibold text-gray-900 dark:text-white break-all"
                     >
-                      Uchinaga Aeri
+                      {{ userProfile?.first_name }}
+                      {{ userProfile?.middle_name }}
+                      {{ userProfile?.last_name }}
                     </p>
                     <p class="text-sm text-gray-500 break-all">
-                      Student ID: 65012345
+                      Student ID: {{ userProfile?.student_id }}
                     </p>
                     <p class="text-sm text-gray-500 break-all">
-                      Email: Gigi_selle@cmu.ac.th
+                      Email: {{ userProfile?.email }}
                     </p>
                   </div>
                 </div>
@@ -91,7 +92,7 @@
               <h2
                 class="text-[#111811] dark:text-white text-3xl md:text-4xl font-bold tracking-tight"
               >
-                Hello, Alex
+                Hello, {{ userProfile?.first_name }}
               </h2>
             </div>
             <div class="w-full md:w-96">
@@ -104,8 +105,12 @@
                   <span class="material-symbols-outlined">search</span>
                 </div>
                 <input
+                  v-model="searchTerm"
+                  id="search"
+                  name="search"
                   class="w-full bg-transparent border-none text-[#111811] dark:text-white placeholder:text-[#637888]/70 focus:ring-0 focus:outline-none text-base h-full"
                   placeholder="Search courses..."
+                  type="text"
                 />
               </label>
             </div>
@@ -116,183 +121,47 @@
                 class="text-lg font-semibold text-[#111811] dark:text-white flex items-center gap-2"
               >
                 Current Enrolled Courses
-                <span
-                  class="bg-[#e0e7eb] dark:bg-[#253038] text-[#4e5b6b] dark:text-[#a0b8cf] text-xs px-2 py-0.5 rounded-full"
-                  >5</span
-                >
               </h3>
-              <div
-                class="flex items-center gap-2 text-sm text-[#4e5b6b] cursor-pointer hover:text-[#111811] dark:hover:text-white transition-colors"
+            </div>
+            <!-- Add courses -->
+            <ul class="divide-y divide-border-light dark:divide-border-dark">
+              <li
+                v-for="course in filteredCourses"
+                :key="course.course_id"
+                class="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors duration-150"
               >
-                <span class="material-symbols-outlined text-[18px]">sort</span>
-                Sort by recent
-              </div>
-            </div>
-            <div
-              class="group bg-white dark:bg-[#1a232e] p-4 rounded-xl shadow-sm border border-transparent hover:border-primary/40 hover:shadow-md transition-all duration-200 cursor-pointer"
-            >
-              <div class="flex items-center justify-between gap-4">
-                <div class="flex items-center gap-5 overflow-hidden">
-                  <div
-                    class="shrink-0 size-14 rounded-xl bg-gradient-to-br from-[#f0f4f8] to-[#e8f1f5] dark:from-[#253038] dark:to-[#1f2633] flex items-center justify-center text-[#111811] dark:text-white group-hover:scale-105 transition-transform"
-                  >
-                    <span class="material-symbols-outlined text-3xl"
-                      >terminal</span
+                <div
+                  class="group bg-white dark:bg-[#1a232e] p-4 rounded-xl shadow-sm border border-transparent hover:border-primary/40 hover:shadow-md transition-all duration-200 cursor-pointer"
+                  @click="goToAssignment(course.course_id)"
+                >
+                  <div class="flex items-center justify-between gap-4">
+                    <div class="flex items-center gap-5 overflow-hidden">
+                      <div class="flex flex-col min-w-0">
+                        <!-- <div class="flex items-center gap-2 mb-0.5">
+                          <span
+                            class="font-mono text-xs font-bold text-[#637888] dark:text-[#a0b8cf] bg-[#f0f4f8] dark:bg-[#253038] px-1.5 py-0.5 rounded"
+                            >{{ course.course_id }}</span
+                          >
+                        </div> -->
+                        <h4
+                          class="text-[#111811] dark:text-white text-lg font-semibold truncate group-hover:text-primary transition-colors"
+                        >
+                          {{ course.course_name }}
+                        </h4>
+                      </div>
+                    </div>
+                    <div
+                      class="shrink-0 flex items-center justify-center size-10 rounded-full bg-[#f6f8fa] dark:bg-[#253038] text-[#111811] dark:text-white group-hover:bg-primary group-hover:text-white transition-colors"
                     >
-                  </div>
-                  <div class="flex flex-col min-w-0">
-                    <div class="flex items-center gap-2 mb-0.5">
-                      <span
-                        class="font-mono text-xs font-bold text-[#637888] dark:text-[#a0b8cf] bg-[#f0f4f8] dark:bg-[#253038] px-1.5 py-0.5 rounded"
-                        >CS101</span
+                      <span class="material-symbols-outlined"
+                        >arrow_forward</span
                       >
                     </div>
-                    <h4
-                      class="text-[#111811] dark:text-white text-lg font-semibold truncate group-hover:text-primary transition-colors"
-                    >
-                      Introduction to Computer Science
-                    </h4>
                   </div>
                 </div>
-                <div
-                  class="shrink-0 flex items-center justify-center size-10 rounded-full bg-[#f6f8fa] dark:bg-[#253038] text-[#111811] dark:text-white group-hover:bg-primary group-hover:text-white transition-colors"
-                >
-                  <span class="material-symbols-outlined">arrow_forward</span>
-                </div>
-              </div>
-            </div>
-            <div
-              class="group bg-white dark:bg-[#1a232e] p-4 rounded-xl shadow-sm border border-transparent hover:border-primary/40 hover:shadow-md transition-all duration-200 cursor-pointer"
-            >
-              <div class="flex items-center justify-between gap-4">
-                <div class="flex items-center gap-5 overflow-hidden">
-                  <div
-                    class="shrink-0 size-14 rounded-xl bg-gradient-to-br from-[#f0f4f8] to-[#e8f1f5] dark:from-[#253038] dark:to-[#1f2633] flex items-center justify-center text-[#111811] dark:text-white group-hover:scale-105 transition-transform"
-                  >
-                    <span class="material-symbols-outlined text-3xl"
-                      >biotech</span
-                    >
-                  </div>
-                  <div class="flex flex-col min-w-0">
-                    <div class="flex items-center gap-2 mb-0.5">
-                      <span
-                        class="font-mono text-xs font-bold text-[#637888] dark:text-[#a0b8cf] bg-[#f0f4f8] dark:bg-[#253038] px-1.5 py-0.5 rounded"
-                        >BIO101</span
-                      >
-                    </div>
-                    <h4
-                      class="text-[#111811] dark:text-white text-lg font-semibold truncate group-hover:text-primary transition-colors"
-                    >
-                      General Biology I
-                    </h4>
-                  </div>
-                </div>
-                <div
-                  class="shrink-0 flex items-center justify-center size-10 rounded-full bg-[#f6f8fa] dark:bg-[#253038] text-[#111811] dark:text-white group-hover:bg-primary group-hover:text-white transition-colors"
-                >
-                  <span class="material-symbols-outlined">arrow_forward</span>
-                </div>
-              </div>
-            </div>
-            <div
-              class="group bg-white dark:bg-[#1a232e] p-4 rounded-xl shadow-sm border border-transparent hover:border-primary/40 hover:shadow-md transition-all duration-200 cursor-pointer"
-            >
-              <div class="flex items-center justify-between gap-4">
-                <div class="flex items-center gap-5 overflow-hidden">
-                  <div
-                    class="shrink-0 size-14 rounded-xl bg-gradient-to-br from-[#f0f4f8] to-[#e8f1f5] dark:from-[#253038] dark:to-[#1f2633] flex items-center justify-center text-[#111811] dark:text-white group-hover:scale-105 transition-transform"
-                  >
-                    <span class="material-symbols-outlined text-3xl"
-                      >functions</span
-                    >
-                  </div>
-                  <div class="flex flex-col min-w-0">
-                    <div class="flex items-center gap-2 mb-0.5">
-                      <span
-                        class="font-mono text-xs font-bold text-[#637888] dark:text-[#a0b8cf] bg-[#f0f4f8] dark:bg-[#253038] px-1.5 py-0.5 rounded"
-                        >MATH202</span
-                      >
-                    </div>
-                    <h4
-                      class="text-[#111811] dark:text-white text-lg font-semibold truncate group-hover:text-primary transition-colors"
-                    >
-                      Calculus II
-                    </h4>
-                  </div>
-                </div>
-                <div
-                  class="shrink-0 flex items-center justify-center size-10 rounded-full bg-[#f6f8fa] dark:bg-[#253038] text-[#111811] dark:text-white group-hover:bg-primary group-hover:text-white transition-colors"
-                >
-                  <span class="material-symbols-outlined">arrow_forward</span>
-                </div>
-              </div>
-            </div>
-            <div
-              class="group bg-white dark:bg-[#1a232e] p-4 rounded-xl shadow-sm border border-transparent hover:border-primary/40 hover:shadow-md transition-all duration-200 cursor-pointer"
-            >
-              <div class="flex items-center justify-between gap-4">
-                <div class="flex items-center gap-5 overflow-hidden">
-                  <div
-                    class="shrink-0 size-14 rounded-xl bg-gradient-to-br from-[#f0f4f8] to-[#e8f1f5] dark:from-[#253038] dark:to-[#1f2633] flex items-center justify-center text-[#111811] dark:text-white group-hover:scale-105 transition-transform"
-                  >
-                    <span class="material-symbols-outlined text-3xl"
-                      >auto_stories</span
-                    >
-                  </div>
-                  <div class="flex flex-col min-w-0">
-                    <div class="flex items-center gap-2 mb-0.5">
-                      <span
-                        class="font-mono text-xs font-bold text-[#637888] dark:text-[#a0b8cf] bg-[#f0f4f8] dark:bg-[#253038] px-1.5 py-0.5 rounded"
-                        >ENG105</span
-                      >
-                    </div>
-                    <h4
-                      class="text-[#111811] dark:text-white text-lg font-semibold truncate group-hover:text-primary transition-colors"
-                    >
-                      Academic Writing
-                    </h4>
-                  </div>
-                </div>
-                <div
-                  class="shrink-0 flex items-center justify-center size-10 rounded-full bg-[#f6f8fa] dark:bg-[#253038] text-[#111811] dark:text-white group-hover:bg-primary group-hover:text-white transition-colors"
-                >
-                  <span class="material-symbols-outlined">arrow_forward</span>
-                </div>
-              </div>
-            </div>
-            <div
-              class="group bg-white dark:bg-[#1a232e] p-4 rounded-xl shadow-sm border border-transparent hover:border-primary/40 hover:shadow-md transition-all duration-200 cursor-pointer"
-            >
-              <div class="flex items-center justify-between gap-4">
-                <div class="flex items-center gap-5 overflow-hidden">
-                  <div
-                    class="shrink-0 size-14 rounded-xl bg-gradient-to-br from-[#f0f4f8] to-[#e8f1f5] dark:from-[#253038] dark:to-[#1f2633] flex items-center justify-center text-[#111811] dark:text-white group-hover:scale-105 transition-transform"
-                  >
-                    <span class="material-symbols-outlined text-3xl"
-                      >history_edu</span
-                    >
-                  </div>
-                  <div class="flex flex-col min-w-0">
-                    <div class="flex items-center gap-2 mb-0.5">
-                      <span
-                        class="font-mono text-xs font-bold text-[#637888] dark:text-[#a0b8cf] bg-[#f0f4f8] dark:bg-[#253038] px-1.5 py-0.5 rounded"
-                        >HIST300</span
-                      >
-                    </div>
-                    <h4
-                      class="text-[#111811] dark:text-white text-lg font-semibold truncate group-hover:text-primary transition-colors"
-                    >
-                      World History
-                    </h4>
-                  </div>
-                </div>
-                <div
-                  class="shrink-0 flex items-center justify-center size-10 rounded-full bg-[#f6f8fa] dark:bg-[#253038] text-[#111811] dark:text-white group-hover:bg-primary group-hover:text-white transition-colors"
-                >
-                  <span class="material-symbols-outlined">arrow_forward</span>
-                </div>
-              </div>
-            </div>
+              </li>
+            </ul>
+            <!-- end add courses -->
           </section>
         </div>
       </div>
@@ -302,7 +171,7 @@
 
 <script setup>
 name: "Dashboard";
-import { ref, onMounted, onBeforeUnmount } from "vue";
+import { ref, onMounted, onBeforeUnmount, computed } from "vue";
 import { useRouter } from "vue-router";
 
 const router = useRouter();
@@ -311,6 +180,11 @@ const isOpen = ref(false);
 
 const dropdownRef = ref(null);
 
+const userProfile = ref(null);
+const courses = ref([]);
+const searchTerm = ref("");
+
+const BASE_URL = "http://localhost:56733";
 const toggleDropdown = () => {
   isOpen.value = !isOpen.value;
 };
@@ -323,11 +197,49 @@ const handleClickOutside = (event) => {
 
 onMounted(() => {
   document.addEventListener("click", handleClickOutside);
+  fetchDashboard();
+  fetchUserProfile();
 });
 
 onBeforeUnmount(() => {
   document.removeEventListener("click", handleClickOutside);
 });
+//########################################################################### fetch #################################
+const fetchDashboard = async () => {
+  try {
+    const response = await fetch(`${BASE_URL}/student/dashboard_student`, {
+      credentials: "include",
+    });
+
+    if (!response.ok) {
+      router.push("/login");
+      return;
+    }
+
+    const data = await response.json();
+    courses.value = data.courses;
+  } catch (error) {
+    console.error("Fetch dashboard error:", error);
+  }
+};
+
+const fetchUserProfile = async () => {
+  try {
+    const response = await fetch(`${BASE_URL}/me`, {
+      credentials: "include",
+    });
+
+    if (!response.ok) {
+      router.push("/login");
+      return;
+    }
+
+    const data = await response.json();
+    userProfile.value = data;
+  } catch (error) {
+    console.error("Fetch profile error:", error);
+  }
+};
 
 const handleLogout = async () => {
   try {
@@ -343,6 +255,20 @@ const handleLogout = async () => {
   } catch (error) {
     console.error("Logout failed", error);
   }
+};
+// ################################################################# course ########################################
+const filteredCourses = computed(() => {
+  if (!searchTerm.value) return courses.value;
+
+  return courses.value.filter(
+    (c) =>
+      c.course_name.toLowerCase().includes(searchTerm.value.toLowerCase()) ||
+      String(c.course_id).includes(searchTerm.value),
+  );
+});
+
+const goToAssignment = (course_id) => {
+  router.push(`/student/assignments/${course_id}`);
 };
 </script>
 
