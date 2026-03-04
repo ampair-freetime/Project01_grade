@@ -12,3 +12,4 @@ class AuthUser(Base):
 
     student = relationship("Student", back_populates="auth_user", uselist=False)
     teacher = relationship("Teacher", back_populates="auth_user", uselist=False)
+    providers = relationship("AuthProvider", back_populates="auth_user")

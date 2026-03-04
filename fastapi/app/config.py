@@ -68,6 +68,7 @@ class Settings(BaseSettings):
     google_client_secret: Optional[str] = None
     google_discovery_url: Optional[str] = None
     frontend_login_success_uri: str = "http://localhost:8080/login-success"  # Default
+    frontend_login_failure_uri: str = "http://localhost:8080/login-failure"
 
     @validator("allowed_origins", pre=True, always=True)
     def assemble_allowed_origins(cls, v):

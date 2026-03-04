@@ -11,6 +11,7 @@ from app.schemas.auth import UserResponse, Message, UserLogin, UserSignin
 from pwdlib import PasswordHash
 
 from app.models.authuser import AuthUser
+from app.models.authprovider import AuthProvider
 from app.models.teacher import Teacher
 from app.models.student import Student
 from app.config import settings
@@ -147,25 +148,43 @@ async def google_auth(request: Request, db: Session = Depends(get_db)):
             user_info = user_info_response.json()
             logger.debug(f"Google profile: {user_info}")
 
-        user = db.query(AuthUser).filter(
-            AuthUser.email == user_info["email"]).first()
-        if not user:
-            logger.debug("User not found, creating one")
-            user = AuthUser(email=user_info["email"])
-            db.add(user)
-            db.commit()
-            db.refresh(user)
+        provider = db.query(AuthProvider).filter(
+            AuthProvider.provider == "google",
+            AuthProvider.provider_user_id == user_info["id"]
+        ).first()
+
+        if provider:
+            user = db.query(AuthUser).filter(
+                AuthUser.auth_user_id == provider.auth_user_id
+            ).first()
         else:
-            logger.debug("User found, updating details")
-            user.name = user_info["name"]
-            user.avatar_url = user_info.get("picture")
+            user = db.query(AuthUser).filter(
+                AuthUser.email == user_info["email"]
+            ).first()
+
+            if not user:
+                user = AuthUser(email=user_info["email"])
+                db.add(user)
+                db.commit()
+                db.refresh(user)
+
+            new_provider = AuthProvider(
+                auth_user_id=user.auth_user_id,
+                provider="google",
+                provider_user_id=user_info["id"]
+            )
+
+            db.add(new_provider)
             db.commit()
 
         jwt_token = create_access_token(
-            data={"sub": str(user.id), "name": user.name,
-                  "email": user.email, "avatar_url": user.avatar_url},
+            data={
+                "sub": str(user.auth_user_id),
+                "email": user.email
+            },
             expires_delta=timedelta(days=1)
         )
+
         frontend_url = settings.frontend_login_success_uri
         logger.info(f"Redirecting to frontend with token for {user.email}")
         return RedirectResponse(url=f"{frontend_url}?token={jwt_token}")
