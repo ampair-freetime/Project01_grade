@@ -41,7 +41,7 @@
                 <img
                   alt="User profile picture"
                   class="h-10 w-10 rounded-full object-cover border-2 border-primary"
-                  :src="userProfile?.avatar_url"
+                  :src="randomAvatar"
                 />
               </div>
             </button>
@@ -54,7 +54,7 @@
                 <div class="flex items-center space-x-3">
                   <img
                     class="h-12 w-12 rounded-full object-cover"
-                    :src="userProfile?.avatar_url"
+                    :src="randomAvatar"
                   />
                   <div>
                     <p
@@ -83,12 +83,17 @@
         </div>
       </div>
     </header>
-    <main class="flex-1 flex flex-col h-full overflow-hidden relative">
-      <div class="flex-1 overflow-y-auto p-8 lg:p-12">
-        <div class="max-w-5xl mx-auto flex flex-col gap-8">
-          <nav
-            aria-label="Breadcrumb"
-            class="mb-6 text-sm text-text-muted-light dark:text-text-muted-dark"
+    <main class="w-full">
+      <div class="max-w-7xl mx-auto px-6 py-8 space-y-8">
+        <nav
+          aria-label="Breadcrumb"
+          class="mb-6 text-sm text-text-muted-light dark:text-text-muted-dark"
+        >
+          <!-- Return -->
+          <button
+            class="group inline-flex items-center gap-3 font-bold text-[#111811] dark:text-white hover:text-primary transition-colors"
+            type="button"
+            @click="router.push(`/teacher/assignments/${assign_id}`)"
           >
             <!-- Return -->
             <a
@@ -102,73 +107,71 @@
                   arrow_back
                 </span>
               </div>
-              <span>Return</span>
+            </a>
+            <span>Return</span>
+          </button>
+
+          <!-- Path -->
+          <div class="flex flex-wrap items-center gap-2 mt-4">
+            <button
+              class="hover:text-primary font-medium"
+              @click="router.push(`/teacher/courses/`)"
+            >
+              Course Management
+            </button>
+
+            <span class="font-medium">/</span>
+
+            <a class="hover:text-primary font-medium" href="#">
+              CS101 - Intro to Algorithms
             </a>
 
-            <!-- Path -->
-            <div class="flex flex-wrap items-center gap-2 mt-4">
-              <a class="hover:text-primary font-medium" href="#">
-                Course Management
-              </a>
+            <span class="font-medium">/</span>
 
-              <span class="font-medium">/</span>
-
-              <a class="hover:text-primary font-medium" href="#">
-                CS101 - Intro to Algorithms
-              </a>
-
-              <span class="font-medium">/</span>
-
-              <span class="text-[#111811] dark:text-white font-medium">
-                Midterm Exam
-              </span>
-            </div>
-          </nav>
-          <div
-            class="flex flex-col lg:flex-row lg:items-end justify-between gap-4"
-          >
-            <div>
-              <div class="flex items-center gap-3 mb-1">
-                <h1 class="text-3xl font-bold text-gray-900 dark:text-white">
-                  Midterm Exam
-                </h1>
-                <span
-                  class="px-2.5 py-0.5 rounded-full bg-sky-50 dark:bg-sky-900/20 text-sky-700 dark:text-sky-300 text-xs font-semibold border border-sky-700 dark:border-sky-500"
-                  >Section A</span
-                >
-              </div>
-            </div>
-            <div class="flex flex-wrap items-center gap-3">
-              <label
-                class="inline-flex items-center px-4 py-2 bg-white dark:bg-slate-800 border border-gray-300 dark:border-slate-600 rounded-lg text-sm font-medium text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-slate-700 shadow-sm transition-colors"
-              >
-                <span class="material-symbols-outlined text-lg mr-2"
-                  >upload_file</span
-                >
-                Import CSV
-                <input
-                  type="file"
-                  accept=".csv"
-                  class="hidden"
-                  @change="handleFileUpload"
-                />
-              </label>
-              <button
-                class="inline-flex items-center px-4 py-2 bg-slate-900 dark:bg-slate-700 border border-transparent rounded-lg text-sm font-medium text-white hover:bg-slate-800 dark:hover:bg-slate-600 shadow-sm transition-colors"
-              >
-                <span class="material-symbols-outlined text-lg mr-2"
-                  >publish</span
-                >
-                Publish Scores
-              </button>
-              <button
-                class="inline-flex items-center px-4 py-2 bg-sky-500 dark:bg-sky-600 border border-transparent rounded-lg text-sm font-medium text-white hover:opacity-90 shadow-sm transition-colors"
-              >
-                <span class="material-symbols-outlined text-lg mr-2">save</span>
-                Save Changes
-              </button>
-            </div>
+            <span class="text-[#111811] dark:text-white font-medium">
+              {{ assignmentName || "Assignment" }}
+            </span>
           </div>
+        </nav>
+        <div>
+            <div class="flex items-center gap-3 mb-1">
+              <h1 class="text-3xl font-bold text-gray-900 dark:text-white">
+                {{ assignmentName || "Assignment" }}
+              </h1>
+            <span
+              class="px-2.5 py-0.5 rounded-full bg-sky-50 dark:bg-sky-900/20 text-sky-700 dark:text-sky-300 text-xs font-semibold border border-sky-700 dark:border-sky-500"
+              >Section A</span
+            >
+            <label
+              class="inline-flex items-center px-4 py-2 bg-white dark:bg-slate-800 border border-gray-300 dark:border-slate-600 rounded-lg text-sm font-medium text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-slate-700 shadow-sm transition-colors"
+            >
+              <span class="material-symbols-outlined text-lg mr-2"
+                >upload_file</span
+              >
+              Import CSV
+              <input
+                type="file"
+                accept=".csv"
+                class="hidden"
+                @change="handleFileUpload"
+              />
+            </label>
+            <button
+              class="inline-flex items-center px-4 py-2 bg-slate-900 dark:bg-slate-700 border border-transparent rounded-lg text-sm font-medium text-white hover:bg-slate-800 dark:hover:bg-slate-600 shadow-sm transition-colors"
+            >
+              <span class="material-symbols-outlined text-lg mr-2"
+                >publish</span
+              >
+              Publish Scores
+            </button>
+            <button
+              class="inline-flex items-center px-4 py-2 bg-sky-500 dark:bg-sky-600 border border-transparent rounded-lg text-sm font-medium text-white hover:opacity-90 shadow-sm transition-colors"
+            >
+              <span class="material-symbols-outlined text-lg mr-2">save</span>
+              Save Changes
+            </button>
+          </div>
+
           <div
             class="px-4 py-6 bg-surface-light dark:bg-surface-dark rounded-xl border border-border-light dark:border-border-dark p-2 flex flex-col md:flex-row items-center justify-between gap-4 shadow-sm"
           >
@@ -609,7 +612,14 @@ const students = ref([]);
 const sortKey = ref("");
 const sortOption = ref("id_lowhigh");
 const sortOpen = ref(false);
-const quizID = route.params.quiz_id;
+
+const quizID = computed(() => Number(route.params.quiz_id));
+
+const randomAvatar = ref("");
+const userProfile = ref(null);
+const assignmentName = ref("");
+
+const BASE_URL = "http://localhost:56733";
 
 const toggleDropdown = () => {
   isOpen.value = !isOpen.value;
@@ -623,18 +633,51 @@ const handleClickOutside = (event) => {
 
 const fetchStudentScore = async () => {
   try {
-    const token = localStorage.getItem("token");
-
-    const response = await fetch(`http://localhost:56733/stu_score/${quizID}`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
+    const response = await fetch(`${BASE_URL}/stu_score/${quizID}`, {
+      method: "GET",
+      credentials: "include",
     });
+    if (!response.ok) {
+      const text = await response.text().catch(() => "");
+      console.error("Fetch student score failed:", response.status, text);
+      throw new Error("Fetch failed");
+    }
+
     const data = await response.json();
+    assignmentName.value = data?.assignment?.assign_name || "Assignment";
+
+    const scoreList = Array.isArray(data?.score) ? data.score : [];
+
+    students.value = scoreList.map((s) => ({
+      student_id: s.stu_id,
+      student_name: [s.stu_fname, s.stu_mname, s.stu_lname]
+        .filter(Boolean)
+        .join(" "),
+      score: s.score,
+      section: s.section,
+      status: s.unread_flag ? "Unread" : "Read",
+    }));
 
     sortPeople();
   } catch (err) {
     console.error(err);
+  }
+};
+const fetchUserProfile = async () => {
+  try {
+    const response = await fetch(`${BASE_URL}/me`, {
+      credentials: "include",
+    });
+
+    if (!response.ok) {
+      router.push("/login");
+      return;
+    }
+
+    const data = await response.json();
+    userProfile.value = data;
+  } catch (error) {
+    console.error("Fetch profile error:", error);
   }
 };
 
@@ -668,7 +711,7 @@ const handleFileUpload = async (event) => {
 
 const handleLogout = async () => {
   try {
-    const response = await fetch("http://localhost:56733/logout", {
+    const response = await fetch(`${BASE_URL}/logout`, {
       method: "GET",
       credentials: "include",
     });
@@ -690,13 +733,13 @@ const sortPeople = () => {
   switch (sortOption.value) {
     case "id_lowhigh":
       students.value.sort(
-        (a, b) => Number(a.student_id) - Number(b.student_id),
+        (a, b) => Number(a.student_id) - Number(b.student_id)
       );
       break;
 
     case "name_atoz":
       students.value.sort((a, b) =>
-        a.student_name.localeCompare(b.student_name),
+        a.student_name.localeCompare(b.student_name)
       );
       break;
 
@@ -708,6 +751,9 @@ const sortPeople = () => {
 
 onMounted(() => {
   document.addEventListener("click", handleClickOutside);
+  const seed = Math.random().toString(36).substring(7);
+  randomAvatar.value = `https://robohash.org/${seed}.png`;
+  fetchUserProfile();
   fetchStudentScore();
 });
 

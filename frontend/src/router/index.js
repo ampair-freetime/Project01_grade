@@ -27,8 +27,8 @@ const routes = [
 
   // Teacher
   { path: '/teacher/courses', component: CourseManagement },
-  { path: '/teacher/assignments/:id', component: AssignmentManagement },
-  { path: '/teacher/grade', component: Grade },
+  { path: '/teacher/assignments/:course_id', component: AssignmentManagement },
+  { path: '/teacher/grade/:quiz_id', component: Grade },
 ]
 
 const router = createRouter({
