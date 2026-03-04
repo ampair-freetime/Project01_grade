@@ -527,7 +527,7 @@ const deleteCourse = async (id) => {
 };
 
 const goToAssignment = (course_id) => {
-  router.push(`/assignment/${course_id}`);
+  router.push(`/teacher/assignments/${course_id}`);
 };
 
 const archiveCourse = async (course_id) => {
