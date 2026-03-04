@@ -14,3 +14,5 @@ from .scores import Score
 from .uploads import Upload
 # quiz (ควิซ)
 from .quiz import Quiz
+# authprovider (จัดการการล็อกอิน)
+from .authprovider import AuthProvider
