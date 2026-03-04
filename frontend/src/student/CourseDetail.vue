@@ -32,7 +32,7 @@
               <div class="hidden md:flex flex-col items-end mr-1">
                 <span
                   class="text-sm font-semibold text-gray-900 dark:text-white"
-                  >Giselle</span
+                  >{{ userProfile?.first_name }}</span
                 >
               </div>
               <div class="relative">
@@ -51,19 +51,21 @@
                 <div class="flex items-center space-x-3">
                   <img
                     class="h-12 w-12 rounded-full object-cover"
-                    src="https://lh3.googleusercontent.com/aida-public/AB6AXuAfs56wd3ZKem_c5viO2sbQi6QqagsAHOE_1vjyHa7ZI8VHLknmGt20_hlaSVETqWYOsJL90qkBypXOjJp3RLSZRVCCQdcfaZh5kBgmGKpB2H1ljdV46tJTVLrSN0GurDyMvTs3Rbs4iUT-JQEizgeI8EIRbyNIvgzgmld5oKsHWGOuXctpZU9YajqdkAw1xoCp7REQvLbXOz8A9iuN2iz7maCHA50bOTOwjKS5ivvz9hojTaRSN6jd9o2cDN90A2qviBCKcL1ugg"
+                    :src="userProfile?.avatar_url"
                   />
                   <div>
                     <p
                       class="font-semibold text-gray-900 dark:text-white break-all"
                     >
-                      Uchinaga Aeri
+                      {{ userProfile?.first_name }}
+                      {{ userProfile?.middle_name }}
+                      {{ userProfile?.last_name }}
                     </p>
                     <p class="text-sm text-gray-500 break-all">
-                      Student ID: 65012345
+                      Student ID: {{ userProfile?.student_id }}
                     </p>
                     <p class="text-sm text-gray-500 break-all">
-                      Email: Gigi_selle@cmu.ac.th
+                      Email: {{ userProfile?.email }}
                     </p>
                   </div>
                 </div>
@@ -100,9 +102,9 @@
             <div class="flex flex-wrap gap-2 text-sm">
               <a class="hover:text-primary font-medium" href="#"> Courses </a>
               <span class="font-medium"> / </span>
-              <span class="text-[#111811] dark:text-white font-medium"
-                >{{ course?.course_name }}</span
-              >
+              <span class="text-[#111811] dark:text-white font-medium">{{
+                course?.course_name
+              }}</span>
             </div>
           </div>
           <section class="@container">
@@ -113,7 +115,7 @@
                 <h1
                   class="text-[#111811] dark:text-white text-3xl md:text-4xl font-black leading-tight tracking-[-0.033em]"
                 >
-                  CS101: Intro to Algorithms
+                  {{ course?.course_name }}
                 </h1>
                 <div
                   class="flex items-center gap-2 text-primary dark:text-primary mt-1"
@@ -140,9 +142,9 @@
               </div>
               <div class="text-sm dark:text-primary">
                 Weighted Average:
-                <span class="font-bold text-primary dark:text-primary"
-                  >92.00</span
-                >
+                <span class="font-bold text-primary dark:text-primary">
+                  {{ weightedAverage.toFixed(2) }}
+                </span>
               </div>
             </div>
             <div
@@ -170,64 +172,38 @@
                     class="divide-y divide-border-light dark:divide-border-dark text-sm"
                   >
                     <tr
-                      class="hover:bg-[#fcfdfc] dark:hover:bg-[#1f2832] transition-colors group"
+                      v-for="item in assessments"
+                      :key="item.quiz_id"
+                      class="hover:bg-[#fcfdfc] dark:hover:bg-[#1f2832] transition-colors group cursor-pointer"
+                      @click="router.push(`/student/score/${item.quiz_id}`)"
                     >
                       <td class="p-4">
                         <div class="font-bold text-[#111811] dark:text-white">
-                          Final Project
+                          {{ item.quiz_name }}
                         </div>
-                      </td>
-                      <td class="p-4 text-center font-medium">40%</td>
-                    </tr>
-                    <tr
-                      class="hover:bg-[#fcfdfc] dark:hover:bg-[#1f2832] transition-colors group"
-                    >
-                      <td class="p-4">
-                        <div class="font-bold text-[#111811] dark:text-white">
-                          Midterm Exam
+
+                        <!-- คะแนน -->
+                        <div
+                          v-if="item.my_score !== null"
+                          class="text-xs text-gray-500 mt-1"
+                        >
+                          Score: {{ item.my_score }} / {{ item.full_mark }} ({{
+                            item.percent
+                          }}%)
                         </div>
+
+                        <!-- แจ้งเตือน unread
+                        <div
+                          v-if="item.unread_flag"
+                          class="text-xs text-red-500 mt-1"
+                        >
+                          ● New score
+                        </div> -->
                       </td>
-                      <td class="p-4 text-center font-medium">30%</td>
-                    </tr>
-                    <tr
-                      class="hover:bg-[#fcfdfc] dark:hover:bg-[#1f2832] transition-colors group"
-                    >
-                      <td class="p-4">
-                        <div class="font-bold text-[#111811] dark:text-white">
-                          Assignment 1
-                        </div>
+
+                      <td class="p-4 text-center font-medium">
+                        {{ item.weight }}%
                       </td>
-                      <td class="p-4 text-center font-medium">10%</td>
-                    </tr>
-                    <tr
-                      class="hover:bg-[#fcfdfc] dark:hover:bg-[#1f2832] transition-colors group"
-                    >
-                      <td class="p-4">
-                        <div class="font-bold text-[#111811] dark:text-white">
-                          Assignment 2
-                        </div>
-                      </td>
-                      <td class="p-4 text-center font-medium">10%</td>
-                    </tr>
-                    <tr
-                      class="hover:bg-[#fcfdfc] dark:hover:bg-[#1f2832] transition-colors group"
-                    >
-                      <td class="p-4">
-                        <div class="font-bold text-[#111811] dark:text-white">
-                          Quiz: Week 5
-                        </div>
-                      </td>
-                      <td class="p-4 text-center font-medium">5%</td>
-                    </tr>
-                    <tr
-                      class="hover:bg-[#fcfdfc] dark:hover:bg-[#1f2832] transition-colors group"
-                    >
-                      <td class="p-4">
-                        <div class="font-bold text-[#111811] dark:text-white">
-                          Participation
-                        </div>
-                      </td>
-                      <td class="p-4 text-center font-medium">5%</td>
                     </tr>
                   </tbody>
                 </table>
@@ -247,7 +223,7 @@ import { useRouter, useRoute } from "vue-router";
 
 const router = useRouter();
 const route = useRoute();
-
+const userProfile = ref(null);
 const course = ref(null);
 const assessments = ref([]);
 const weightedAverage = ref(0);
@@ -258,19 +234,34 @@ const isOpen = ref(false);
 
 const dropdownRef = ref(null);
 
+const fetchUserProfile = async () => {
+  try {
+    const response = await fetch(`${BASE_URL}/me`, {
+      credentials: "include",
+    });
+
+    if (!response.ok) {
+      router.push("/login");
+      return;
+    }
+
+    const data = await response.json();
+    userProfile.value = data;
+  } catch (error) {
+    console.error("Fetch profile error:", error);
+  }
+};
+
 const toggleDropdown = () => {
   isOpen.value = !isOpen.value;
 };
 
 const fetchCourseDetail = async () => {
   try {
-    const response = await fetch(
-      `http://localhost:56733/course/${courseId}`,
-      {
-        method: "GET",
-        credentials: "include",
-      }
-    );
+    const response = await fetch(`http://localhost:56733/course/${courseId}`, {
+      method: "GET",
+      credentials: "include",
+    });
 
     if (!response.ok) {
       if (response.status === 403) {
@@ -307,13 +298,14 @@ onBeforeUnmount(() => {
 
 const handleLogout = async () => {
   try {
-    const response = await fetch(`${BASE_URL}/logout`, {
+    const response = await fetch("http://localhost:56733/logout", {
       method: "GET",
       credentials: "include",
     });
 
     if (response.ok) {
-      localStorage.clear();
+      localStorage.removeItem("csrf_token");
+      localStorage.removeItem("role");
       router.push("/login");
     }
   } catch (error) {
