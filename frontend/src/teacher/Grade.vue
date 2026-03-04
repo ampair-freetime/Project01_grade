@@ -90,10 +90,9 @@
           class="mb-6 text-sm text-text-muted-light dark:text-text-muted-dark"
         >
           <!-- Return -->
-          <button
+          <a
             class="group inline-flex items-center gap-3 font-bold text-[#111811] dark:text-white hover:text-primary transition-colors"
-            type="button"
-            @click="router.push(`/teacher/assignments/${assign_id}`)"
+            href="#"
           >
             <div
               class="flex size-9 items-center justify-center rounded-full bg-surface-light dark:bg-surface-dark border border-border-light dark:border-border-dark shadow-sm group-hover:border-primary group-hover:text-primary transition-colors"
@@ -103,472 +102,487 @@
               </span>
             </div>
             <span>Return</span>
-          </button>
+          </a>
 
-          <!-- Path -->
-          <div class="flex flex-wrap items-center gap-2 mt-4">
-            <a class="hover:text-primary font-medium" href="#">
-              Course Management
-            </a>
+            <!-- Path -->
+            <div class="flex flex-wrap items-center gap-2 mt-4">
+              <a class="hover:text-primary font-medium" href="#">
+                Course Management
+              </a>
 
-            <span class="font-medium">/</span>
+              <span class="font-medium">/</span>
 
-            <a class="hover:text-primary font-medium" href="#">
-              CS101 - Intro to Algorithms
-            </a>
+              <a class="hover:text-primary font-medium" href="#">
+                CS101 - Intro to Algorithms
+              </a>
 
-            <span class="font-medium">/</span>
+              <span class="font-medium">/</span>
 
-            <span class="text-[#111811] dark:text-white font-medium">
-              Midterm Exam
-            </span>
-          </div>
-        </nav>
-        <div
-          class="flex flex-col lg:flex-row lg:items-end justify-between gap-4"
-        >
-          <div>
-            <div class="flex items-center gap-3 mb-1">
-              <h1 class="text-3xl font-bold text-gray-900 dark:text-white">
+              <span class="text-[#111811] dark:text-white font-medium">
                 Midterm Exam
-              </h1>
-              <span
-                class="px-2.5 py-0.5 rounded-full bg-sky-50 dark:bg-sky-900/20 text-sky-700 dark:text-sky-300 text-xs font-semibold border border-sky-700 dark:border-sky-500"
-                >Section A</span
+              </span>
+            </div>
+          </nav>
+          <div
+            class="flex flex-col lg:flex-row lg:items-end justify-between gap-4"
+          >
+            <div>
+              <div class="flex items-center gap-3 mb-1">
+                <h1 class="text-3xl font-bold text-gray-900 dark:text-white">
+                  Midterm Exam
+                </h1>
+                <span
+                  class="px-2.5 py-0.5 rounded-full bg-sky-50 dark:bg-sky-900/20 text-sky-700 dark:text-sky-300 text-xs font-semibold border border-sky-700 dark:border-sky-500"
+                  >Section A</span
+                >
+              </div>
+            </div>
+            <div class="flex flex-wrap items-center gap-3">
+              <label
+                class="inline-flex items-center px-4 py-2 bg-white dark:bg-slate-800 border border-gray-300 dark:border-slate-600 rounded-lg text-sm font-medium text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-slate-700 shadow-sm transition-colors"
               >
+                <span class="material-symbols-outlined text-lg mr-2"
+                  >upload_file</span
+                >
+                Import CSV
+                <input
+                  type="file"
+                  accept=".csv"
+                  class="hidden"
+                  @change="handleFileUpload"
+                />
+              </label>
+              <button
+                class="inline-flex items-center px-4 py-2 bg-slate-900 dark:bg-slate-700 border border-transparent rounded-lg text-sm font-medium text-white hover:bg-slate-800 dark:hover:bg-slate-600 shadow-sm transition-colors"
+              >
+                <span class="material-symbols-outlined text-lg mr-2"
+                  >publish</span
+                >
+                Publish Scores
+              </button>
+              <button
+                class="inline-flex items-center px-4 py-2 bg-sky-500 dark:bg-sky-600 border border-transparent rounded-lg text-sm font-medium text-white hover:opacity-90 shadow-sm transition-colors"
+              >
+                <span class="material-symbols-outlined text-lg mr-2">save</span>
+                Save Changes
+              </button>
             </div>
           </div>
-          <div class="flex flex-wrap items-center gap-3">
-            <label
-              class="inline-flex items-center px-4 py-2 bg-white dark:bg-slate-800 border border-gray-300 dark:border-slate-600 rounded-lg text-sm font-medium text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-slate-700 shadow-sm transition-colors"
-            >
-              <span class="material-symbols-outlined text-lg mr-2"
-                >upload_file</span
+          <div
+            class="px-4 py-6 bg-surface-light dark:bg-surface-dark rounded-xl border border-border-light dark:border-border-dark p-2 flex flex-col md:flex-row items-center justify-between gap-4 shadow-sm"
+          >
+            <div class="relative w-full md:w-96">
+              <span
+                class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none"
               >
-              Import CSV
+                <span
+                  class="material-symbols-outlined text-gray-400 dark:text-gray-500"
+                  >search</span
+                >
+              </span>
               <input
-                type="file"
-                accept=".csv"
-                class="hidden"
-                @change="handleFileUpload"
+                class="pl-10 pr-4 py-2 w-full bg-gray-50 dark:bg-slate-800/50 border border-gray-200 dark:border-slate-700 rounded-lg text-sm focus:ring-2 focus:ring-sky-500 focus:border-transparent dark:text-white dark:placeholder-gray-500"
+                placeholder="Search by name or student ID..."
+                type="text"
               />
-            </label>
-            <button
-              class="inline-flex items-center px-4 py-2 bg-slate-900 dark:bg-slate-700 border border-transparent rounded-lg text-sm font-medium text-white hover:bg-slate-800 dark:hover:bg-slate-600 shadow-sm transition-colors"
-            >
-              <span class="material-symbols-outlined text-lg mr-2"
-                >publish</span
-              >
-              Publish Scores
-            </button>
-            <button
-              class="inline-flex items-center px-4 py-2 bg-sky-500 dark:bg-sky-600 border border-transparent rounded-lg text-sm font-medium text-white hover:opacity-90 shadow-sm transition-colors"
-            >
-              <span class="material-symbols-outlined text-lg mr-2">save</span>
-              Save Changes
-            </button>
-          </div>
-        </div>
-        <div
-          class="px-4 py-6 bg-surface-light dark:bg-surface-dark rounded-xl border border-border-light dark:border-border-dark p-2 flex flex-col md:flex-row items-center justify-between gap-4 shadow-sm"
-        >
-          <div class="relative w-full md:w-96">
-            <span
-              class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none"
-            >
-              <span
-                class="material-symbols-outlined text-gray-400 dark:text-gray-500"
-                >search</span
-              >
-            </span>
-            <input
-              class="pl-10 pr-4 py-2 w-full bg-gray-50 dark:bg-slate-800/50 border border-gray-200 dark:border-slate-700 rounded-lg text-sm focus:ring-2 focus:ring-sky-500 focus:border-transparent dark:text-white dark:placeholder-gray-500"
-              placeholder="Search by name or student ID..."
-              type="text"
-            />
-          </div>
-          <div
-            class="flex items-center gap-4 w-full md:w-auto justify-between md:justify-end overflow-x-auto pb-2 md:pb-0"
-          >
-            <div class="flex flex-wrap items-center gap-2 text-sm">
-              <span
-                class="uppercase text-xs font-bold tracking-wider mr-1 text-gray-500 dark:text-gray-300"
-                >Status :</span
-              >
-              <button
-                class="px-3 py-1.5 bg-surface-dark dark:bg-surface-light text-white dark:text-slate-900 rounded-md font-medium text-xs"
-              >
-                All Students
-              </button>
-              <button
-                class="px-3 py-1.5 text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-slate-700 rounded-md font-medium text-xs flex items-center gap-1 transition-colors"
-              >
-                Read Announcement
-                <span
-                  class="bg-sky-100 dark:bg-sky-800 text-sky-700 dark:text-sky-100 px-1.5 py-0.5 rounded-full text-[10px]"
-                  >12</span
-                >
-              </button>
-              <button
-                class="px-3 py-1.5 text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-slate-700 rounded-md font-medium text-xs flex items-center gap-1 transition-colors"
-              >
-                Unread
-                <span
-                  class="bg-amber-200 dark:bg-yellow-600 text-amber-900 dark:text-yellow-50 px-1.5 py-0.5 rounded-full text-[10px]"
-                  >4</span
-                >
-              </button>
             </div>
             <div
-              class="w-px h-6 bg-gray-200 dark:bg-gray-700 hidden md:block"
-            ></div>
-            <div class="flex items-center gap-2 text-sm whitespace-nowrap">
-              <span
-                class="uppercase text-xs font-bold tracking-wider text-gray-400 dark:text-gray-300"
-                >Sort By:</span
-              >
-              <select
-                v-model="sortOption"
-                @change="sortPeople"
-                class="border border-gray-300 rounded-md pl-3 pr-8 py-1 text-sm dark:bg-gray-700 dark:border-gray-600"
-              >
-                <option value="id_lowhigh">ID</option>
+              class="flex items-center gap-4 w-full md:w-auto justify-between md:justify-end overflow-x-auto pb-2 md:pb-0"
+            >
+              <div class="flex flex-wrap items-center gap-2 text-sm">
+                <span
+                  class="uppercase text-xs font-bold tracking-wider mr-1 text-gray-500 dark:text-gray-300"
+                  >Status :</span
+                >
+                <button
+                  class="px-3 py-1.5 bg-surface-dark dark:bg-surface-light text-white dark:text-slate-900 rounded-md font-medium text-xs"
+                >
+                  All Students
+                </button>
+                <button
+                  class="px-3 py-1.5 text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-slate-700 rounded-md font-medium text-xs flex items-center gap-1 transition-colors"
+                >
+                  Read
+                  <span
+                    class="bg-sky-100 dark:bg-sky-800 text-sky-700 dark:text-sky-100 px-1.5 py-0.5 rounded-full text-[10px]"
+                    >12</span
+                  >
+                </button>
+                <button
+                  class="px-3 py-1.5 text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-slate-700 rounded-md font-medium text-xs flex items-center gap-1 transition-colors"
+                >
+                  Unread
+                  <span
+                    class="bg-amber-200 dark:bg-yellow-600 text-amber-900 dark:text-yellow-50 px-1.5 py-0.5 rounded-full text-[10px]"
+                    >4</span
+                  >
+                </button>
+              </div>
+              <div
+                class="w-px h-6 bg-gray-200 dark:bg-gray-700 hidden md:block"
+              ></div>
+              <div class="flex items-center gap-2 text-sm whitespace-nowrap">
+                <span
+                  class="uppercase text-xs font-bold tracking-wider text-gray-400 dark:text-gray-300"
+                  >Sort By:</span
+                >
+                <select
+                  v-model="sortOption"
+                  @change="sortPeople"
+                  class="border border-gray-300 rounded-md pl-3 pr-8 py-1 text-sm dark:bg-gray-700 dark:border-gray-600"
+                >
+                  <option value="id_lowhigh">ID</option>
 
-                <option value="name_atoz">Name</option>
+                  <option value="name_atoz">Name</option>
 
-                <option value="section_lowhigh">section</option>
-              </select>
+                  <option value="section_lowhigh">section</option>
+                </select>
+              </div>
             </div>
           </div>
-        </div>
-        <div
-          class="bg-surface-light dark:bg-surface-dark rounded-xl border border-border-light dark:border-border-dark shadow-sm overflow-hidden"
-        >
-          <div class="overflow-x-auto">
-            <table class="w-full table-fixed text-left">
-              <thead>
-                <tr
-                  class="border-b border-border-light dark:border-border-dark bg-gray-50/50 dark:bg-slate-800/50"
-                >
-                  <th class="min-w-[120px] p-4 text-xs font-bold text-gray-500 text-center">
-                    Student Info
-                  </th>
+          <div
+            class="bg-surface-light dark:bg-surface-dark rounded-xl border border-border-light dark:border-border-dark shadow-sm overflow-hidden"
+          >
+            <div class="overflow-x-auto">
+              <table class="w-full table-fixed text-left">
+                <thead>
+                  <tr
+                    class="border-b border-border-light dark:border-border-dark bg-gray-50/50 dark:bg-slate-800/50"
+                  >
+                    <th
+                      class="min-w-[120px] p-4 text-xs font-bold text-gray-500 text-center"
+                    >
+                      Student Info
+                    </th>
 
-                  <th class="min-w-[120px] p-4 text-xs font-bold text-gray-500 text-center">
-                    Score
-                  </th>
+                    <th
+                      class="min-w-[120px] p-4 text-xs font-bold text-gray-500 text-center"
+                    >
+                      Score
+                    </th>
 
-                  <th class="min-w-[120px] p-4 text-xs font-bold text-gray-500 text-center">
-                    Status
-                  </th>
+                    <th
+                      class="min-w-[120px] p-4 text-xs font-bold text-gray-500 text-center"
+                    >
+                      Status
+                    </th>
 
-                  <th class="min-w-[120px] p-4 text-xs font-bold text-gray-500 text-center">
-                    Actions
-                  </th>
-                </tr>
-              </thead>
-              <tbody
-                class="divide-y divide-border-light dark:divide-border-dark"
-              >
-                <tr
-                  v-for="student in students"
-                  :key="student.student_id"
-                  class="group hover:bg-gray-50 dark:hover:bg-slate-800/50 transition-colors"
+                    <th
+                      class="min-w-[120px] p-4 text-xs font-bold text-gray-500 text-center"
+                    >
+                      Actions
+                    </th>
+                  </tr>
+                </thead>
+                <tbody
+                  class="divide-y divide-border-light dark:divide-border-dark"
                 >
-                  <td class="p-4 pl-6">
-                    <div class="flex items-center gap-3">
-                      <div
-                        class="w-10 h-10 rounded-full overflow-hidden flex-shrink-0"
-                      >
-                        <img
-                          alt="Alice Johnson"
-                          class="w-full h-full object-cover"
-                          src="https://lh3.googleusercontent.com/aida-public/AB6AXuBkSaqLRo55aSxruOMViPHwv4KXrCEh-Jt4rRHt0pzsYYkq6PChv3pfMUyxSiCkxd2z0z0KRTtThtJX_QiepD7rSfF-oqCMtqoraUVKfMl_Q2qr8ooHr1DTbhKfoD5zSIQjukFXEShxlvU6EHk3FUhKhMxXdVgoOq8RHG3MHaxcdHo98M6JRhOfbVQzjy0oGXGOx3h6FRjg4ASkFah3R-BqKPGHv_My_GLm8rsCnirFjXf6kvCJ-pUG5JzfUo4gpgfVm87sVrEbOw"
-                        />
-                      </div>
-                      <div>
+                  <tr
+                    v-for="student in students"
+                    :key="student.student_id"
+                    class="group hover:bg-gray-50 dark:hover:bg-slate-800/50 transition-colors"
+                  >
+                    <td class="p-4 pl-6">
+                      <div class="flex items-center gap-3">
                         <div
-                          class="font-semibold text-gray-900 dark:text-white"
+                          class="w-10 h-10 rounded-full overflow-hidden flex-shrink-0"
                         >
-                          {{ student.student_name }}
+                          <img
+                            alt="Alice Johnson"
+                            class="w-full h-full object-cover"
+                            src="https://lh3.googleusercontent.com/aida-public/AB6AXuBkSaqLRo55aSxruOMViPHwv4KXrCEh-Jt4rRHt0pzsYYkq6PChv3pfMUyxSiCkxd2z0z0KRTtThtJX_QiepD7rSfF-oqCMtqoraUVKfMl_Q2qr8ooHr1DTbhKfoD5zSIQjukFXEShxlvU6EHk3FUhKhMxXdVgoOq8RHG3MHaxcdHo98M6JRhOfbVQzjy0oGXGOx3h6FRjg4ASkFah3R-BqKPGHv_My_GLm8rsCnirFjXf6kvCJ-pUG5JzfUo4gpgfVm87sVrEbOw"
+                          />
                         </div>
-                        <div
-                          class="text-xs text-text-muted-light dark:text-text-muted-dark"
-                        >
-                          ID: {{ student.student_id }}
-                        </div>
-                      </div>
-                    </div>
-                  </td>
-                  <td class="p-4 text-center">
-                    <div
-                      class="w-16 h-10 mx-auto border border-gray-200 dark:border-slate-600 rounded-lg flex items-center justify-center font-semibold text-gray-900 dark:text-white bg-white dark:bg-slate-900"
-                    >
-                      {{ student.score }}
-                    </div>
-                  </td>
-                  <td class="p-4 text-center">
-                    <span
-                      class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-sky-100 dark:bg-sky-700/40 text-sky-700 dark:text-sky-200"
-                    >
-                      <span class="w-1.5 h-1.5 rounded-full bg-sky-500"></span>
-                      {{ student.status }}
-                    </span>
-                  </td>
-                  <td class="p-4 text-center">
-                    <button
-                      class="p-2 rounded-full hover:bg-red-50 text-gray-400 hover:text-red-500 dark:hover:bg-red-900/20 dark:hover:text-red-400 transition-colors"
-                      title="Delete record"
-                    >
-                      <span class="material-symbols-outlined text-[20px]"
-                        >delete</span
-                      >
-                    </button>
-                  </td>
-                </tr>
-                <tr
-                  class="group hover:bg-gray-50 dark:hover:bg-slate-800/50 transition-colors"
-                >
-                  <td class="p-4 pl-6">
-                    <div class="flex items-center gap-3">
-                      <div
-                        class="w-10 h-10 rounded-full bg-blue-100 dark:bg-blue-900 text-blue-600 dark:text-blue-300 flex items-center justify-center font-bold text-sm flex-shrink-0"
-                      >
-                        BS
-                      </div>
-                      <div>
-                        <div
-                          class="font-semibold text-gray-900 dark:text-white"
-                        >
-                          Bob Smith
-                        </div>
-                        <div
-                          class="text-xs text-text-muted-light dark:text-text-muted-dark"
-                        >
-                          ID: 2023002
+                        <div>
+                          <div
+                            class="font-semibold text-gray-900 dark:text-white"
+                          >
+                            {{ student.student_name }}
+                          </div>
+                          <div
+                            class="text-xs text-text-muted-light dark:text-text-muted-dark"
+                          >
+                            ID: {{ student.student_id }}
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  </td>
-                  <td class="p-4 text-center">
-                    <div
-                      class="w-16 h-10 mx-auto border border-gray-200 dark:border-slate-600 rounded-lg flex items-center justify-center font-semibold text-gray-900 dark:text-white bg-white dark:bg-slate-900"
-                    >
-                      85
-                    </div>
-                  </td>
-                  <td class="p-4 text-center">
-                    <span
-                      class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-amber-100 dark:bg-yellow-900/50 text-amber-700 dark:text-yellow-300"
-                    >
-                      <span
-                        class="w-1.5 h-1.5 rounded-full bg-amber-500 dark:bg-yellow-400"
-                      ></span>
-                      Unread
-                    </span>
-                  </td>
-                  <td class="p-4 text-center">
-                    <button
-                      class="p-2 rounded-full hover:bg-red-50 text-gray-400 hover:text-red-500 dark:hover:bg-red-900/20 dark:hover:text-red-400 transition-colors"
-                      title="Delete record"
-                    >
-                      <span class="material-symbols-outlined text-[20px]"
-                        >delete</span
-                      >
-                    </button>
-                  </td>
-                </tr>
-                <tr
-                  class="bg-sky-50/50 dark:bg-sky-900/10 border-l-4 border-l-sky-500"
-                >
-                  <td class="p-4 pl-6">
-                    <div class="flex items-center gap-3">
-                      <div
-                        class="w-10 h-10 rounded-full overflow-hidden flex-shrink-0 border-2 border-sky-100 dark:border-sky-800"
-                      >
-                        <img
-                          alt="Charlie Brown"
-                          class="w-full h-full object-contain bg-amber-50"
-                          src="https://lh3.googleusercontent.com/aida-public/AB6AXuBN0g-WHePpThTNMUhPAiYyolESpOvQwcvWsK86MgulRv8D3VHb3aOZJJV34TDq1T4OcXDsgb6hyBSaJgeedYQwQwGhlcX-dZLSF70FjunbM15RLBTgJk3IrodQswRdAM_26LPuhmB4M-ws_MQE4UJs0SAB2qtD755nqywNpp8Si9MBghBdT_dCxzvYrd4sml8IgvIY2OL0tul0_FlLUpiL_6M6-mrIyurLIqDHaFVTN6X8edP6SRuHWUQx5YPNnZJDocL6xbwJwA"
-                        />
-                      </div>
-                      <div>
-                        <div
-                          class="font-semibold text-gray-900 dark:text-white"
-                        >
-                          Charlie Brown
-                        </div>
-                        <div
-                          class="text-xs text-text-muted-light dark:text-text-muted-dark"
-                        >
-                          ID: 2023003
-                        </div>
-                      </div>
-                    </div>
-                  </td>
-                  <td class="p-4 text-center">
-                    <div class="relative w-20 mx-auto">
+                    </td>
+                    <td class="p-4 text-center">
                       <div
                         class="w-16 h-10 mx-auto border border-gray-200 dark:border-slate-600 rounded-lg flex items-center justify-center font-semibold text-gray-900 dark:text-white bg-white dark:bg-slate-900"
                       >
-                        75
+                        {{ student.score }}
                       </div>
-                    </div>
-                  </td>
-                  <td class="p-4 text-center">
-                    <span
-                      class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-sky-100 dark:bg-sky-700/40 text-sky-700 dark:text-sky-200"
-                    >
-                      <span class="w-1.5 h-1.5 rounded-full bg-sky-500"></span>
-                      Read
-                    </span>
-                  </td>
-                  <td class="p-4 text-center">
-                    <button
-                      class="p-2 rounded-full hover:bg-red-50 text-gray-400 hover:text-red-500 dark:hover:bg-red-900/20 dark:hover:text-red-400 transition-colors"
-                      title="Delete record"
-                    >
-                      <span class="material-symbols-outlined text-[20px]"
-                        >delete</span
+                    </td>
+                    <td class="p-4 text-center">
+                      <span
+                        class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-sky-100 dark:bg-sky-700/40 text-sky-700 dark:text-sky-200"
                       >
-                    </button>
-                  </td>
-                </tr>
-                <tr
-                  class="group hover:bg-gray-50 dark:hover:bg-slate-800/50 transition-colors"
-                >
-                  <td class="p-4 pl-6">
-                    <div class="flex items-center gap-3">
-                      <div
-                        class="w-10 h-10 rounded-full bg-pink-100 dark:bg-pink-900 text-pink-600 dark:text-pink-300 flex items-center justify-center font-bold text-sm flex-shrink-0"
+                        <span
+                          class="w-1.5 h-1.5 rounded-full bg-sky-500"
+                        ></span>
+                        {{ student.status }}
+                      </span>
+                    </td>
+                    <td class="p-4 text-center">
+                      <button
+                        class="p-2 rounded-full hover:bg-red-50 text-gray-400 hover:text-red-500 dark:hover:bg-red-900/20 dark:hover:text-red-400 transition-colors"
+                        title="Delete record"
                       >
-                        DW
-                      </div>
-                      <div>
-                        <div
-                          class="font-semibold text-gray-900 dark:text-white"
+                        <span class="material-symbols-outlined text-[20px]"
+                          >delete</span
                         >
-                          Daisy Wong
+                      </button>
+                    </td>
+                  </tr>
+                  <tr
+                    class="group hover:bg-gray-50 dark:hover:bg-slate-800/50 transition-colors"
+                  >
+                    <td class="p-4 pl-6">
+                      <div class="flex items-center gap-3">
+                        <div
+                          class="w-10 h-10 rounded-full bg-blue-100 dark:bg-blue-900 text-blue-600 dark:text-blue-300 flex items-center justify-center font-bold text-sm flex-shrink-0"
+                        >
+                          BS
                         </div>
-                        <div
-                          class="text-xs text-text-muted-light dark:text-text-muted-dark"
-                        >
-                          ID: 2023004
-                        </div>
-                      </div>
-                    </div>
-                  </td>
-                  <td class="p-4 text-center">
-                    <div
-                      class="w-16 h-10 mx-auto border border-gray-200 dark:border-slate-600 rounded-lg flex items-center justify-center font-semibold text-gray-900 dark:text-white bg-white dark:bg-slate-900"
-                    >
-                      78
-                    </div>
-                  </td>
-                  <td class="p-4 text-center">
-                    <span
-                      class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-sky-100 dark:bg-sky-700/40 text-sky-700 dark:text-sky-200"
-                    >
-                      <span class="w-1.5 h-1.5 rounded-full bg-sky-500"></span>
-                      Read
-                    </span>
-                  </td>
-                  <td class="p-4 text-center">
-                    <button
-                      class="p-2 rounded-full hover:bg-red-50 text-gray-400 hover:text-red-500 dark:hover:bg-red-900/20 dark:hover:text-red-400 transition-colors"
-                      title="Delete record"
-                    >
-                      <span class="material-symbols-outlined text-[20px]"
-                        >delete</span
-                      >
-                    </button>
-                  </td>
-                </tr>
-                <tr
-                  class="group hover:bg-gray-50 dark:hover:bg-slate-800/50 transition-colors"
-                >
-                  <td class="p-4 pl-6">
-                    <div class="flex items-center gap-3">
-                      <div
-                        class="w-10 h-10 rounded-full overflow-hidden flex-shrink-0"
-                      >
-                        <img
-                          alt="Evan Lee"
-                          class="w-full h-full object-cover"
-                          src="https://lh3.googleusercontent.com/aida-public/AB6AXuAOq5HIJrHhf31413-hbBg16dhLQOUngJZZhzPEXKub1u8NDLyzOpPeGQMUmYSlXk-4lPjAgrF1HhfEkYSXW8VvyL1ZjQJdBJmuSTAP27pFTTwzSD2a1M0CDqZUC54Mu8M9Y4OqxWhphFcgjoWwhUyBlnXYhEBnL0P4oNp84OIEzpB4e9sEDWos5bPJSrzNrpw__Jb3KaGwHYT1AQau6R2sbUKS0RxojV6vxXSOt-IA_xIOf9iLdzWyxWxcQMGNCE2_QIEavwcWRA"
-                        />
-                      </div>
-                      <div>
-                        <div
-                          class="font-semibold text-gray-900 dark:text-white"
-                        >
-                          Evan Lee
-                        </div>
-                        <div
-                          class="text-xs text-text-muted-light dark:text-text-muted-dark"
-                        >
-                          ID: 2023005
+                        <div>
+                          <div
+                            class="font-semibold text-gray-900 dark:text-white"
+                          >
+                            Bob Smith
+                          </div>
+                          <div
+                            class="text-xs text-text-muted-light dark:text-text-muted-dark"
+                          >
+                            ID: 2023002
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  </td>
-                  <td class="p-4 text-center">
-                    <div class="relative w-20 mx-auto">
+                    </td>
+                    <td class="p-4 text-center">
                       <div
                         class="w-16 h-10 mx-auto border border-gray-200 dark:border-slate-600 rounded-lg flex items-center justify-center font-semibold text-gray-900 dark:text-white bg-white dark:bg-slate-900"
                       >
-                        74
+                        85
                       </div>
-                    </div>
-                  </td>
-                  <td class="p-4 text-center">
-                    <span
-                      class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-amber-100 dark:bg-yellow-900/50 text-amber-700 dark:text-yellow-300"
-                    >
+                    </td>
+                    <td class="p-4 text-center">
                       <span
-                        class="w-1.5 h-1.5 rounded-full bg-amber-500"
-                      ></span>
-                      Unread
-                    </span>
-                  </td>
-                  <td class="p-4 text-center">
-                    <button
-                      class="p-2 rounded-full hover:bg-red-50 text-gray-400 hover:text-red-500 dark:hover:bg-red-900/20 dark:hover:text-red-400 transition-colors"
-                      title="Delete record"
-                    >
-                      <span class="material-symbols-outlined text-[20px]"
-                        >delete</span
+                        class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-amber-100 dark:bg-yellow-900/50 text-amber-700 dark:text-yellow-300"
                       >
-                    </button>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-          <div
-            class="px-6 py-4 border-t border-border-light dark:border-border-dark flex items-center justify-between"
-          >
-            <div
-              class="text-sm text-text-muted-light dark:text-text-muted-dark"
-            >
-              <span class="font-bold text-gray-900 dark:text-white"></span>
-              <span class="font-bold text-gray-900 dark:text-white"></span>
+                        <span
+                          class="w-1.5 h-1.5 rounded-full bg-amber-500 dark:bg-yellow-400"
+                        ></span>
+                        Unread
+                      </span>
+                    </td>
+                    <td class="p-4 text-center">
+                      <button
+                        class="p-2 rounded-full hover:bg-red-50 text-gray-400 hover:text-red-500 dark:hover:bg-red-900/20 dark:hover:text-red-400 transition-colors"
+                        title="Delete record"
+                      >
+                        <span class="material-symbols-outlined text-[20px]"
+                          >delete</span
+                        >
+                      </button>
+                    </td>
+                  </tr>
+                  <tr
+                    class="bg-sky-50/50 dark:bg-sky-900/10 border-l-4 border-l-sky-500"
+                  >
+                    <td class="p-4 pl-6">
+                      <div class="flex items-center gap-3">
+                        <div
+                          class="w-10 h-10 rounded-full overflow-hidden flex-shrink-0 border-2 border-sky-100 dark:border-sky-800"
+                        >
+                          <img
+                            alt="Charlie Brown"
+                            class="w-full h-full object-contain bg-amber-50"
+                            src="https://lh3.googleusercontent.com/aida-public/AB6AXuBN0g-WHePpThTNMUhPAiYyolESpOvQwcvWsK86MgulRv8D3VHb3aOZJJV34TDq1T4OcXDsgb6hyBSaJgeedYQwQwGhlcX-dZLSF70FjunbM15RLBTgJk3IrodQswRdAM_26LPuhmB4M-ws_MQE4UJs0SAB2qtD755nqywNpp8Si9MBghBdT_dCxzvYrd4sml8IgvIY2OL0tul0_FlLUpiL_6M6-mrIyurLIqDHaFVTN6X8edP6SRuHWUQx5YPNnZJDocL6xbwJwA"
+                          />
+                        </div>
+                        <div>
+                          <div
+                            class="font-semibold text-gray-900 dark:text-white"
+                          >
+                            Charlie Brown
+                          </div>
+                          <div
+                            class="text-xs text-text-muted-light dark:text-text-muted-dark"
+                          >
+                            ID: 2023003
+                          </div>
+                        </div>
+                      </div>
+                    </td>
+                    <td class="p-4 text-center">
+                      <div class="relative w-20 mx-auto">
+                        <div
+                          class="w-16 h-10 mx-auto border border-gray-200 dark:border-slate-600 rounded-lg flex items-center justify-center font-semibold text-gray-900 dark:text-white bg-white dark:bg-slate-900"
+                        >
+                          75
+                        </div>
+                      </div>
+                    </td>
+                    <td class="p-4 text-center">
+                      <span
+                        class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-sky-100 dark:bg-sky-700/40 text-sky-700 dark:text-sky-200"
+                      >
+                        <span
+                          class="w-1.5 h-1.5 rounded-full bg-sky-500"
+                        ></span>
+                        Read
+                      </span>
+                    </td>
+                    <td class="p-4 text-center">
+                      <button
+                        class="p-2 rounded-full hover:bg-red-50 text-gray-400 hover:text-red-500 dark:hover:bg-red-900/20 dark:hover:text-red-400 transition-colors"
+                        title="Delete record"
+                      >
+                        <span class="material-symbols-outlined text-[20px]"
+                          >delete</span
+                        >
+                      </button>
+                    </td>
+                  </tr>
+                  <tr
+                    class="group hover:bg-gray-50 dark:hover:bg-slate-800/50 transition-colors"
+                  >
+                    <td class="p-4 pl-6">
+                      <div class="flex items-center gap-3">
+                        <div
+                          class="w-10 h-10 rounded-full bg-pink-100 dark:bg-pink-900 text-pink-600 dark:text-pink-300 flex items-center justify-center font-bold text-sm flex-shrink-0"
+                        >
+                          DW
+                        </div>
+                        <div>
+                          <div
+                            class="font-semibold text-gray-900 dark:text-white"
+                          >
+                            Daisy Wong
+                          </div>
+                          <div
+                            class="text-xs text-text-muted-light dark:text-text-muted-dark"
+                          >
+                            ID: 2023004
+                          </div>
+                        </div>
+                      </div>
+                    </td>
+                    <td class="p-4 text-center">
+                      <div
+                        class="w-16 h-10 mx-auto border border-gray-200 dark:border-slate-600 rounded-lg flex items-center justify-center font-semibold text-gray-900 dark:text-white bg-white dark:bg-slate-900"
+                      >
+                        78
+                      </div>
+                    </td>
+                    <td class="p-4 text-center">
+                      <span
+                        class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-sky-100 dark:bg-sky-700/40 text-sky-700 dark:text-sky-200"
+                      >
+                        <span
+                          class="w-1.5 h-1.5 rounded-full bg-sky-500"
+                        ></span>
+                        Read
+                      </span>
+                    </td>
+                    <td class="p-4 text-center">
+                      <button
+                        class="p-2 rounded-full hover:bg-red-50 text-gray-400 hover:text-red-500 dark:hover:bg-red-900/20 dark:hover:text-red-400 transition-colors"
+                        title="Delete record"
+                      >
+                        <span class="material-symbols-outlined text-[20px]"
+                          >delete</span
+                        >
+                      </button>
+                    </td>
+                  </tr>
+                  <tr
+                    class="group hover:bg-gray-50 dark:hover:bg-slate-800/50 transition-colors"
+                  >
+                    <td class="p-4 pl-6">
+                      <div class="flex items-center gap-3">
+                        <div
+                          class="w-10 h-10 rounded-full overflow-hidden flex-shrink-0"
+                        >
+                          <img
+                            alt="Evan Lee"
+                            class="w-full h-full object-cover"
+                            src="https://lh3.googleusercontent.com/aida-public/AB6AXuAOq5HIJrHhf31413-hbBg16dhLQOUngJZZhzPEXKub1u8NDLyzOpPeGQMUmYSlXk-4lPjAgrF1HhfEkYSXW8VvyL1ZjQJdBJmuSTAP27pFTTwzSD2a1M0CDqZUC54Mu8M9Y4OqxWhphFcgjoWwhUyBlnXYhEBnL0P4oNp84OIEzpB4e9sEDWos5bPJSrzNrpw__Jb3KaGwHYT1AQau6R2sbUKS0RxojV6vxXSOt-IA_xIOf9iLdzWyxWxcQMGNCE2_QIEavwcWRA"
+                          />
+                        </div>
+                        <div>
+                          <div
+                            class="font-semibold text-gray-900 dark:text-white"
+                          >
+                            Evan Lee
+                          </div>
+                          <div
+                            class="text-xs text-text-muted-light dark:text-text-muted-dark"
+                          >
+                            ID: 2023005
+                          </div>
+                        </div>
+                      </div>
+                    </td>
+                    <td class="p-4 text-center">
+                      <div class="relative w-20 mx-auto">
+                        <div
+                          class="w-16 h-10 mx-auto border border-gray-200 dark:border-slate-600 rounded-lg flex items-center justify-center font-semibold text-gray-900 dark:text-white bg-white dark:bg-slate-900"
+                        >
+                          74
+                        </div>
+                      </div>
+                    </td>
+                    <td class="p-4 text-center">
+                      <span
+                        class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-amber-100 dark:bg-yellow-900/50 text-amber-700 dark:text-yellow-300"
+                      >
+                        <span
+                          class="w-1.5 h-1.5 rounded-full bg-amber-500"
+                        ></span>
+                        Unread
+                      </span>
+                    </td>
+                    <td class="p-4 text-center">
+                      <button
+                        class="p-2 rounded-full hover:bg-red-50 text-gray-400 hover:text-red-500 dark:hover:bg-red-900/20 dark:hover:text-red-400 transition-colors"
+                        title="Delete record"
+                      >
+                        <span class="material-symbols-outlined text-[20px]"
+                          >delete</span
+                        >
+                      </button>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
             </div>
-            <div class="flex space-x-2">
-              <button
-                class="p-2 border border-border-light dark:border-border-dark rounded-md text-gray-400 hover:text-gray-500 dark:hover:text-gray-300 bg-white dark:bg-surface-dark hover:bg-gray-50 dark:hover:bg-gray-700"
+            <div
+              class="px-6 py-4 border-t border-border-light dark:border-border-dark flex items-center justify-between"
+            >
+              <div
+                class="text-sm text-text-muted-light dark:text-text-muted-dark"
               >
-                <span class="material-symbols-outlined text-sm"
-                  >chevron_left</span
+                <span class="font-bold text-gray-900 dark:text-white"></span>
+                <span class="font-bold text-gray-900 dark:text-white"></span>
+              </div>
+              <div class="flex space-x-2">
+                <button
+                  class="p-2 border border-border-light dark:border-border-dark rounded-md text-gray-400 hover:text-gray-500 dark:hover:text-gray-300 bg-white dark:bg-surface-dark hover:bg-gray-50 dark:hover:bg-gray-700"
                 >
-              </button>
-              <button
-                class="p-2 border border-border-light dark:border-border-dark rounded-md text-gray-400 hover:text-gray-500 dark:hover:text-gray-300 bg-white dark:bg-surface-dark hover:bg-gray-50 dark:hover:bg-gray-700"
-              >
-                <span class="material-symbols-outlined text-sm"
-                  >chevron_right</span
+                  <span class="material-symbols-outlined text-sm"
+                    >chevron_left</span
+                  >
+                </button>
+                <button
+                  class="p-2 border border-border-light dark:border-border-dark rounded-md text-gray-400 hover:text-gray-500 dark:hover:text-gray-300 bg-white dark:bg-surface-dark hover:bg-gray-50 dark:hover:bg-gray-700"
                 >
-              </button>
+                  <span class="material-symbols-outlined text-sm"
+                    >chevron_right</span
+                  >
+                </button>
+              </div>
             </div>
           </div>
         </div>

@@ -80,9 +80,9 @@
         </div>
       </div>
     </header>
-    <main class="w-full">
-      <div class="max-w-7xl mx-auto px-6 py-8">
-        <div class="flex flex-col w-full gap-8">
+    <main class="flex-1 flex flex-col h-full overflow-hidden relative">
+      <div class="flex-1 overflow-y-auto p-8 lg:p-12">
+        <div class="max-w-5xl mx-auto flex flex-col gap-8">
           <nav
             class="mb-6 text-sm text-text-muted-light dark:text-text-muted-dark"
           >
