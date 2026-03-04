@@ -101,7 +101,7 @@
               <a class="hover:text-primary font-medium" href="#"> Courses </a>
               <span class="font-medium"> / </span>
               <span class="text-[#111811] dark:text-white font-medium"
-                >CS101 - Intro to Algorithms</span
+                >{{ course?.course_name }}</span
               >
             </div>
           </div>
@@ -243,9 +243,16 @@
 <script setup>
 name: "CourseDetail";
 import { ref, onMounted, onBeforeUnmount } from "vue";
-import { useRouter } from "vue-router";
+import { useRouter, useRoute } from "vue-router";
 
 const router = useRouter();
+const route = useRoute();
+
+const course = ref(null);
+const assessments = ref([]);
+const weightedAverage = ref(0);
+
+const courseId = route.params.course_id;
 
 const isOpen = ref(false);
 
@@ -253,6 +260,34 @@ const dropdownRef = ref(null);
 
 const toggleDropdown = () => {
   isOpen.value = !isOpen.value;
+};
+
+const fetchCourseDetail = async () => {
+  try {
+    const response = await fetch(
+      `http://localhost:56733/course/${courseId}`,
+      {
+        method: "GET",
+        credentials: "include",
+      }
+    );
+
+    if (!response.ok) {
+      if (response.status === 403) {
+        alert("You are not enrolled in this course");
+        router.push("/student/dashboard");
+      }
+      return;
+    }
+
+    const data = await response.json();
+
+    course.value = data;
+    assessments.value = data.assessments;
+    weightedAverage.value = data.weighted_average;
+  } catch (error) {
+    console.error("Fetch course detail error:", error);
+  }
 };
 
 const handleClickOutside = (event) => {
@@ -263,6 +298,7 @@ const handleClickOutside = (event) => {
 
 onMounted(() => {
   document.addEventListener("click", handleClickOutside);
+  fetchCourseDetail();
 });
 
 onBeforeUnmount(() => {

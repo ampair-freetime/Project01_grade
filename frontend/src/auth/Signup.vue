@@ -256,6 +256,7 @@
 import { ref } from "vue";
 import { useRouter } from "vue-router";
 
+
 defineOptions({
   name: "SignIn",
 });
@@ -266,7 +267,7 @@ const lastName = ref("");
 const middleName = ref("");
 
 const email = ref("");
-const studentID = ref(0);
+const studentID = ref("");
 const password = ref("");
 const showPassword = ref(false);
 
