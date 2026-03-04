@@ -162,10 +162,19 @@ async def create_assignments(assign: T_Assignment,db: Session= Depends(get_db),c
 
 ####################################################################################################################################
 #  upload CSV แสดงว่าต้องมีหน้า quiz name อะไรอย่างนี้แล้ว
-@router.post("/upload/{quiz_id}")
-async def upload_csv(quiz_id: int,file: UploadFile = File(...),db: Session = Depends(get_db),current_user: AuthUser = Depends(get_current_user)):
+@router.post("/upload/{course_id}/{quiz_id}")
+async def upload_csv(quiz_id: int,course_id: int,file: UploadFile = File(...),db: Session = Depends(get_db),current_user: AuthUser = Depends(get_current_user)):
 
     teacher = is_teacher(db, current_user)
+    file_name = file.filename
+    new_upload = Upload(
+        file_name=file_name,
+        teacher_id = teacher.teacher_id,
+        course_id=course_id
+    )
+    db.add(new_upload)
+    db.commit()
+    db.refresh(new_upload)
     # อ่านละแปลงเป็นข้อความ
     content = await file.read()
     decoded = content.decode("utf-8-sig")
