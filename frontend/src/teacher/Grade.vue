@@ -90,9 +90,10 @@
           class="mb-6 text-sm text-text-muted-light dark:text-text-muted-dark"
         >
           <!-- Return -->
-          <a
+          <button
             class="group inline-flex items-center gap-3 font-bold text-[#111811] dark:text-white hover:text-primary transition-colors"
-            href="#"
+            type="button"
+            @click="router.push(`/teacher/assignments/${assign_id}`)"
           >
             <div
               class="flex size-9 items-center justify-center rounded-full bg-surface-light dark:bg-surface-dark border border-border-light dark:border-border-dark shadow-sm group-hover:border-primary group-hover:text-primary transition-colors"
@@ -102,7 +103,7 @@
               </span>
             </div>
             <span>Return</span>
-          </a>
+          </button>
 
           <!-- Path -->
           <div class="flex flex-wrap items-center gap-2 mt-4">
@@ -593,8 +594,12 @@ const students = ref([]);
 const sortKey = ref("");
 const sortOption = ref("id_lowhigh");
 const sortOpen = ref(false);
-const quizID = route.params.quiz_id;
+
+const quizID = computed(() => Number(route.params.quiz_id));
+
 const randomAvatar = ref("");
+const userProfile = ref(null);
+
 const BASE_URL = "http://localhost:56733";
 
 const toggleDropdown = () => {
@@ -606,52 +611,31 @@ const handleClickOutside = (event) => {
     isOpen.value = false;
   }
 };
-// const fetchAssignment = async (course_id) => {
-//   try {
-//     const response = await fetch(
-//       `${BASE_URL}/teacher/assignment/${course_id}`,
-//       {
-//         method: "GET",
-//         credentials: "include",
-//       }
-//     );
-
-//     if (!response.ok) {
-//       const text = await response.text().catch(() => "");
-//       console.error("Fetch assignment failed:", response.status, text);
-//       throw new Error("Fetch failed");
-//     }
-
-//     const data = await response.json();
-//     // backend:
-//     // {
-//     //   course: { course_id, course_name },
-//     //   assignment: [{ assign_id, assign_name, full_mark }, ...]
-//     // }
-
-//     if (Array.isArray(data.assignment)) {
-//       assignments.value = data.assignment;
-//     } else if (Array.isArray(data)) {
-//       assignments.value = data;
-//     } else {
-//       assignments.value = [];
-//     }
-//     courseTitle.value = data.course?.course_name || courseTitle.value;
-//   } catch (err) {
-//     console.error(err);
-//   }
-// };
 
 const fetchStudentScore = async () => {
   try {
-    const token = localStorage.getItem("token");
-
     const response = await fetch(`${BASE_URL}/stu_score/${quizID}`, {
       method: "GET",
       credentials: "include",
-      
     });
+    if (!response.ok) {
+      const text = await response.text().catch(() => "");
+      console.error("Fetch student score failed:", response.status, text);
+      throw new Error("Fetch failed");
+    }
+
     const data = await response.json();
+    const scoreList = Array.isArray(data?.score) ? data.score : [];
+
+    students.value = scoreList.map((s) => ({
+      student_id: s.stu_id,
+      student_name: [s.stu_fname, s.stu_mname, s.stu_lname]
+        .filter(Boolean)
+        .join(" "),
+      score: s.score,
+      section: s.section,
+      status: s.unread_flag ? "Unread" : "Read",
+    }));
 
     sortPeople();
   } catch (err) {
@@ -706,7 +690,7 @@ const handleFileUpload = async (event) => {
 
 const handleLogout = async () => {
   try {
-    const response = await fetch("http://localhost:56733/logout", {
+    const response = await fetch(`${BASE_URL}/logout`, {
       method: "GET",
       credentials: "include",
     });

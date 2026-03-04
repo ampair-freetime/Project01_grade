@@ -221,6 +221,7 @@
               </span>
               <button
                 class="text-sm font-medium text-primary hover:text-primary-dark border border-border-light dark:border-border-dark hover:border-primary bg-white dark:bg-surface-dark rounded-lg px-4 py-2 transition-colors shadow-sm"
+                @click="goToGrade(assignment.assign_id)"
               >
                 View &amp; Edit Scores
               </button>
@@ -331,6 +332,7 @@ defineOptions({
 
 const router = useRouter();
 const route = useRoute();
+
 const showArchiveModal = ref(false);
 const startCreate = ref(false);
 const isOpen = ref(false);
@@ -530,6 +532,10 @@ const deleteArchivedAssignment = async (assign_id) => {
 };
 
 // ###########################################################################################################################################################
+const goToGrade = (quiz_id) => {
+  router.push(`/teacher/grade/${quiz_id}`);
+};
+
 const handleLogout = async () => {
   try {
     const response = await fetch(`${BASE_URL}/logout`, {
