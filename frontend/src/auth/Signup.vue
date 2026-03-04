@@ -44,9 +44,7 @@
               Create Account
             </h1>
           </div>
-          <form 
-            @submit.prevent="handleSignup"
-            class="px-6 sm:px-8 pb-10 flex flex-col gap-5">
+          <form class="px-6 sm:px-8 pb-10 flex flex-col gap-5">
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
               <div class="flex flex-col gap-1.5">
                 <label
@@ -130,7 +128,7 @@
                 />
               </div>
             </div>
-            <div class="flex flex-col gap-1.5">
+            <div v-if="email.includes('_') && email.endsWith('@cmu.ac.th')" class="modal"><div class="flex flex-col gap-1.5">
               <label
                 class="text-[#0f172a] dark:text-gray-200 text-sm font-semibold leading-normal ml-1"
                 >ID</label
@@ -148,7 +146,7 @@
                   type="text"
                 />
               </div>
-            </div>
+            </div></div>
             <div class="flex flex-col gap-1.5">
               <label
                 class="text-text-main dark:text-gray-200 text-sm font-semibold leading-normal ml-1"
@@ -179,19 +177,21 @@
               </div>
             </div>
             <div class="flex flex-col gap-4 mt-2">
-              <button
-                class="group relative w-full h-12 bg-primary hover:bg-primary-dark text-white text-base font-bold rounded-lg shadow-[0_2px_10px_rgba(56,189,248,0.2)] hover:shadow-glow hover:-translate-y-0.5 active:translate-y-0 transition-all duration-200 flex items-center justify-center gap-2 overflow-hidden"
-                type="submit"
-              >
-                <span
-                  class="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300 ease-out"
-                ></span>
-                <span
-                  class="material-symbols-outlined relative z-10 group-hover:rotate-12 transition-transform duration-300"
-                  >person_add</span
+              <form @submit.prevent="handleSignup">
+                <button
+                  class="group relative w-full h-12 bg-primary hover:bg-primary-dark text-white text-base font-bold rounded-lg shadow-[0_2px_10px_rgba(56,189,248,0.2)] hover:shadow-glow hover:-translate-y-0.5 active:translate-y-0 transition-all duration-200 flex items-center justify-center gap-2 overflow-hidden"
+                  type="submit"
                 >
-                <span class="relative z-10">Sign Up</span>
-              </button>
+                  <span
+                    class="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300 ease-out"
+                  ></span>
+                  <span
+                    class="material-symbols-outlined relative z-10 group-hover:rotate-12 transition-transform duration-300"
+                    >person_add</span
+                  >
+                  <span class="relative z-10">Sign Up</span>
+                </button>
+              </form>
               <div class="relative flex items-center justify-center w-full">
                 <div class="absolute inset-0 flex items-center">
                   <div
@@ -266,9 +266,11 @@ const lastName = ref("");
 const middleName = ref("");
 
 const email = ref("");
-const studentID = ref("");
+const studentID = ref(0);
 const password = ref("");
 const showPassword = ref(false);
+
+const isModalOpen = ref(false)
 
 const togglePassword = () => {
   showPassword.value = !showPassword.value;
@@ -281,7 +283,6 @@ const handleSignup = async () => {
       headers: {
         "Content-Type": "application/json",
       },
-      credentials: "include",
       body: JSON.stringify({
         first_name: firstName.value,
         last_name: lastName.value,
@@ -296,10 +297,6 @@ const handleSignup = async () => {
       const errorData = await response.json();
       throw new Error(errorData.detail || "SignUp failed");
     }
-
-    const data = await response.json();
-    localStorage.setItem("csrf_token", data.csrf_token);
-    localStorage.setItem("role", data.role);
 
     router.push("/login");
   } catch (error) {

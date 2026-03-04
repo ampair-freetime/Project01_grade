@@ -401,6 +401,7 @@ const isOpen = ref(false);
 const showArchiveModal = ref(false);
 const archivedCourses = ref([]);
 const userProfile = ref(null);
+const csrf_token = localStorage.getItem("csrf_token")
 
 
 const BASE_URL = "http://localhost:56733";
@@ -486,7 +487,9 @@ const submit = async () => {
     const response = await fetch(`${BASE_URL}/teacher/create_course`, {
       method: "POST",
       credentials: "include",
-      headers: { "Content-Type": "application/json" },
+      headers: { "Content-Type": "application/json",
+         'X-CSRF-Token': csrf_token
+      },
       body: JSON.stringify({
         course_name: courseName.value,
       }),
@@ -507,6 +510,7 @@ const deleteCourse = async (id) => {
 
   try {
     const response = await fetch(`${BASE_URL}/teacher/delete_course/${id}`, {
+      headers:{'X-CSRF-Token': csrf_token},
       method: "POST",
       credentials: "include",
     });
@@ -535,6 +539,7 @@ const archiveCourse = async (course_id) => {
 
   try {
     const response = await fetch(`${BASE_URL}/teacher/archive_course/${course_id}`, {
+      headers:{'X-CSRF-Token': csrf_token},
       method: "POST",
       credentials: "include",
     });
