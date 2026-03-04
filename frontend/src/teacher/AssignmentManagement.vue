@@ -142,6 +142,9 @@
                   >
                 </div>
                 <input
+                  v-model="searchTerm"
+                  id="search"
+                  name="search"
                   class="block w-full pl-10 pr-3 py-3 border border-border-light dark:border-border-dark rounded-md leading-5 bg-white dark:bg-surface-dark text-gray-900 dark:text-gray-100 placeholder-gray-500 focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary sm:text-sm"
                   placeholder="Search assignments..."
                   type="text"
@@ -216,7 +219,7 @@
             </div>
 
             <div
-              v-for="assignment in assignments"
+              v-for="assignment in filteredAssignment"
               :key="assignment.assign_id"
               class="bg-white dark:bg-surface-dark border border-border-light dark:border-border-dark rounded-xl px-6 py-5 shadow-sm hover:shadow-md transition-shadow"
             >
@@ -360,6 +363,7 @@ const dropdownRef = ref(null);
 const courseID = computed(() => Number(route.params.course_id));
 const assignmentTitle = ref("");
 const score = ref("");
+const searchTerm = ref("");
 const userProfile = ref(null);
 const assignments = ref([]);
 const courseTitle = ref("");
@@ -452,6 +456,17 @@ const cancleCreate = () => {
 };
 
 // ################################ Assignment ###########################################################################################################################
+
+// กรอง assignment ตามการค้นหา
+const filteredAssignment = computed(() => {
+  const term = searchTerm.value.trim().toLowerCase();
+  if (!term) return assignments.value;
+
+  return assignments.value.filter((a) => {
+    const name = (a.assign_name || a.quiz_name || "").toLowerCase();
+    return name.includes(term);
+  });
+});
 
 const submit = async () => {
   try {
@@ -554,7 +569,13 @@ const deleteArchivedAssignment = async (assign_id) => {
 
 // ###########################################################################################################################################################
 const goToGrade = (quiz_id) => {
-  router.push(`/teacher/grade/${quiz_id}`);
+  router.push({
+    path: `/teacher/grade/${quiz_id}`,
+    query: {
+      course_id: courseID.value,
+      course_title: courseTitle.value,
+    },
+  });
 };
 
 const handleLogout = async () => {

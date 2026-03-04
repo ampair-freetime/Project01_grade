@@ -527,8 +527,7 @@ const deleteArchivedCourse = async (course_id) => {
 const filteredCourses = computed(() => {
   if (!searchTerm.value) return courses.value;
 
-  return courses.value.filter(
-    (c) =>
+  return courses.value.filter((c) =>
       c.course_name.toLowerCase().includes(searchTerm.value.toLowerCase()) ||
       String(c.course_id).includes(searchTerm.value)
   );
