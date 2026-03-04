@@ -292,29 +292,32 @@
 
         <h2 class="text-xl font-semibold mb-4">Archived Courses</h2>
 
-        <ul class="space-y-2">
+        <ul v-if="archivedCourses.length" class="space-y-2">
           <li
+            v-for="course in archivedCourses"
+            :key="course.course_id"
             class="rounded-xl hover:bg-gray-100 dark:hover:bg-gray-600/50 transition-colors duration-150"
           >
             <div class="px-4 py-2 flex items-center">
               <div
                 class="flex-shrink-0 h-10 w-10 rounded-xl bg-purple-200 dark:bg-purple-600/50 text-purple-600 dark:text-purple-400 flex items-center justify-center"
               >
-                <span class="material-symbols-outlined">rocket</span>
+                <span class="material-symbols-outlined">archive</span>
               </div>
               <div class="ml-4 grow items-center">
                 <div class="text-sm font-bold text-gray-900 dark:text-white">
-                  Astro101
+                  {{ course.course_name }}
                 </div>
                 <div
                   class="text-xs text-text-muted-light dark:text-text-muted-dark"
                 >
-                  Astronomy
+                  Course ID: {{ course.course_id }}
                 </div>
               </div>
               <div class="flex items-center gap-6">
                 <div class="flex items-end min-w-[50px]">
                   <button
+                    @click="restoreCourse(course.course_id)"
                     class="p-2 text-gray-400 hover:text-yellow-600 hover:bg-yellow-50 dark:hover:bg-yellow-900/30 rounded-full transition-colors duration-200 group"
                     title="Restore Course"
                   >
@@ -324,49 +327,7 @@
                     >
                   </button>
                   <button
-                    class="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-900/30 rounded-full transition-colors duration-200 group"
-                    title="Delete Course"
-                  >
-                    <span
-                      class="material-symbols-outlined text-xl group-hover:text-red-600"
-                      >delete</span
-                    >
-                  </button>
-                </div>
-              </div>
-            </div>
-          </li>
-          <li
-            class="rounded-xl hover:bg-gray-100 dark:hover:bg-gray-600/50 transition-colors duration-150"
-          >
-            <div class="px-4 py-2 flex items-center">
-              <div
-                class="flex-shrink-0 h-10 w-10 rounded-xl bg-yellow-200 dark:bg-yellow-600/50 text-yellow-600 dark:text-yellow-400 flex items-center justify-center"
-              >
-                <span class="material-symbols-outlined">bolt</span>
-              </div>
-              <div class="ml-4 grow items-center">
-                <div class="text-sm font-bold text-gray-900 dark:text-white">
-                  EE101
-                </div>
-                <div
-                  class="text-xs text-text-muted-light dark:text-text-muted-dark"
-                >
-                  Electric Engeneering
-                </div>
-              </div>
-              <div class="flex items-center gap-6">
-                <div class="flex items-end min-w-[50px]">
-                  <button
-                    class="p-2 text-gray-400 hover:text-yellow-600 hover:bg-yellow-50 dark:hover:bg-yellow-900/30 rounded-full transition-colors duration-200 group"
-                    title="Restore Course"
-                  >
-                    <span
-                      class="material-symbols-outlined text-xl group-hover:text-yellow-600"
-                      >restore</span
-                    >
-                  </button>
-                  <button
+                    @click="deleteArchivedCourse(course.course_id)"
                     class="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-900/30 rounded-full transition-colors duration-200 group"
                     title="Delete Course"
                   >
@@ -380,6 +341,12 @@
             </div>
           </li>
         </ul>
+        <p
+          v-else
+          class="text-sm text-text-muted-light dark:text-text-muted-dark py-4"
+        >
+          No archived courses.
+        </p>
       </div>
     </div>
   </div>
@@ -403,8 +370,9 @@ const archivedCourses = ref([]);
 const userProfile = ref(null);
 const csrf_token = localStorage.getItem("csrf_token")
 
-
 const BASE_URL = "http://localhost:56733";
+
+// ################################ fetch ###########################################################################################################################
 
 const fetchDashboard = async () => {
   try {
@@ -423,20 +391,6 @@ const fetchDashboard = async () => {
   } catch (error) {
     console.error("Fetch dashboard error:", error);
   }
-};
-
-const filteredCourses = computed(() => {
-  if (!searchTerm.value) return courses.value;
-
-  return courses.value.filter(
-    (c) =>
-      c.course_name.toLowerCase().includes(searchTerm.value.toLowerCase()) ||
-      String(c.course_id).includes(searchTerm.value),
-  );
-});
-
-const toggleDropdown = () => {
-  isOpen.value = !isOpen.value;
 };
 
 const fetchUserProfile = async () => {
@@ -458,13 +412,31 @@ const fetchUserProfile = async () => {
   }
 };
 
-const handleClickOutside = (event) => {
-  if (dropdownRef.value && !dropdownRef.value.contains(event.target)) {
-    isOpen.value = false;
+const fetchArchivedCourses = async () => {
+  try {
+    const response = await fetch(`${BASE_URL}/teacher/archive_teacher`, {
+      credentials: "include",
+    });
+    if (response.ok) {
+      const data = await response.json();
+      archivedCourses.value = data.courses || [];
+    } else {
+      archivedCourses.value = [];
+    }
+  } catch (error) {
+    console.error("Fetch archived courses error:", error);
+    archivedCourses.value = [];
   }
 };
 
-const openArchive = () => {
+// ######################## pop-up ###################################################################################################################################
+
+const toggleDropdown = () => {
+  isOpen.value = !isOpen.value;
+};
+
+const openArchive = async () => {
+  await fetchArchivedCourses();
   showArchiveModal.value = true;
 };
 
@@ -480,6 +452,70 @@ const cancleCreate = () => {
   startCreate.value = false;
 };
 
+const handleClickOutside = (event) => {
+  if (dropdownRef.value && !dropdownRef.value.contains(event.target)) {
+    isOpen.value = false;
+  }
+};
+
+// ######################## archive ###################################################################################################################################
+
+//กู้คืนcourse
+const restoreCourse = async (course_id) => {
+  try {
+    const response = await fetch(
+      `${BASE_URL}/teacher/restore_to_dash/${course_id}`,
+      {
+        headers: { "X-CSRF-Token": csrf_token },
+        method: "POST",
+        credentials: "include",
+      }
+    );
+    if (!response.ok) {
+      const err = await response.json();
+      alert(err.detail || "Restore failed");
+    }
+    archivedCourses.value = archivedCourses.value.filter((c) => c.course_id !== course_id);
+
+    await fetchDashboard();
+  } catch (error) {
+    console.error("Restore error:", error);
+  }
+};
+
+//ลบcourseที่อยู่ในกล่องarchive (ลบถาวร)
+const deleteArchivedCourse = async (course_id) => {
+  if (!confirm("Delete this archived course?")) return;
+  try {
+    const response = await fetch(`${BASE_URL}/teacher/delete_course/${course_id}`, {
+      headers: { "X-CSRF-Token": csrf_token },
+      method: "POST",
+      credentials: "include",
+    });
+    if (!response.ok) {
+      const err = await response.json();
+      alert(err.detail || "Delete failed");
+    }
+    archivedCourses.value = archivedCourses.value.filter((c) => c.course_id !== course_id);
+  } catch (error) {
+    console.error("Delete error:", error);
+  }
+};
+
+// ######################## course ###################################################################################################################################
+
+// กรองรายวิชาตามการค้นหา
+const filteredCourses = computed(() => {
+  if (!searchTerm.value) return courses.value;
+
+  return courses.value.filter(
+    (c) =>
+      c.course_name.toLowerCase().includes(searchTerm.value.toLowerCase()) ||
+      String(c.course_id).includes(searchTerm.value),
+  );
+});
+
+// สร้างcourseใหม่
 const submit = async () => {
   if (!courseName.value) return;
 
@@ -505,6 +541,35 @@ const submit = async () => {
   }
 };
 
+// จัดเก็บcourse
+const archiveCourse = async (course_id) => {
+  if (!confirm("Archive this course?")) return;
+
+  const course = courses.value.find((c) => c.course_id === course_id);
+  if (!course) return;
+
+  try {
+    const response = await fetch(`${BASE_URL}/teacher/archive/${course_id}`, {
+      headers: { "X-CSRF-Token": csrf_token },
+      method: "POST",
+      credentials: "include",
+    });
+
+    if (!response.ok) {
+      const err = await response.json();
+      alert(err.detail || "Archive failed");
+      return;
+    }
+
+    courses.value = courses.value.filter((c) => c.course_id !== course_id);
+    archivedCourses.value.push(course);
+    await fetchDashboard();
+  } catch (error) {
+    console.error("Archive error:", error);
+  }
+};
+
+// ลบ course
 const deleteCourse = async (id) => {
   if (!confirm("Delete this course?")) return;
 
@@ -530,38 +595,12 @@ const deleteCourse = async (id) => {
   }
 };
 
+//ไปที่หน้า Assignment
 const goToAssignment = (course_id) => {
   router.push(`/assignment/${course_id}`);
 };
 
-const archiveCourse = async (course_id) => {
-  if (!confirm("Archive this course?")) return;
-
-  try {
-    const response = await fetch(`${BASE_URL}/teacher/archive/${course_id}`, {
-      headers:{'X-CSRF-Token': csrf_token},
-      method: "POST",
-      credentials: "include",
-    });
-
-    if (!response.ok) {
-      const err = await response.json();
-      alert(err.detail || "Archive failed");
-      return;
-    }
-
-await fetchDashboard();
-    const course = courses.value.find(c => c.course_id === course_id)
-    courses.value = courses.value.filter(
-      c => c.course_id !== course_id
-    )
-    if (course) {
-      archivedCourses.value.push(course)
-    }
-  } catch (error) {
-    console.error("Archive error:", error);
-  }
-};
+// ###########################################################################################################################################################
 
 const handleLogout = async () => {
   try {
@@ -570,7 +609,9 @@ const handleLogout = async () => {
       credentials: "include",
     });
 
-    if (!response.ok) throw new Error();
+    if (!response.ok){
+      throw new Error();
+    }
 
     localStorage.clear();
     router.push("/login");
