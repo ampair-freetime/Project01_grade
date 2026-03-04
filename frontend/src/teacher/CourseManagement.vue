@@ -185,54 +185,46 @@
             :key="course.course_id"
             class="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors duration-150"
           >
-            <div class="px-6 py-5 flex items-center justify-between">
-              <a @click="goToAssignment(course.course_id)" class="block">
-                <div class="ml-4">
-                  <!-- <div class="text-base font-bold">
-                    {{ course.course_id }}
-                  </div> -->
-                  <div
-                    class="text-l font-bold text-primary text-gray-900 dark:text-white uppercase tracking-wide"
-                  >
-                    {{ course.course_name }}
-                  </div>
+            <div
+              class="px-6 py-5 flex items-center justify-between cursor-pointer"
+              @click="goToAssignment(course.course_id)"
+            >
+              <!-- LEFT -->
+              <div class="flex-1 min-w-0">
+                <div
+                  class="text-l font-bold text-primary dark:text-primary-light uppercase tracking-wide"
+                >
+                  {{ course.course_name }}
                 </div>
-              </a>
-              <div class="flex items-center gap-6">
+              </div>
+
+              <!-- RIGHT -->
+              <div class="flex items-center gap-6 shrink-0">
                 <div class="flex flex-col items-end min-w-[80px]">
-                  <div
-                    class="flex items-center text-gray-900 dark:text-white font-semibold"
-                  >
-                    <span
-                      class="material-symbols-outlined text-text-muted-light dark:text-text-muted-dark mr-1 text-lg"
+                  <div class="flex items-center font-semibold">
+                    <span class="material-symbols-outlined mr-1 text-lg"
                       >people</span
                     >
                     {{ course.student_count ?? 0 }}
                   </div>
-                  <div
-                    class="text-xs text-text-muted-light dark:text-text-muted-dark uppercase mt-0.5"
-                  >
-                    Students
-                  </div>
+                  <div class="text-xs uppercase mt-0.5">Students</div>
                 </div>
-                <div class="flex items-end min-w-[50px]">
+
+                <div class="flex items-center">
                   <button
-                    @click="deleteCourse(course.course_id)"
-                    class="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-900/30 rounded-full transition-colors duration-200 group"
-                    title="Delete Course"
+                    @click.stop="deleteCourse(course.course_id)"
+                    class="p-2 rounded-full"
                   >
-                    <span
-                      class="material-symbols-outlined text-xl group-hover:text-red-600"
+                    <span class="material-symbols-outlined text-xl"
                       >delete</span
                     >
                   </button>
+
                   <button
-                    @click="archiveCourse(course.course_id)"
-                    class="p-2 text-gray-400 hover:text-yellow-600 hover:bg-yellow-50 dark:hover:bg-yellow-900/30 rounded-full transition-colors duration-200 group"
-                    title="Archive Course"
+                    @click.stop="archiveCourse(course.course_id)"
+                    class="p-2 rounded-full"
                   >
-                    <span
-                      class="material-symbols-outlined text-xl group-hover:text-yellow-600"
+                    <span class="material-symbols-outlined text-xl"
                       >archive</span
                     >
                   </button>
@@ -403,8 +395,7 @@ const isOpen = ref(false);
 const showArchiveModal = ref(false);
 const archivedCourses = ref([]);
 const userProfile = ref(null);
-const csrf_token = localStorage.getItem("csrf_token")
-
+const csrf_token = localStorage.getItem("csrf_token");
 
 const BASE_URL = "http://localhost:56733";
 
@@ -445,18 +436,17 @@ const fetchUserProfile = async () => {
   try {
     const response = await fetch(`${BASE_URL}/me`, {
       credentials: "include",
-    })
+    });
 
     if (!response.ok) {
-      router.push("/login")
-      return
+      router.push("/login");
+      return;
     }
 
-    const data = await response.json()
-    userProfile.value = data
-
+    const data = await response.json();
+    userProfile.value = data;
   } catch (error) {
-    console.error("Fetch profile error:", error)
+    console.error("Fetch profile error:", error);
   }
 };
 
@@ -489,8 +479,9 @@ const submit = async () => {
     const response = await fetch(`${BASE_URL}/teacher/create_course`, {
       method: "POST",
       credentials: "include",
-      headers: { "Content-Type": "application/json",
-         'X-CSRF-Token': csrf_token
+      headers: {
+        "Content-Type": "application/json",
+        "X-CSRF-Token": csrf_token,
       },
       body: JSON.stringify({
         course_name: courseName.value,
@@ -512,7 +503,7 @@ const deleteCourse = async (id) => {
 
   try {
     const response = await fetch(`${BASE_URL}/teacher/delete_course/${id}`, {
-      headers:{'X-CSRF-Token': csrf_token},
+      headers: { "X-CSRF-Token": csrf_token },
       method: "POST",
       credentials: "include",
     });
@@ -523,9 +514,7 @@ const deleteCourse = async (id) => {
       return;
     }
 
-    courses.value = courses.value.filter(
-      (course) => course.course_id !== id
-    );
+    courses.value = courses.value.filter((course) => course.course_id !== id);
   } catch (error) {
     console.error("Delete error:", error);
     alert("Something went wrong");
@@ -533,7 +522,7 @@ const deleteCourse = async (id) => {
 };
 
 const goToAssignment = (course_id) => {
-  router.push(`/assignment/${course_id}`);
+  router.push(`/teacher/assignments/${course_id}`);
 };
 
 const archiveCourse = async (course_id) => {
@@ -541,7 +530,7 @@ const archiveCourse = async (course_id) => {
 
   try {
     const response = await fetch(`${BASE_URL}/teacher/archive/${course_id}`, {
-      headers:{'X-CSRF-Token': csrf_token},
+      headers: { "X-CSRF-Token": csrf_token },
       method: "POST",
       credentials: "include",
     });
@@ -549,12 +538,10 @@ const archiveCourse = async (course_id) => {
     if (response.ok) {
       await fetchDashboard();
     }
-    const course = courses.value.find(c => c.course_id === course_id)
-    courses.value = courses.value.filter(
-      c => c.course_id !== course_id
-    )
+    const course = courses.value.find((c) => c.course_id === course_id);
+    courses.value = courses.value.filter((c) => c.course_id !== course_id);
     if (course) {
-      archivedCourses.value.push(course)
+      archivedCourses.value.push(course);
     }
   } catch (error) {
     console.error("Archive error:", error);

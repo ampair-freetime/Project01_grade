@@ -433,10 +433,11 @@ const showArchiveModal = ref(false);
 const startCreate = ref(false);
 const isOpen = ref(false);
 const dropdownRef = ref(null);
-const courseID = ref(route.params.course_id);
+// const course_id = ref(route.params.id);
 const assignmentTitle = ref("");
 const score = ref("");
 const userProfile = ref(null);
+const csrfToken = localStorage.getItem("csrf_token");
 
 const BASE_URL = "http://localhost:56733";
 
@@ -484,11 +485,10 @@ const cancleCreate = () => {
   startCreate.value = false;
 };
 
-const fetchAssignment = async (course_id) => {
+const fetchAssignment = async () => {
   try {
-    const token = localStorage.getItem("token");
     const response = await fetch(
-      `${BASE_URL}/teacher/assignment/${course_id}`,
+      `${BASE_URL}/teacher/assignment/${route.params.id}`,
       {
         method: "GET",
         credentials: "include",
@@ -518,7 +518,7 @@ const submit = async () => {
       body: JSON.stringify({
         quiz_name: assignmentTitle.value,
         full_mark: Number(score.value),
-        course_id: Number(courseID.value),
+        course_id: Number(route.params.id),
       }),
     });
 
@@ -533,6 +533,7 @@ const submit = async () => {
 
     assignmentTitle.value = "";
     score.value = "";
+    await fetchAssignment();
   } catch (error) {
     console.error(error);
   }

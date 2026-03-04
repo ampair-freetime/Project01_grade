@@ -27,7 +27,7 @@ const routes = [
 
   // Teacher
   { path: '/teacher/courses', component: CourseManagement },
-  { path: '/teacher/assignments', component: AssignmentManagement },
+  { path: '/teacher/assignments/:id', component: AssignmentManagement },
   { path: '/teacher/grade', component: Grade },
 ]
 
