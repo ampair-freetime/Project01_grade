@@ -96,25 +96,21 @@ async def teacher_score(quiz_id: int,db:Session=Depends(get_db),current_user: Au
         },
         "score":student_score
     }
-#แสดงผล course ที่จัดเก็บไว้
+# แสดงผล course ที่จัดเก็บไว้ (archive)
 @router.get("/archive_teacher")
-async def teacher_dashboard(db: Session = Depends(get_db),current_user: AuthUser = Depends(get_current_user)):
-    # ครู?
+async def list_archived_courses(db: Session = Depends(get_db), current_user: AuthUser = Depends(get_current_user)):
     teacher = is_teacher(db, current_user)
-    # วิชาทั้งหมดที่ครูคนนั้นสร้างไว้
-    courses = db.query(Course).filter(Course.teacher_id == teacher.teacher_id,Course.is_deleted == False,Course.is_archive == True).all()
-    # response ชื่อครูกับรายวิชาที่สอน
-    if not courses:
-        raise HTTPException(status_code=404,detail="courses not found")
+    courses = db.query(Course).filter(
+        Course.teacher_id == teacher.teacher_id,
+        Course.is_deleted == False,
+        Course.is_archive == True,
+    ).all()
     return {
         "teacher_name": f"{teacher.first_name} {teacher.last_name}",
         "courses": [
-            {
-                "course_id": c.course_id,
-                "course_name": c.course_name
-            }
+            {"course_id": c.course_id, "course_name": c.course_name}
             for c in courses
-        ]
+        ],
     }
 
 ###################################################################################################################################
@@ -280,12 +276,14 @@ async def archive(course_id:int, db:Session = Depends(get_db), current_user: Aut
     return {"message":"Archive course successfully"}
 
 @router.post("/restore_to_dash/{course_id}")
-async def archive(course_id:int, db:Session = Depends(get_db), current_user: AuthUser=Depends(get_current_user)):
-    teacher = is_teacher(db,current_user)
-    course = db.query(Course).filter(Course.course_id == course_id,Course.teacher_id == teacher.teacher_id).first()
-    #จัดเก็บ course
+async def restore_course(course_id: int, db: Session = Depends(get_db), current_user: AuthUser = Depends(get_current_user)):
+    teacher = is_teacher(db, current_user)
+    course = db.query(Course).filter(
+        Course.course_id == course_id,
+        Course.teacher_id == teacher.teacher_id,
+    ).first()
     if not course:
-        raise HTTPException(status=404,detail="Course not found")
+        raise HTTPException(status_code=404, detail="Course not found")
     course.is_archive = False
     db.commit()
-    return {"message":"Restore course successfully"}
+    return {"message": "Restore course successfully"}

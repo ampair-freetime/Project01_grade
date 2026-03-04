@@ -137,7 +137,12 @@
               >upload_file</span
             >
             Import CSV
-            <input type="file" accept=".csv" class="hidden" @change="handleFileUpload">
+            <input
+              type="file"
+              accept=".csv"
+              class="hidden"
+              @change="handleFileUpload"
+            />
           </label>
           <button
             class="inline-flex items-center px-4 py-2 bg-slate-900 dark:bg-slate-700 border border-transparent rounded-lg text-sm font-medium text-white hover:bg-slate-800 dark:hover:bg-slate-600 shadow-sm transition-colors"
@@ -231,28 +236,31 @@
         class="bg-surface-light dark:bg-surface-dark rounded-xl border border-border-light dark:border-border-dark shadow-sm overflow-hidden"
       >
         <div class="overflow-x-auto">
-          <table class="w-full text-left border-collapse">
+          <table class="min-w-[700px] w-full text-left border-collapse">
             <thead>
               <tr
                 class="border-b border-border-light dark:border-border-dark bg-gray-50/50 dark:bg-slate-800/50"
               >
                 <th
-                  class="p-4 text-xs font-bold text-gray-500 dark:text-gray-300 uppercase tracking-wider pl-6"
+                  class="w-[45%] p-4 text-xs font-bold text-gray-500 dark:text-gray-300 uppercase tracking-wider pl-6"
                 >
                   Student Info
                 </th>
+
                 <th
-                  class="p-4 text-xs font-bold text-gray-500 dark:text-gray-300 uppercase tracking-wider text-center"
+                  class="w-[15%] p-4 text-xs font-bold text-gray-500 dark:text-gray-300 uppercase tracking-wider text-center"
                 >
                   Score
                 </th>
+
                 <th
-                  class="p-4 text-xs font-bold text-gray-500 dark:text-gray-300 uppercase tracking-wider text-center"
+                  class="w-[20%] p-4 text-xs font-bold text-gray-500 dark:text-gray-300 uppercase tracking-wider text-center"
                 >
                   Status
                 </th>
+
                 <th
-                  class="p-4 text-xs font-bold text-gray-500 dark:text-gray-300 uppercase tracking-wider text-center"
+                  class="w-[20%] p-4 text-xs font-bold text-gray-500 dark:text-gray-300 uppercase tracking-wider text-center"
                 >
                   Actions
                 </th>
@@ -523,53 +531,28 @@
           </table>
         </div>
         <div
-          class="bg-gray-50 dark:bg-slate-800/50 border-t border-border-light dark:border-border-dark p-4 flex flex-col sm:flex-row items-center justify-between gap-4"
+          class="px-6 py-4 border-t border-border-light dark:border-border-dark flex items-center justify-between"
         >
           <div class="text-sm text-text-muted-light dark:text-text-muted-dark">
-            Showing
-            <span class="font-semibold text-gray-900 dark:text-white">1</span>
-            to
-            <span class="font-semibold text-gray-900 dark:text-white">5</span>
-            of
-            <span class="font-semibold text-gray-900 dark:text-white">34</span>
-            students
+            <span class="font-bold text-gray-900 dark:text-white"></span>
+            <span class="font-bold text-gray-900 dark:text-white"></span>
           </div>
-          <nav class="flex items-center gap-1">
+          <div class="flex space-x-2">
             <button
-              class="px-3 py-1 text-sm font-medium text-gray-500 dark:text-gray-400 bg-white dark:bg-slate-800 border border-gray-300 dark:border-slate-600 rounded-md hover:bg-gray-50 dark:hover:bg-slate-700 disabled:opacity-50"
+              class="p-2 border border-border-light dark:border-border-dark rounded-md text-gray-400 hover:text-gray-500 dark:hover:text-gray-300 bg-white dark:bg-surface-dark hover:bg-gray-50 dark:hover:bg-gray-700"
             >
-              Previous
+              <span class="material-symbols-outlined text-sm"
+                >chevron_left</span
+              >
             </button>
             <button
-              class="w-8 h-8 flex items-center justify-center text-sm font-medium bg-sky-500 text-white rounded-md"
+              class="p-2 border border-border-light dark:border-border-dark rounded-md text-gray-400 hover:text-gray-500 dark:hover:text-gray-300 bg-white dark:bg-surface-dark hover:bg-gray-50 dark:hover:bg-gray-700"
             >
-              1
+              <span class="material-symbols-outlined text-sm"
+                >chevron_right</span
+              >
             </button>
-            <button
-              class="w-8 h-8 flex items-center justify-center text-sm font-medium text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-slate-700 rounded-md"
-            >
-              2
-            </button>
-            <button
-              class="w-8 h-8 flex items-center justify-center text-sm font-medium text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-slate-700 rounded-md"
-            >
-              3
-            </button>
-            <span
-              class="w-8 h-8 flex items-center justify-center text-sm text-gray-400 dark:text-gray-500"
-              >...</span
-            >
-            <button
-              class="w-8 h-8 flex items-center justify-center text-sm font-medium text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-slate-700 rounded-md"
-            >
-              7
-            </button>
-            <button
-              class="px-3 py-1 text-sm font-medium text-gray-500 dark:text-gray-400 bg-white dark:bg-slate-800 border border-gray-300 dark:border-slate-600 rounded-md hover:bg-gray-50 dark:hover:bg-slate-700"
-            >
-              Next
-            </button>
-          </nav>
+          </div>
         </div>
       </div>
     </main>
@@ -624,28 +607,28 @@ const fetchStudentScore = async () => {
 
 const handleFileUpload = async (event) => {
   const file = event.target.files[0];
-  if (!file){
+  if (!file) {
     return;
   }
   const formdata = new FormData();
   formdata.append("file", file);
 
-  try{
+  try {
     const token = localStorage.getItem("csrf_token");
-    const response = await fetch(`http://localhost:56733/upload/${quizID}`,{
+    const response = await fetch(`http://localhost:56733/upload/${quizID}`, {
       method: "POST",
       headers: {
-        Authorization: `Bearer ${token}`
+        Authorization: `Bearer ${token}`,
       },
-      body: formdata
+      body: formdata,
     });
     if (!response.ok) {
       const errorData = await response.json();
-      alert(errorData.detail || "Upload failed")
+      alert(errorData.detail || "Upload failed");
     }
-    alert("CSV uploaded successfully")
+    alert("CSV uploaded successfully");
     fetchStudentScore();
-  } catch(err){
+  } catch (err) {
     console.error(err);
   }
 };
@@ -674,20 +657,19 @@ const sortPeople = () => {
   switch (sortOption.value) {
     case "id_lowhigh":
       students.value.sort(
-        (a, b) => Number(a.student_id) - Number(b.student_id)
+        (a, b) => Number(a.student_id) - Number(b.student_id),
       );
       break;
 
     case "name_atoz":
       students.value.sort((a, b) =>
-        a.student_name.localeCompare(b.student_name)
+        a.student_name.localeCompare(b.student_name),
       );
       break;
 
     case "section_lowhigh":
       students.value.sort((a, b) => a.section.localeCompare(b.section));
       break;
-
   }
 };
 

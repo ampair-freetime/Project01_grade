@@ -117,7 +117,7 @@
         class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8"
       >
         <h1
-          class="text-3xl font-bold text-gray-900 dark:text-white whitespace-nowrap"
+          class="text-3xl font-bold text-gray-900 dark:text-white break-words"
         >
           CS101 - Intro to Computer Science
         </h1>
@@ -151,7 +151,7 @@
             @click.self="cancleCreate"
           >
             <div
-              class="bg-white dark:bg-gray-800 w-[600px] rounded-xl shadow-xl p-6 relative"
+              class="bg-white dark:bg-gray-800 w-full max-w-md mx-4 rounded-2xl shadow-xl p-6 relative max-h-[90vh] overflow-y-auto"
             >
               <button
                 @click="cancleCreate"
@@ -492,7 +492,7 @@ const fetchAssignment = async () => {
       {
         method: "GET",
         credentials: "include",
-      }
+      },
     );
 
     if (!response.ok) {
@@ -546,7 +546,7 @@ const deleteAssign = async (assign_id) => {
       {
         method: "POST",
         credentials: "include",
-      }
+      },
     );
 
     if (!response.ok) {
