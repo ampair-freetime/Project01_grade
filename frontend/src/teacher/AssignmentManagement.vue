@@ -83,237 +83,244 @@
         </div>
       </div>
     </header>
-    <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      <nav
-        aria-label="Breadcrumb"
-        class="flex mb-6 text-sm text-text-muted-light dark:text-text-muted-dark"
-      >
-        <div class="flex flex-col gap-4">
+    <main class="w-full">
+      <div class="max-w-7xl mx-auto px-6 py-8">
+        <nav
+          aria-label="Breadcrumb"
+          class="mb-6 text-sm text-text-muted-light dark:text-text-muted-dark"
+        >
+          <!-- Return -->
           <a
-            class="group flex w-fit items-center gap-3 text-sm font-bold text-[#111811] dark:text-white hover:text-primary transition-colors"
+            class="group inline-flex items-center gap-3 font-bold text-[#111811] dark:text-white hover:text-primary transition-colors"
             href="#"
           >
             <div
               class="flex size-9 items-center justify-center rounded-full bg-surface-light dark:bg-surface-dark border border-border-light dark:border-border-dark shadow-sm group-hover:border-primary group-hover:text-primary transition-colors"
             >
-              <span class="material-symbols-outlined text-[20px]"
-                >arrow_back</span
-              >
+              <span class="material-symbols-outlined text-[20px]">
+                arrow_back
+              </span>
             </div>
             <span>Return</span>
           </a>
-          <div class="flex flex-wrap gap-2 text-sm">
+
+          <!-- Path -->
+          <div class="flex flex-wrap items-center gap-2 mt-4">
             <a class="hover:text-primary font-medium" href="#">
               Course Management
             </a>
-            <span class="font-medium"> / </span>
-            <span class="text-[#111811] dark:text-white font-medium"
-              >CS101 - Intro to Algorithms</span
+
+            <span class="font-medium">/</span>
+
+            <span class="text-[#111811] dark:text-white font-medium">
+              CS101 - Intro to Algorithms
+            </span>
+          </div>
+        </nav>
+        <div
+          class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8"
+        >
+          <h1
+            class="text-3xl font-bold text-gray-900 dark:text-white break-words"
+          >
+            CS101 - Intro to Computer Science
+          </h1>
+          <div class="flex flex-col sm:flex-row gap-4 w-full md:w-auto">
+            <div class="relative w-full md:w-64">
+              <div
+                class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none"
+              >
+                <span class="material-symbols-outlined text-gray-400"
+                  >search</span
+                >
+              </div>
+              <input
+                class="block w-full pl-10 pr-3 py-3 border border-border-light dark:border-border-dark rounded-md leading-5 bg-white dark:bg-surface-dark text-gray-900 dark:text-gray-100 placeholder-gray-500 focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary sm:text-sm"
+                placeholder="Search assignments..."
+                type="text"
+              />
+            </div>
+            <div>
+              <button
+                @click="createAssignment"
+                class="inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-primary hover:bg-primary-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary transition-colors whitespace-nowrap"
+              >
+                <span class="material-symbols-outlined mr-2 text-lg">add</span>
+                Create New Assignment
+              </button>
+            </div>
+            <div
+              v-if="startCreate"
+              class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+              @click.self="cancleCreate"
             >
+              <div
+                class="bg-white dark:bg-gray-800 w-full max-w-md mx-4 rounded-2xl shadow-xl p-6 relative max-h-[90vh] overflow-y-auto"
+              >
+                <button
+                  @click="cancleCreate"
+                  class="absolute top-3 right-3 text-2xl text-gray-500 hover:text-red-500"
+                >
+                  ✕
+                </button>
+
+                <h2 class="text-2xl font-semibold mb-4">
+                  Create New Assignment
+                </h2>
+                <div class="mb-4">
+                  <label class="block text-lg py-1">Assignment Title</label>
+                  <input
+                    v-model="assignmentTitle"
+                    type="text"
+                    class="w-full border border-gray-300 dark:border-gray-800 rounded-md dark:bg-gray-700 px-3 py-2 focus:outline-none focus:ring-green-200"
+                    placeholder="e.g., HW01 - Python001"
+                  />
+                </div>
+                <div class="mb-4">
+                  <label class="block text-lg py-1">Score</label>
+                  <input
+                    v-model="score"
+                    type="number"
+                    class="w-full border border-gray-300 dark:border-gray-800 rounded-md dark:bg-gray-700 px-3 py-2 focus:outline-none focus:ring-green-200"
+                    placeholder="e.g., 30"
+                  />
+                </div>
+
+                <div class="flex justify-end gap-3">
+                  <button
+                    @click="submit"
+                    class="px-6 py-3 rounded-md bg-green-600 hover:bg-green-800 text-white text-base"
+                  >
+                    Create Assignment
+                  </button>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
-      </nav>
-      <div
-        class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8"
-      >
-        <h1
-          class="text-3xl font-bold text-gray-900 dark:text-white break-words"
-        >
-          CS101 - Intro to Computer Science
-        </h1>
-        <div class="flex flex-col sm:flex-row gap-4 w-full md:w-auto">
-          <div class="relative w-full md:w-64">
-            <div
-              class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none"
-            >
-              <span class="material-symbols-outlined text-gray-400"
-                >search</span
-              >
-            </div>
-            <input
-              class="block w-full pl-10 pr-3 py-3 border border-border-light dark:border-border-dark rounded-md leading-5 bg-white dark:bg-surface-dark text-gray-900 dark:text-gray-100 placeholder-gray-500 focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary sm:text-sm"
-              placeholder="Search assignments..."
-              type="text"
-            />
-          </div>
-          <div>
-            <button
-              @click="createAssignment"
-              class="inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-primary hover:bg-primary-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary transition-colors whitespace-nowrap"
-            >
-              <span class="material-symbols-outlined mr-2 text-lg">add</span>
-              Create New Assignment
-            </button>
-          </div>
+        <div class="flex flex-col space-y-4">
           <div
-            v-if="startCreate"
-            class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
-            @click.self="cancleCreate"
+            class="bg-white dark:bg-surface-dark border border-border-light dark:border-border-dark rounded-xl px-6 py-5 shadow-sm hover:shadow-md transition-shadow"
           >
-            <div
-              class="bg-white dark:bg-gray-800 w-full max-w-md mx-4 rounded-2xl shadow-xl p-6 relative max-h-[90vh] overflow-y-auto"
-            >
-              <button
-                @click="cancleCreate"
-                class="absolute top-3 right-3 text-2xl text-gray-500 hover:text-red-500"
-              >
-                ✕
-              </button>
-
-              <h2 class="text-2xl font-semibold mb-4">Create New Assignment</h2>
-              <div class="mb-4">
-                <label class="block text-lg py-1">Assignment Title</label>
-                <input
-                  v-model="assignmentTitle"
-                  type="text"
-                  class="w-full border border-gray-300 dark:border-gray-800 rounded-md dark:bg-gray-700 px-3 py-2 focus:outline-none focus:ring-green-200"
-                  placeholder="e.g., HW01 - Python001"
-                />
-              </div>
-              <div class="mb-4">
-                <label class="block text-lg py-1">Score</label>
-                <input
-                  v-model="score"
-                  type="number"
-                  class="w-full border border-gray-300 dark:border-gray-800 rounded-md dark:bg-gray-700 px-3 py-2 focus:outline-none focus:ring-green-200"
-                  placeholder="e.g., 30"
-                />
-              </div>
-
-              <div class="flex justify-end gap-3">
+            <div class="flex items-center justify-between">
+              <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
+                Midterm Exam
+              </h3>
+              <div class="flex items-center gap-2">
+                <!-- View&Edit botton -->
                 <button
-                  @click="submit"
-                  class="px-6 py-3 rounded-md bg-green-600 hover:bg-green-800 text-white text-base"
+                  class="text-sm font-medium text-primary hover:text-primary-dark border border-border-light dark:border-border-dark hover:border-primary bg-white dark:bg-surface-dark rounded-lg px-4 py-2 transition-colors shadow-sm"
                 >
-                  Create Assignment
+                  View &amp; Edit Scores
+                </button>
+                <!-- Archive botton -->
+                <button
+                  class="p-2 text-gray-400 hover:text-yellow-600 hover:bg-yellow-50 dark:hover:bg-yellow-900/30 rounded-full transition-colors duration-200 group"
+                  title="Delete Assignment"
+                >
+                  <span class="material-symbols-outlined text-xl">archive</span>
+                </button>
+                <!-- Delete botton -->
+                <button
+                  class="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-500/10 rounded-full transition-colors duration-200 group"
+                  title="Delete Assignment"
+                >
+                  <span class="material-symbols-outlined text-xl">delete</span>
                 </button>
               </div>
             </div>
           </div>
-        </div>
-      </div>
-      <div class="flex flex-col space-y-4">
-        <div
-          class="bg-white dark:bg-surface-dark border border-border-light dark:border-border-dark rounded-xl px-6 py-5 shadow-sm hover:shadow-md transition-shadow"
-        >
-          <div class="flex items-center justify-between">
-            <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
-              Midterm Exam
-            </h3>
-            <div class="flex items-center gap-2">
-              <!-- View&Edit botton -->
-              <button
-                class="text-sm font-medium text-primary hover:text-primary-dark border border-border-light dark:border-border-dark hover:border-primary bg-white dark:bg-surface-dark rounded-lg px-4 py-2 transition-colors shadow-sm"
-              >
-                View &amp; Edit Scores
-              </button>
-              <!-- Archive botton -->
-              <button
-                class="p-2 text-gray-400 hover:text-yellow-600 hover:bg-yellow-50 dark:hover:bg-yellow-900/30 rounded-full transition-colors duration-200 group"
-                title="Delete Assignment"
-              >
-                <span class="material-symbols-outlined text-xl">archive</span>
-              </button>
-              <!-- Delete botton -->
-              <button
-                class="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-500/10 rounded-full transition-colors duration-200 group"
-                title="Delete Assignment"
-              >
-                <span class="material-symbols-outlined text-xl">delete</span>
-              </button>
+          <div
+            class="bg-white dark:bg-surface-dark border border-border-light dark:border-border-dark rounded-xl px-6 py-5 shadow-sm hover:shadow-md transition-shadow"
+          >
+            <div class="flex items-center justify-between">
+              <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
+                Database Project Phase 1
+              </h3>
+              <div class="flex items-center gap-2">
+                <!-- View&Edit botton -->
+                <button
+                  class="text-sm font-medium text-primary hover:text-primary-dark border border-border-light dark:border-border-dark hover:border-primary bg-white dark:bg-surface-dark rounded-lg px-4 py-2 transition-colors shadow-sm"
+                >
+                  View &amp; Edit Scores
+                </button>
+                <!-- Archive botton -->
+                <button
+                  class="p-2 text-gray-400 hover:text-yellow-600 hover:bg-yellow-50 dark:hover:bg-yellow-900/30 rounded-full transition-colors duration-200 group"
+                  title="Delete Assignment"
+                >
+                  <span class="material-symbols-outlined text-xl">archive</span>
+                </button>
+                <!-- Delete botton -->
+                <button
+                  class="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-500/10 rounded-full transition-colors duration-200 group"
+                  title="Delete Assignment"
+                >
+                  <span class="material-symbols-outlined text-xl">delete</span>
+                </button>
+              </div>
             </div>
           </div>
-        </div>
-        <div
-          class="bg-white dark:bg-surface-dark border border-border-light dark:border-border-dark rounded-xl px-6 py-5 shadow-sm hover:shadow-md transition-shadow"
-        >
-          <div class="flex items-center justify-between">
-            <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
-              Database Project Phase 1
-            </h3>
-            <div class="flex items-center gap-2">
-              <!-- View&Edit botton -->
-              <button
-                class="text-sm font-medium text-primary hover:text-primary-dark border border-border-light dark:border-border-dark hover:border-primary bg-white dark:bg-surface-dark rounded-lg px-4 py-2 transition-colors shadow-sm"
-              >
-                View &amp; Edit Scores
-              </button>
-              <!-- Archive botton -->
-              <button
-                class="p-2 text-gray-400 hover:text-yellow-600 hover:bg-yellow-50 dark:hover:bg-yellow-900/30 rounded-full transition-colors duration-200 group"
-                title="Delete Assignment"
-              >
-                <span class="material-symbols-outlined text-xl">archive</span>
-              </button>
-              <!-- Delete botton -->
-              <button
-                class="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-500/10 rounded-full transition-colors duration-200 group"
-                title="Delete Assignment"
-              >
-                <span class="material-symbols-outlined text-xl">delete</span>
-              </button>
+          <div
+            class="bg-white dark:bg-surface-dark border border-border-light dark:border-border-dark rounded-xl px-6 py-5 shadow-sm hover:shadow-md transition-shadow"
+          >
+            <div class="flex items-center justify-between">
+              <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
+                SQL Practice Quiz
+              </h3>
+              <div class="flex items-center gap-2">
+                <!-- View&Edit botton -->
+                <button
+                  class="text-sm font-medium text-primary hover:text-primary-dark border border-border-light dark:border-border-dark hover:border-primary bg-white dark:bg-surface-dark rounded-lg px-4 py-2 transition-colors shadow-sm"
+                >
+                  View &amp; Edit Scores
+                </button>
+                <!-- Archive botton -->
+                <button
+                  class="p-2 text-gray-400 hover:text-yellow-600 hover:bg-yellow-50 dark:hover:bg-yellow-900/30 rounded-full transition-colors duration-200 group"
+                  title="Delete Assignment"
+                >
+                  <span class="material-symbols-outlined text-xl">archive</span>
+                </button>
+                <!-- Delete botton -->
+                <button
+                  class="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-500/10 rounded-full transition-colors duration-200 group"
+                  title="Delete Assignment"
+                >
+                  <span class="material-symbols-outlined text-xl">delete</span>
+                </button>
+              </div>
             </div>
           </div>
-        </div>
-        <div
-          class="bg-white dark:bg-surface-dark border border-border-light dark:border-border-dark rounded-xl px-6 py-5 shadow-sm hover:shadow-md transition-shadow"
-        >
-          <div class="flex items-center justify-between">
-            <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
-              SQL Practice Quiz
-            </h3>
-            <div class="flex items-center gap-2">
-              <!-- View&Edit botton -->
-              <button
-                class="text-sm font-medium text-primary hover:text-primary-dark border border-border-light dark:border-border-dark hover:border-primary bg-white dark:bg-surface-dark rounded-lg px-4 py-2 transition-colors shadow-sm"
-              >
-                View &amp; Edit Scores
-              </button>
-              <!-- Archive botton -->
-              <button
-                class="p-2 text-gray-400 hover:text-yellow-600 hover:bg-yellow-50 dark:hover:bg-yellow-900/30 rounded-full transition-colors duration-200 group"
-                title="Delete Assignment"
-              >
-                <span class="material-symbols-outlined text-xl">archive</span>
-              </button>
-              <!-- Delete botton -->
-              <button
-                class="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-500/10 rounded-full transition-colors duration-200 group"
-                title="Delete Assignment"
-              >
-                <span class="material-symbols-outlined text-xl">delete</span>
-              </button>
-            </div>
-          </div>
-        </div>
-        <div
-          class="bg-white dark:bg-surface-dark border border-border-light dark:border-border-dark rounded-xl px-6 py-5 shadow-sm hover:shadow-md transition-shadow"
-        >
-          <div class="flex items-center justify-between">
-            <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
-              Normalization Exercise
-            </h3>
-            <div class="flex items-center gap-2">
-              <!-- View&Edit botton -->
-              <button
-                class="text-sm font-medium text-primary hover:text-primary-dark border border-border-light dark:border-border-dark hover:border-primary bg-white dark:bg-surface-dark rounded-lg px-4 py-2 transition-colors shadow-sm"
-              >
-                View &amp; Edit Scores
-              </button>
-              <!-- Archive botton -->
-              <button
-                class="p-2 text-gray-400 hover:text-yellow-600 hover:bg-yellow-50 dark:hover:bg-yellow-900/30 rounded-full transition-colors duration-200 group"
-                title="Delete Assignment"
-              >
-                <span class="material-symbols-outlined text-xl">archive</span>
-              </button>
-              <!-- Delete botton -->
-              <button
-                class="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-500/10 rounded-full transition-colors duration-200 group"
-                title="Delete Assignment"
-              >
-                <span class="material-symbols-outlined text-xl">delete</span>
-              </button>
+          <div
+            class="bg-white dark:bg-surface-dark border border-border-light dark:border-border-dark rounded-xl px-6 py-5 shadow-sm hover:shadow-md transition-shadow"
+          >
+            <div class="flex items-center justify-between">
+              <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
+                Normalization Exercise
+              </h3>
+              <div class="flex items-center gap-2">
+                <!-- View&Edit botton -->
+                <button
+                  class="text-sm font-medium text-primary hover:text-primary-dark border border-border-light dark:border-border-dark hover:border-primary bg-white dark:bg-surface-dark rounded-lg px-4 py-2 transition-colors shadow-sm"
+                >
+                  View &amp; Edit Scores
+                </button>
+                <!-- Archive botton -->
+                <button
+                  class="p-2 text-gray-400 hover:text-yellow-600 hover:bg-yellow-50 dark:hover:bg-yellow-900/30 rounded-full transition-colors duration-200 group"
+                  title="Delete Assignment"
+                >
+                  <span class="material-symbols-outlined text-xl">archive</span>
+                </button>
+                <!-- Delete botton -->
+                <button
+                  class="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-500/10 rounded-full transition-colors duration-200 group"
+                  title="Delete Assignment"
+                >
+                  <span class="material-symbols-outlined text-xl">delete</span>
+                </button>
+              </div>
             </div>
           </div>
         </div>
