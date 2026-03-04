@@ -9,7 +9,7 @@ class UserResponse(BaseModel):
     middle_name: Optional[str] = None
     last_name: str
     avatar_url: Optional[str] = None
-    student_id: Optional[str] = None  # รหัสนักศึกษา
+    student_id: Optional[int] = None  # รหัสนักศึกษา
 
     class Config:
         from_attributes = True
