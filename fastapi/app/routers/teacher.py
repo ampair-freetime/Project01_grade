@@ -26,7 +26,7 @@ async def teacher_dashboard(db: Session = Depends(get_db),current_user: AuthUser
     # ครู?
     teacher = is_teacher(db, current_user)
     # วิชาทั้งหมดที่ครูคนนั้นสร้างไว้
-    courses = db.query(Course).filter(Course.teacher_id == teacher.teacher_id,Course.is_deleted == False).all()
+    courses = db.query(Course).filter(Course.teacher_id == teacher.teacher_id,Course.is_deleted == False,Course.is_archive == False).all()
     # response ชื่อครูกับรายวิชาที่สอน
     # if not courses:
     #     raise HTTPException(status_code=404,detail="courses not found")
@@ -276,4 +276,5 @@ async def archive(course_id:int, db:Session = Depends(get_db), current_user: Aut
     if not course:
         raise HTTPException(status=404,detail="Course not found")
     course.is_archive = True
+    db.commit()
     return {"message":"Archive course successfully"}

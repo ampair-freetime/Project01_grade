@@ -531,22 +531,26 @@ const deleteCourse = async (id) => {
 };
 
 const goToAssignment = (course_id) => {
-  router.push(`/teacher/assignments/${course_id}`);
+  router.push(`/assignment/${course_id}`);
 };
 
 const archiveCourse = async (course_id) => {
   if (!confirm("Archive this course?")) return;
 
   try {
-    const response = await fetch(`${BASE_URL}/teacher/archive_course/${course_id}`, {
+    const response = await fetch(`${BASE_URL}/teacher/archive/${course_id}`, {
       headers:{'X-CSRF-Token': csrf_token},
       method: "POST",
       credentials: "include",
     });
 
-    if (response.ok) {
-      await fetchDashboard();
+    if (!response.ok) {
+      const err = await response.json();
+      alert(err.detail || "Archive failed");
+      return;
     }
+
+await fetchDashboard();
     const course = courses.value.find(c => c.course_id === course_id)
     courses.value = courses.value.filter(
       c => c.course_id !== course_id
