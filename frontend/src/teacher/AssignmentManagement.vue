@@ -41,7 +41,7 @@
                 <img
                   alt="User profile picture"
                   class="h-10 w-10 rounded-full object-cover border-2 border-primary"
-                  :src="userProfile?.avatar_url"
+                  :src="randomAvatar"
                 />
               </div>
             </button>
@@ -54,7 +54,7 @@
                 <div class="flex items-center space-x-3">
                   <img
                     class="h-12 w-12 rounded-full object-cover"
-                    :src="userProfile?.avatar_url"
+                    :src="randomAvatar"
                   />
                   <div>
                     <p
@@ -89,9 +89,10 @@
         class="flex mb-6 text-sm text-text-muted-light dark:text-text-muted-dark"
       >
         <div class="flex flex-col gap-4">
-          <a
+          <button
             class="group flex w-fit items-center gap-3 text-sm font-bold text-[#111811] dark:text-white hover:text-primary transition-colors"
-            href="#"
+            type="button"
+            @click="router.push('/teacher/courses')"
           >
             <div
               class="flex size-9 items-center justify-center rounded-full bg-surface-light dark:bg-surface-dark border border-border-light dark:border-border-dark shadow-sm group-hover:border-primary group-hover:text-primary transition-colors"
@@ -101,15 +102,15 @@
               >
             </div>
             <span>Return</span>
-          </a>
+          </button>
           <div class="flex flex-wrap gap-2 text-sm">
-            <a class="hover:text-primary font-medium" href="#">
-              Course Management
-            </a>
-            <span class="font-medium"> / </span>
-            <span class="text-[#111811] dark:text-white font-medium"
-              >CS101 - Intro to Algorithms</span
+            <span class="hover:text-primary font-medium cursor-pointer"
+              >Course Management</span
             >
+            <span class="font-medium"> / </span>
+            <span class="text-[#111811] dark:text-white font-medium">
+              {{ courseTitle || `Course #${courseID}` }}
+            </span>
           </div>
         </div>
       </nav>
@@ -119,7 +120,7 @@
         <h1
           class="text-3xl font-bold text-gray-900 dark:text-white whitespace-nowrap"
         >
-          CS101 - Intro to Computer Science
+          {{ courseTitle || "Assignments" }}
         </h1>
         <div class="flex flex-col sm:flex-row gap-4 w-full md:w-auto">
           <div class="relative w-full md:w-64">
@@ -194,121 +195,45 @@
       </div>
       <div class="flex flex-col space-y-4">
         <div
-          class="bg-white dark:bg-surface-dark border border-border-light dark:border-border-dark rounded-xl px-6 py-5 shadow-sm hover:shadow-md transition-shadow"
+          v-if="assignments.length === 0"
+          class="bg-white dark:bg-surface-dark border border-dashed border-border-light dark:border-border-dark rounded-xl px-6 py-10 text-center text-sm text-text-muted-light dark:text-text-muted-dark"
         >
-          <div class="flex items-center justify-between">
-            <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
-              Midterm Exam
-            </h3>
-            <div class="flex items-center gap-2">
-              <!-- View&Edit botton -->
-              <button
-                class="text-sm font-medium text-primary hover:text-primary-dark border border-border-light dark:border-border-dark hover:border-primary bg-white dark:bg-surface-dark rounded-lg px-4 py-2 transition-colors shadow-sm"
-              >
-                View &amp; Edit Scores
-              </button>
-              <!-- Archive botton -->
-              <button
-                class="p-2 text-gray-400 hover:text-yellow-600 hover:bg-yellow-50 dark:hover:bg-yellow-900/30 rounded-full transition-colors duration-200 group"
-                title="Delete Assignment"
-              >
-                <span class="material-symbols-outlined text-xl">archive</span>
-              </button>
-              <!-- Delete botton -->
-              <button
-                class="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-500/10 rounded-full transition-colors duration-200 group"
-                title="Delete Assignment"
-              >
-                <span class="material-symbols-outlined text-xl">delete</span>
-              </button>
-            </div>
-          </div>
+          No assignments for this course yet.
         </div>
+
         <div
+          v-for="assignment in assignments"
+          :key="assignment.assign_id"
           class="bg-white dark:bg-surface-dark border border-border-light dark:border-border-dark rounded-xl px-6 py-5 shadow-sm hover:shadow-md transition-shadow"
         >
           <div class="flex items-center justify-between">
             <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
-              Database Project Phase 1
+              {{ assignment.assign_name || assignment.quiz_name }}
             </h3>
-            <div class="flex items-center gap-2">
-              <!-- View&Edit botton -->
+            <div class="flex items-center gap-4">
+              <span
+                class="inline-flex items-center rounded-full bg-gray-100 dark:bg-gray-700 px-3 py-1 text-xs font-medium text-gray-700 dark:text-gray-200"
+              >
+                Full mark:
+                <span class="ml-1 font-semibold">
+                  {{ assignment.full_mark ?? assignment.full_score ?? "-" }}
+                </span>
+              </span>
               <button
                 class="text-sm font-medium text-primary hover:text-primary-dark border border-border-light dark:border-border-dark hover:border-primary bg-white dark:bg-surface-dark rounded-lg px-4 py-2 transition-colors shadow-sm"
               >
                 View &amp; Edit Scores
               </button>
-              <!-- Archive botton -->
+
               <button
+                @click="archiveAssignment(assignment)"
                 class="p-2 text-gray-400 hover:text-yellow-600 hover:bg-yellow-50 dark:hover:bg-yellow-900/30 rounded-full transition-colors duration-200 group"
-                title="Delete Assignment"
+                title="Archive Assignment"
               >
                 <span class="material-symbols-outlined text-xl">archive</span>
               </button>
-              <!-- Delete botton -->
               <button
-                class="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-500/10 rounded-full transition-colors duration-200 group"
-                title="Delete Assignment"
-              >
-                <span class="material-symbols-outlined text-xl">delete</span>
-              </button>
-            </div>
-          </div>
-        </div>
-        <div
-          class="bg-white dark:bg-surface-dark border border-border-light dark:border-border-dark rounded-xl px-6 py-5 shadow-sm hover:shadow-md transition-shadow"
-        >
-          <div class="flex items-center justify-between">
-            <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
-              SQL Practice Quiz
-            </h3>
-            <div class="flex items-center gap-2">
-              <!-- View&Edit botton -->
-              <button
-                class="text-sm font-medium text-primary hover:text-primary-dark border border-border-light dark:border-border-dark hover:border-primary bg-white dark:bg-surface-dark rounded-lg px-4 py-2 transition-colors shadow-sm"
-              >
-                View &amp; Edit Scores
-              </button>
-              <!-- Archive botton -->
-              <button
-                class="p-2 text-gray-400 hover:text-yellow-600 hover:bg-yellow-50 dark:hover:bg-yellow-900/30 rounded-full transition-colors duration-200 group"
-                title="Delete Assignment"
-              >
-                <span class="material-symbols-outlined text-xl">archive</span>
-              </button>
-              <!-- Delete botton -->
-              <button
-                class="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-500/10 rounded-full transition-colors duration-200 group"
-                title="Delete Assignment"
-              >
-                <span class="material-symbols-outlined text-xl">delete</span>
-              </button>
-            </div>
-          </div>
-        </div>
-        <div
-          class="bg-white dark:bg-surface-dark border border-border-light dark:border-border-dark rounded-xl px-6 py-5 shadow-sm hover:shadow-md transition-shadow"
-        >
-          <div class="flex items-center justify-between">
-            <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
-              Normalization Exercise
-            </h3>
-            <div class="flex items-center gap-2">
-              <!-- View&Edit botton -->
-              <button
-                class="text-sm font-medium text-primary hover:text-primary-dark border border-border-light dark:border-border-dark hover:border-primary bg-white dark:bg-surface-dark rounded-lg px-4 py-2 transition-colors shadow-sm"
-              >
-                View &amp; Edit Scores
-              </button>
-              <!-- Archive botton -->
-              <button
-                class="p-2 text-gray-400 hover:text-yellow-600 hover:bg-yellow-50 dark:hover:bg-yellow-900/30 rounded-full transition-colors duration-200 group"
-                title="Delete Assignment"
-              >
-                <span class="material-symbols-outlined text-xl">archive</span>
-              </button>
-              <!-- Delete botton -->
-              <button
+                @click="deleteAssign(assignment.assign_id)"
                 class="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-500/10 rounded-full transition-colors duration-200 group"
                 title="Delete Assignment"
               >
@@ -344,23 +269,26 @@
           ✕
         </button>
 
-        <h2 class="text-xl font-semibold mb-4">Archived Courses</h2>
+        <h2 class="text-xl font-semibold mb-4">Archived Assignment</h2>
 
-        <ul class="space-y-2">
+        <ul v-if="archivedAssignments.length" class="space-y-2">
           <li
+            v-for="assignment in archivedAssignments"
+            :key="assignment.assign_id"
             class="rounded-xl hover:bg-gray-100 dark:hover:bg-gray-600/50 transition-colors duration-150"
           >
             <div class="px-4 py-2 flex items-center">
               <div class="grow items-center">
                 <div class="text-sm font-bold text-gray-900 dark:text-white">
-                  Pre-Test
+                  {{ assignment.assign_name || assignment.quiz_name }}
                 </div>
               </div>
               <div class="flex items-center gap-6">
                 <div class="flex items-end min-w-[50px]">
                   <button
                     class="p-2 text-gray-400 hover:text-yellow-600 hover:bg-yellow-50 dark:hover:bg-yellow-900/30 rounded-full transition-colors duration-200 group"
-                    title="Restore Course"
+                    title="Restore Assignment"
+                    @click="restoreArchivedAssignment(assignment)"
                   >
                     <span
                       class="material-symbols-outlined text-xl group-hover:text-yellow-600"
@@ -369,40 +297,8 @@
                   </button>
                   <button
                     class="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-900/30 rounded-full transition-colors duration-200 group"
-                    title="Delete Course"
-                  >
-                    <span
-                      class="material-symbols-outlined text-xl group-hover:text-red-600"
-                      >delete</span
-                    >
-                  </button>
-                </div>
-              </div>
-            </div>
-          </li>
-          <li
-            class="rounded-xl hover:bg-gray-100 dark:hover:bg-gray-600/50 transition-colors duration-150"
-          >
-            <div class="px-4 py-2 flex items-center">
-              <div class="grow items-center">
-                <div class="text-sm font-bold text-gray-900 dark:text-white">
-                  Pre-Midterm
-                </div>
-              </div>
-              <div class="flex items-center gap-6">
-                <div class="flex items-end min-w-[50px]">
-                  <button
-                    class="p-2 text-gray-400 hover:text-yellow-600 hover:bg-yellow-50 dark:hover:bg-yellow-900/30 rounded-full transition-colors duration-200 group"
-                    title="Restore Course"
-                  >
-                    <span
-                      class="material-symbols-outlined text-xl group-hover:text-yellow-600"
-                      >restore</span
-                    >
-                  </button>
-                  <button
-                    class="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-900/30 rounded-full transition-colors duration-200 group"
-                    title="Delete Course"
+                    title="Delete Assignment"
+                    @click="deleteArchivedAssignment(assignment.assign_id)"
                   >
                     <span
                       class="material-symbols-outlined text-xl group-hover:text-red-600"
@@ -414,13 +310,19 @@
             </div>
           </li>
         </ul>
+        <p
+          v-else
+          class="text-sm text-text-muted-light dark:text-text-muted-dark py-1"
+        >
+          No archived assignments.
+        </p>
       </div>
     </div>
   </div>
 </template>
 
 <script setup>
-import { ref, onMounted, onBeforeUnmount } from "vue";
+import { ref, onMounted, onBeforeUnmount, computed } from "vue";
 import { useRouter, useRoute } from "vue-router";
 
 defineOptions({
@@ -433,15 +335,54 @@ const showArchiveModal = ref(false);
 const startCreate = ref(false);
 const isOpen = ref(false);
 const dropdownRef = ref(null);
-const courseID = ref(route.params.course_id);
+const courseID = computed(() => Number(route.params.course_id));
 const assignmentTitle = ref("");
 const score = ref("");
 const userProfile = ref(null);
+const assignments = ref([]);
+const courseTitle = ref("");
+const csrf_token = localStorage.getItem("csrf_token");
+const archivedAssignments = ref([]);
+const randomAvatar = ref("")
 
 const BASE_URL = "http://localhost:56733";
 
-const toggleDropdown = () => {
-  isOpen.value = !isOpen.value;
+// ################################ fetch ###########################################################################################################################
+
+const fetchAssignment = async (course_id) => {
+  try {
+    const response = await fetch(
+      `${BASE_URL}/teacher/assignment/${course_id}`,
+      {
+        method: "GET",
+        credentials: "include",
+      }
+    );
+
+    if (!response.ok) {
+      const text = await response.text().catch(() => "");
+      console.error("Fetch assignment failed:", response.status, text);
+      throw new Error("Fetch failed");
+    }
+
+    const data = await response.json();
+    // backend:
+    // {
+    //   course: { course_id, course_name },
+    //   assignment: [{ assign_id, assign_name, full_mark }, ...]
+    // }
+
+    if (Array.isArray(data.assignment)) {
+      assignments.value = data.assignment;
+    } else if (Array.isArray(data)) {
+      assignments.value = data;
+    } else {
+      assignments.value = [];
+    }
+    courseTitle.value = data.course?.course_name || courseTitle.value;
+  } catch (err) {
+    console.error(err);
+  }
 };
 
 const fetchUserProfile = async () => {
@@ -460,6 +401,10 @@ const fetchUserProfile = async () => {
   } catch (error) {
     console.error("Fetch profile error:", error);
   }
+};
+// ################################ pop-up ###########################################################################################################################
+const toggleDropdown = () => {
+  isOpen.value = !isOpen.value;
 };
 
 const handleClickOutside = (event) => {
@@ -484,41 +429,30 @@ const cancleCreate = () => {
   startCreate.value = false;
 };
 
-const fetchAssignment = async (course_id) => {
-  try {
-    const token = localStorage.getItem("token");
-    const response = await fetch(
-      `${BASE_URL}/teacher/assignment/${course_id}`,
-      {
-        method: "GET",
-        credentials: "include",
-      }
-    );
-
-    if (!response.ok) {
-      throw new Error("Fetch failed");
-    }
-
-    const data = await response.json();
-    console.log(data);
-  } catch (err) {
-    console.error(err);
-  }
-};
+// ################################ Assignment ###########################################################################################################################
 
 const submit = async () => {
   try {
-    const response = await fetch(`${BASE_URL}/teacher/created_assign`, {
+    if (!assignmentTitle.value || !assignmentTitle.value.trim()) {
+      alert("Please enter assignment title");
+      return;
+    }
+    if (!score.value) {
+      alert("Please enter full mark");
+      return;
+    }
+
+    const response = await fetch(`${BASE_URL}/teacher/create_assign`, {
       method: "POST",
       credentials: "include",
       headers: {
         "Content-Type": "application/json",
-        "X-CSRF-Token": csrfToken,
+        "X-CSRF-Token": csrf_token
       },
       body: JSON.stringify({
-        quiz_name: assignmentTitle.value,
+        quiz_name: assignmentTitle.value.trim(),
         full_mark: Number(score.value),
-        course_id: Number(courseID.value),
+        course_id: courseID.value,
       }),
     });
 
@@ -533,17 +467,26 @@ const submit = async () => {
 
     assignmentTitle.value = "";
     score.value = "";
+
+    if (courseID.value) {
+      await fetchAssignment(courseID.value);
+    }
   } catch (error) {
     console.error(error);
   }
 };
 
 const deleteAssign = async (assign_id) => {
+  if (!confirm("Delete this Assignment?")) return;
+
   try {
     const response = await fetch(
-      `http://localhost:56733/delete_assign/${assign_id}`,
+      `${BASE_URL}/teacher/delete_assign/${assign_id}`,
       {
         method: "POST",
+        headers: {
+          "X-CSRF-Token": csrf_token
+        },
         credentials: "include",
       }
     );
@@ -551,15 +494,45 @@ const deleteAssign = async (assign_id) => {
     if (!response.ok) {
       throw new Error("Delete failed");
     }
-    await fetchAssignment();
+    if (courseID.value) {
+      await fetchAssignment(courseID.value);
+    }
   } catch (err) {
     console.error("Delete failed", err);
   }
 };
 
+const archiveAssignment = async (assignment) => {
+  if (!confirm("Archive this assignment?")) return;
+  try {
+    archivedAssignments.value.push(assignment);
+    assignments.value = assignments.value.filter(
+      (a) => a.assign_id !== assignment.assign_id
+    );
+  } catch (err) {
+    console.error("Archive failed", err);
+  }
+};
+// ################################ Archive ###########################################################################################################################
+// ยังไม่มีหลังบ้าน
+const restoreArchivedAssignment = (assignment) => {
+  archivedAssignments.value = archivedAssignments.value.filter(
+    (a) => a.assign_id !== assignment.assign_id
+  );
+  assignments.value.push(assignment);
+};
+
+const deleteArchivedAssignment = async (assign_id) => {
+  if (!confirm("Permanently delete this assignment?")) return;
+  archivedAssignments.value = archivedAssignments.value.filter(
+    (a) => a.assign_id !== assign_id
+  );
+};
+
+// ###########################################################################################################################################################
 const handleLogout = async () => {
   try {
-    const response = await fetch("http://localhost:56733/logout", {
+    const response = await fetch(`${BASE_URL}/logout`, {
       method: "GET",
       credentials: "include",
     });
@@ -579,7 +552,11 @@ const handleLogout = async () => {
 
 onMounted(() => {
   document.addEventListener("click", handleClickOutside);
-  fetchAssignment();
+  if (courseID.value) {
+    fetchAssignment(courseID.value);
+  }
+  const seed = Math.random().toString(36).substring(7);
+  randomAvatar.value = `https://robohash.org/${seed}.png`;
   fetchUserProfile();
 });
 

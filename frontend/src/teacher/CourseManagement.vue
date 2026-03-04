@@ -41,7 +41,7 @@
                 <img
                   alt="User profile picture"
                   class="h-10 w-10 rounded-full object-cover border-2 border-primary"
-                  :src="userProfile?.avatar_url"
+                  :src="randomAvatar"
                 />
               </div>
             </button>
@@ -54,7 +54,7 @@
                 <div class="flex items-center space-x-3">
                   <img
                     class="h-12 w-12 rounded-full object-cover"
-                    :src="userProfile?.avatar_url"
+                    :src="randomAvatar"
                   />
                   <div>
                     <p
@@ -186,7 +186,11 @@
             class="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors duration-150"
           >
             <div class="px-6 py-5 flex items-center justify-between">
-              <a @click="goToAssignment(course.course_id)" class="block">
+              <a
+                href="#"
+                class="block cursor-pointer"
+                @click.prevent="goToAssignment(course.course_id)"
+              >
                 <div class="ml-4">
                   <!-- <div class="text-base font-bold">
                     {{ course.course_id }}
@@ -369,6 +373,7 @@ const showArchiveModal = ref(false);
 const archivedCourses = ref([]);
 const userProfile = ref(null);
 const csrf_token = localStorage.getItem("csrf_token")
+const randomAvatar = ref("");
 
 const BASE_URL = "http://localhost:56733";
 
@@ -597,7 +602,7 @@ const deleteCourse = async (id) => {
 
 //ไปที่หน้า Assignment
 const goToAssignment = (course_id) => {
-  router.push(`/assignment/${course_id}`);
+  router.push(`/teacher/assignments/${course_id}`);
 };
 
 // ###########################################################################################################################################################
@@ -624,6 +629,8 @@ onMounted(() => {
   document.addEventListener("click", handleClickOutside);
   fetchDashboard();
   fetchUserProfile();
+  const seed = Math.random().toString(36).substring(7);
+  randomAvatar.value = `https://robohash.org/${seed}.png`;
 });
 
 onBeforeUnmount(() => {

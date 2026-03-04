@@ -594,6 +594,8 @@ const sortKey = ref("");
 const sortOption = ref("id_lowhigh");
 const sortOpen = ref(false);
 const quizID = route.params.quiz_id;
+const randomAvatar = ref("");
+const BASE_URL = "http://localhost:56733";
 
 const toggleDropdown = () => {
   isOpen.value = !isOpen.value;
@@ -609,7 +611,7 @@ const fetchStudentScore = async () => {
   try {
     const token = localStorage.getItem("token");
 
-    const response = await fetch(`http://localhost:56733/stu_score/${quizID}`, {
+    const response = await fetch(`${BASE_URL}/stu_score/${quizID}`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -619,6 +621,23 @@ const fetchStudentScore = async () => {
     sortPeople();
   } catch (err) {
     console.error(err);
+  }
+};
+const fetchUserProfile = async () => {
+  try {
+    const response = await fetch(`${BASE_URL}/me`, {
+      credentials: "include",
+    });
+
+    if (!response.ok) {
+      router.push("/login");
+      return;
+    }
+
+    const data = await response.json();
+    userProfile.value = data;
+  } catch (error) {
+    console.error("Fetch profile error:", error);
   }
 };
 
@@ -693,6 +712,9 @@ const sortPeople = () => {
 
 onMounted(() => {
   document.addEventListener("click", handleClickOutside);
+  const seed = Math.random().toString(36).substring(7);
+  randomAvatar.value = `https://robohash.org/${seed}.png`;
+  fetchUserProfile();
   fetchStudentScore();
 });
 
