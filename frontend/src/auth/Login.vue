@@ -203,6 +203,10 @@ const togglePassword = () => {
 
 const handleLogin = async () => {
   try {
+    if (!email.value || !password.value) {
+      alert("ใส่ให้ครบจ้า");
+      return;
+    }
     const response = await fetch("http://localhost:56733/login", {
       method: "POST",
       headers: {

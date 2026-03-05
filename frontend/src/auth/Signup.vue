@@ -44,7 +44,9 @@
               Create Account
             </h1>
           </div>
-          <form class="px-6 sm:px-8 pb-10 flex flex-col gap-5">
+          <form
+            class="px-6 sm:px-8 pb-10 flex flex-col gap-5"
+          >
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
               <div class="flex flex-col gap-1.5">
                 <label
@@ -128,25 +130,31 @@
                 />
               </div>
             </div>
-            <div v-if="email.includes('_') && email.endsWith('@cmu.ac.th')" class="modal"><div class="flex flex-col gap-1.5">
-              <label
-                class="text-[#0f172a] dark:text-gray-200 text-sm font-semibold leading-normal ml-1"
-                >ID</label
-              >
-              <div class="relative flex items-center group">
-                <div
-                  class="absolute left-4 text-[#64748b] group-focus-within:text-primary transition-colors pointer-events-none flex items-center justify-center"
+            <div
+              v-if="email.includes('_') && email.endsWith('@cmu.ac.th')"
+              class="modal"
+            >
+              <div class="flex flex-col gap-1.5">
+                <label
+                  class="text-[#0f172a] dark:text-gray-200 text-sm font-semibold leading-normal ml-1"
+                  >ID</label
                 >
-                  <span class="material-symbols-outlined">badge</span>
+                <div class="relative flex items-center group">
+                  <div
+                    class="absolute left-4 text-[#64748b] group-focus-within:text-primary transition-colors pointer-events-none flex items-center justify-center"
+                  >
+                    <span class="material-symbols-outlined">badge</span>
+                  </div>
+                  <input
+                    v-model="studentID"
+                    required
+                    class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-text-main dark:text-white placeholder:text-[#64748b]/60 focus:outline-0 focus:ring-4 focus:ring-primary/10 border border-border-color dark:border-[#0c4a6e] bg-white dark:bg-[#0c4a6e] h-12 pl-11 pr-4 text-base font-normal leading-normal transition-all hover:border-primary/50 focus:border-primary"
+                    placeholder="123456789"
+                    type="text"
+                  />
                 </div>
-                <input
-                  v-model="studentID"
-                  class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-text-main dark:text-white placeholder:text-[#64748b]/60 focus:outline-0 focus:ring-4 focus:ring-primary/10 border border-border-color dark:border-[#0c4a6e] bg-white dark:bg-[#0c4a6e] h-12 pl-11 pr-4 text-base font-normal leading-normal transition-all hover:border-primary/50 focus:border-primary"
-                  placeholder="123456789"
-                  type="text"
-                />
               </div>
-            </div></div>
+            </div>
             <div class="flex flex-col gap-1.5">
               <label
                 class="text-text-main dark:text-gray-200 text-sm font-semibold leading-normal ml-1"
@@ -270,7 +278,8 @@ const studentID = ref(null);
 const password = ref("");
 const showPassword = ref(false);
 
-const isModalOpen = ref(false)
+const isModalOpen = ref(false);
+
 
 const togglePassword = () => {
   showPassword.value = !showPassword.value;
@@ -278,8 +287,8 @@ const togglePassword = () => {
 
 const handleSignup = async () => {
   try {
-    if (!firstName.value && !lastName.value){
-      alert("Enter your name")
+    if (!firstName.value ||!lastName.value ||!email.value || !password.value) {
+      alert("ใส่ให้ครบจ้า");
       return;
     }
     const response = await fetch("http://localhost:56733/register", {
