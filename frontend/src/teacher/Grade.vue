@@ -83,8 +83,9 @@
         </div>
       </div>
     </header>
-    <main class="w-full">
-      <div class="max-w-7xl mx-auto px-6 py-8 space-y-8">
+    <main class="flex-1 flex-row flex-col h-full overflow-hidden relative">
+      <div class="flex-1 overflow-y-auto p-8 lg:p-12">
+        <div class="max-w-5xl mx-auto flex flex-col gap-8">
         <nav
           aria-label="Breadcrumb"
           class="mb-6 text-sm text-text-muted-light dark:text-text-muted-dark"
@@ -135,6 +136,7 @@
               <h1 class="text-3xl font-bold text-gray-900 dark:text-white">
                 {{ assignment_title || "Assignment" }}
               </h1>
+              <div></div>
             <label
               class="inline-flex items-center px-4 py-2 bg-white dark:bg-slate-800 border border-gray-300 dark:border-slate-600 rounded-lg text-sm font-medium text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-slate-700 shadow-sm transition-colors"
             >
@@ -285,7 +287,7 @@
                         <div
                           class="w-10 h-10 rounded-full bg-sky-100 dark:bg-sky-900 text-sky-700 dark:text-sky-200 flex items-center justify-center font-bold text-sm flex-shrink-0"
                         >
-                          {{ student.student_name?.charAt(0) || "S" }}
+                          {{ student.student_name?.charAt(0) || "KUY" }}
                         </div>
                         <div>
                           <div
@@ -367,6 +369,7 @@
             </div>
           </div>
         </div>
+      </div>
       </div>
     </main>
   </div>

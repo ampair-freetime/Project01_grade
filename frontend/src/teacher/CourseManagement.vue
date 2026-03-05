@@ -92,8 +92,7 @@
           >
             Course Management
           </h1>
-        </div>
-      </div>
+  
       <div
         class="bg-surface-light dark:bg-surface-dark rounded-xl shadow-sm border border-border-light dark:border-border-dark p-4 mb-6 flex flex-col sm:flex-row justify-between items-center gap-4"
       >
@@ -275,6 +274,9 @@
             </button>
           </div>
         </div>
+      </div>
+    </div>
+
       </div>
     </main>
 
