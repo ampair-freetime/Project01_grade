@@ -53,15 +53,14 @@ async def teacher_assingment(course_id: int,current_user: AuthUser = Depends(get
         raise HTTPException(status_code=404,detail="assignment not found")
 
     assignment = []
-
-    for q in course.quizzes:
+    all_assignment = db.query(Quiz).filter(Quiz.course_id==course_id,Quiz.is_deleted== False).all()
+    for q in all_assignment:
         #check is deleted???
-        if q.is_deleted == False:
-            assignment.append({
-                "assign_id": q.quiz_id,
-                "assign_name": q.quiz_name,
-                "full_mark": q.full_mark
-            })
+        assignment.append({
+            "assign_id": q.quiz_id,
+            "assign_name": q.quiz_name,
+            "full_mark": q.full_mark
+        })
     return {
         "course":{
             "course_id": course.course_id,
@@ -79,20 +78,15 @@ async def teacher_score(quiz_id: int,db:Session=Depends(get_db),current_user: Au
         raise HTTPException(status_code=404,detail="score not found")
 
     student_score = []
-
-    for s in assignment.scores:
+    all_score = db.query(Score).filter(Score.quiz_id==quiz_id,Score.is_deleted==False).all()
+    for s in all_score:
         #check is deleted???
-        stu = db.query(Student).filter(Student.student_id==s.student_id).first()
-        if s.is_deleted == False:
-            student_score.append({
+        student_score.append({
                 "score_id": s.score_id,
                 "score": s.score,
                 "unread_flag": s.unread_flag,
                 "section": s.section,
-                "stu_id":s.student_id,
-                "stu_fname": stu.first_name,
-                "stu_mname": stu.middle_name,
-                "stu_lname": stu.last_name
+                "stu_id":s.student_id
             })
     return {
         "assignment":{
@@ -180,60 +174,66 @@ async def upload_csv(quiz_id: int,course_id: int,file: UploadFile = File(...),db
     content = await file.read()
     decoded = content.decode("utf-8-sig")
     # แปลงเป็นตาราง
-    csv_reader = csv.DictReader(io.StringIO(decoded))
-    # if csv_reader:
-    #     raise HTTPException(status=404,detail=f"Header: {csv_reader.fieldnames}")
-    number_student = 0
+    csv_reader = list(csv.DictReader(io.StringIO(decoded)))
 
+    number_student = 0
+    emails_stu = [row["student_email"] for row in csv_reader]
+    id_stu = [row["student_id"] for row in csv_reader]
+    #หา user student ที่มี email ในนี้แล้ว แสดงว่าเราแค่เพิ่มหรือแก้ไขคะแนน
+    stu_signup = db.query(Student).filter(Student.student_id.in_(id_stu)).all()
+    stu_index = {}
+    for u in stu_signup:
+        stu_index[u.student_id] = u
+    all_score =  db.query(Score).filter(Score.student_id.in_(id_stu),Score.quiz_id==quiz_id).all()
+    score_index = {}
+    for s in all_score:
+        score_index[s.student_id] = s
+    #ให้สร้างไอดี ใหม่ก่อนถ้ายังไมมี
     for row in csv_reader:
-        # ดึงข้อมูลจาก CSV
         stu_email = str(row["student_email"])
         stu_id = int(row["student_id"])
         score_v = float(row["score"])
         section = str(row["section"])
         number_student += 1
-        # เช็ค student มีจริงไหม ถ้าไม่มีใฟ้สร้างใหม่เลย
-        user = db.query(AuthUser).filter(AuthUser.email == stu_email).first()
-        # ถ้าไม่มี user แสดงว่าไม่มี student แน่นอน
-        if not user:
+        #ไม่มี ไอดีให้สร้างใหม่
+        t_stu = stu_index.get(stu_id)
+        if not t_stu:
             new_user = AuthUser(email=stu_email)
             db.add(new_user)
-            db.commit()
-            db.refresh(new_user)
+            db.flush()
+
             new_stu = Student(
                 student_id=stu_id,
                 auth_user_id=new_user.auth_user_id)
             db.add(new_stu)
-            db.commit()
-            db.refresh(new_stu)
-        # มี user แล้ว ให้หา student แล้ว update ข้อมูลเอา
+            stu_index[stu_id] = new_stu
 
-        # สร้างหรือ update score ใน quiz นั้นๆ
-        # มีคะแนนของ นักเรียน id นี้หรือยัง
-        score = db.query(Score).filter(Score.student_id == stu_id,Score.quiz_id == quiz_id).first()
-        # ถ้ายังให้สร้าง ถ้ามีให้ update
-        if score:
-            # update คะแนนเดิม (รวมถึงกรณีเคยถูก soft delete มาก่อน)
-            score.score = score_v
-            score.unread_flag = True
-            score.section = section
-            score.is_deleted = False
-            db.commit()
+        t_score = score_index.get(stu_id)
+
+        if t_score:
+            # Update คะแนนเดิม
+            t_score.score = score_v
+            t_score.section = section
+            t_score.unread_flag = True
+            t_score.is_deleted = False
         else:
+            # สร้างคะแนนใหม่
             new_score = Score(
-                score = score_v,
-                section = section,
-                quiz_id = quiz_id,
-                student_id = stu_id
-            )
+                score=score_v,
+                section=section,
+                quiz_id=quiz_id,
+                student_id=stu_id
+            ) #
             db.add(new_score)
-            db.commit()
-    #update number of student
+
+
+    #อัปเดตจำนวนคนใน course
     course = db.query(Course).filter(Course.course_id==course_id,Course.teacher_id==teacher.teacher_id).first()
     if not course:
         raise HTTPException(status_code=404,detail="course not found")
     course.number_student = number_student
     db.commit()
+        
 
     return {"message": "CSV uploaded successfully"}
 ############################################################################ deleted #####################################################################
