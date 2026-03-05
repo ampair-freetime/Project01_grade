@@ -61,18 +61,10 @@
                 </div>
                 <input
                   v-model="email"
-                  list="saved-emails"
                   class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-[#0f172a] dark:text-white placeholder:text-[#64748b]/60 focus:outline-0 focus:ring-4 focus:ring-primary/10 border border-border-color dark:border-[#1e293b] bg-white dark:bg-[#0c1821] h-12 pl-11 pr-4 text-base font-normal leading-normal transition-all hover:border-primary/50 focus:border-primary"
                   placeholder="example@cmu.ac.th"
                   type="email"
                 />
-                <datalist id="saved-emails">
-                  <option
-                    v-for="saved in savedEmails"
-                    :key="saved"
-                    :value="saved"
-                  />
-                </datalist>
               </div>
             </div>
             <div class="flex flex-col gap-1.5">
@@ -125,19 +117,19 @@
               </label>
             </div>
             <div class="flex flex-col gap-4 mt-2">
-              <button
-                class="group relative w-full h-12 bg-primary hover:bg-primary-dark text-white text-base font-bold rounded-lg shadow-[0_2px_10px_rgba(56,189,248,0.2)] hover:shadow-glow hover:-translate-y-0.5 active:translate-y-0 transition-all duration-200 flex items-center justify-center gap-2 overflow-hidden"
-                type="submit"
-              >
-                <span
-                  class="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300 ease-out"
-                ></span>
-                <span
-                  class="material-symbols-outlined relative z-10 group-hover:rotate-12 transition-transform duration-300"
-                  >login</span
+                <button
+                  class="group relative w-full h-12 bg-primary hover:bg-primary-dark text-white text-base font-bold rounded-lg shadow-[0_2px_10px_rgba(56,189,248,0.2)] hover:shadow-glow hover:-translate-y-0.5 active:translate-y-0 transition-all duration-200 flex items-center justify-center gap-2 overflow-hidden"
+                  type="submit"
                 >
-                <span class="relative z-10">Login</span>
-              </button>
+                  <span
+                    class="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300 ease-out"
+                  ></span>
+                  <span
+                    class="material-symbols-outlined relative z-10 group-hover:rotate-12 transition-transform duration-300"
+                    >login</span
+                  >
+                  <span class="relative z-10">Login</span>
+                </button>
               <div class="relative flex items-center py-2">
                 <div
                   class="flex-grow border-t border-border-color dark:border-[#1e293b]"
@@ -195,14 +187,14 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from "vue";
+import { ref } from "vue";
 import { useRouter } from "vue-router";
 
 const email = ref("");
 const password = ref("");
-const savedEmails = ref([]);
 
 const router = useRouter();
+
 const showPassword = ref(false);
 
 const togglePassword = () => {
@@ -211,6 +203,10 @@ const togglePassword = () => {
 
 const handleLogin = async () => {
   try {
+    if (!email.value || !password.value) {
+      alert("ใส่ให้ครบจ้า");
+      return;
+    }
     const response = await fetch("http://localhost:56733/login", {
       method: "POST",
       headers: {
@@ -229,7 +225,6 @@ const handleLogin = async () => {
     }
 
     const data = await response.json();
-    saveEmail(email.value);
     localStorage.setItem("csrf_token", data.csrf_token);
     localStorage.setItem("role", data.role);
 
@@ -240,24 +235,6 @@ const handleLogin = async () => {
     }
   } catch (error) {
     alert(error.message);
-  }
-};
-onMounted(() => {
-  const stored = localStorage.getItem("saved_emails");
-  if (stored) {
-    savedEmails.value = JSON.parse(stored);
-  }
-});
-
-const saveEmail = (newEmail) => {
-  if (!newEmail) return;
-
-  if (!savedEmails.value.includes(newEmail)) {
-    savedEmails.value.push(newEmail);
-    localStorage.setItem(
-      "saved_emails",
-      JSON.stringify(savedEmails.value)
-    );
   }
 };
 name: "Login";
