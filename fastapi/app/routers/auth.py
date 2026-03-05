@@ -246,7 +246,9 @@ async def register(signin_data: UserSignin, db: Session = Depends(get_db)):
             raise HTTPException(status_code=401, detail="Yor are not invited")
         #this user not rewrite 2 ขั้น ใช้ password เป็น none และ student_id เทียบกัน
         avatar = f"https://ui-avatars.com/api/?name={signin_data.first_name}&size=128&background=random"
-        if user.student and user.password is None and user.student.student_id == signin_data.student_id:
+        if user.student.student_id != signin_data.student_id:
+            raise HTTPException(status_code=401, detail="ID not match please enter new ID")
+        if user.student and user.password is None:
             user.student.first_name = signin_data.first_name
             user.student.last_name = signin_data.last_name
             user.student.middle_name = signin_data.middle_name
