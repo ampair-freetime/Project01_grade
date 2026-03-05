@@ -91,24 +91,20 @@
             aria-label="Breadcrumb"
             class="mb-6 text-sm text-text-muted-light dark:text-text-muted-dark"
           >
-            <div class="flex flex-col gap-4">
-              <button
-                class="group flex w-fit items-center gap-3 text-sm font-bold text-[#111811] dark:text-white hover:text-primary transition-colors"
-                type="button"
-                @click="router.push('/teacher/courses')"
-              >
-                <!-- Return -->
-                <a
-                  class="group inline-flex items-center gap-3 font-bold text-[#111811] dark:text-white hover:text-primary transition-colors"
-                  href="#"
-                >
-                  <span class="material-symbols-outlined text-[20px]"
-                    >arrow_back</span
-                  >
-                </a>
-              </button>
+            <button
+            class="group inline-flex items-center gap-3 font-bold text-[#111811] dark:text-white hover:text-primary transition-colors"
+            type="button"
+            @click="router.push(`/teacher/courses`)"
+          >
+            <div
+              class="flex size-9 items-center justify-center rounded-full bg-surface-light dark:bg-surface-dark border border-border-light dark:border-border-dark shadow-sm group-hover:border-primary group-hover:text-primary transition-colors"
+            >
+              <span class="material-symbols-outlined text-[20px]">
+                arrow_back
+              </span>
             </div>
             <span>Return</span>
+          </button>
 
             <div class="flex flex-wrap items-center gap-2 mt-4">
               <button

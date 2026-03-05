@@ -8,7 +8,7 @@ logger = logging.getLogger(__name__)
 
 try:
     # Simple engine creation for Vercel serverless
-    engine = create_engine(settings.database_url, pool_pre_ping=True)
+    engine = create_engine(settings.database_url, pool_pre_ping=True, pool_size=10, max_overflow=20)
     SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
     logger.info("Database engine created successfully")
 except Exception as e:
