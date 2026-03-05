@@ -32,7 +32,7 @@ ACCESS_TOKEN_EXPIRE_MINUTES = 1440  # 1 day (1440 minutes)
 # Google OAuth Configuration
 GOOGLE_CLIENT_ID = settings.google_client_id or "your-google-client-id"
 GOOGLE_CLIENT_SECRET = settings.google_client_secret or "your-google-client-secret"
-GOOGLE_REDIRECT_URI = "http://localhost:8080/auth/google/auth"  # Adjust as needed
+GOOGLE_REDIRECT_URI = "http://localhost:56733/google/auth"
 GOOGLE_AUTH_URL = "https://accounts.google.com/o/oauth2/v2/auth"
 GOOGLE_TOKEN_URL = "https://oauth2.googleapis.com/token"
 GOOGLE_USERINFO_URL = "https://www.googleapis.com/oauth2/v1/userinfo"
@@ -88,43 +88,29 @@ async def hello():
 
 @router.get("/login_with_google", response_description="Redirects to Google OAuth")
 async def login(request: Request):
-    """
-    **Initiate Google OAuth Login**
-
-    Constructs the Google OAuth URL with identifying scopes (openid, email, profile)
-    and redirects the user to Google's consent page.
-    """
-    # ... implementation details ...
     redirect_uri = str(request.url_for("google_auth"))
     auth_url = (
-        f"{GOOGLE_AUTH_URL}?response_type=code&client_id={GOOGLE_CLIENT_ID}"
-        f"&redirect_uri={redirect_uri}&scope=openid%20email%20profile"
+        f"{GOOGLE_AUTH_URL}?response_type=code"
+        f"&client_id={GOOGLE_CLIENT_ID}"
+        f"&redirect_uri={redirect_uri}"
+        f"&scope=openid%20email%20profile"
+        f"&prompt=select_account"
     )
     logger.info("Redirecting to Google OAuth")
     return RedirectResponse(url=auth_url)
 
 
-@router.get("/google/auth", name="google_auth", response_description="Redirects to Frontend with JWT")
-async def google_auth(request: Request, db: Session = Depends(get_db)):
-    """
-    **Google OAuth Callback**
-
-    Handles the callback from Google:
-    1. Exchanges the authorization code for an access token.
-    2. Fetches user profile information from Google.
-    3. Creates or updates the user in the local database.
-    4. Generates a valid JWT for the session.
-    5. Redirects the user back to the frontend with the JWT query parameter.
-    """
-    # ... implementation details ...
+@router.get("/google/auth", name="google_auth")
+async def google_auth(
+    request: Request,
+    db: Session = Depends(get_db)
+):
     try:
         code = request.query_params.get("code")
-    # ... rest of the function ...
-        # (This is a large block, I will strictly follow replacement rules in next step, 
-        # simplifying here for the thought process)
+        # เช็คว่ามี code ไหม
         if not code:
-            raise ValueError("No authorization code provided")
-
+            raise HTTPException(status_code=400, detail="Missing authorization code")
+        # ส่งข้อมูลไปให้ google
         async with AsyncClient() as client:
             token_response = await client.post(
                 GOOGLE_TOKEN_URL,
@@ -137,61 +123,99 @@ async def google_auth(request: Request, db: Session = Depends(get_db)):
                 },
             )
             token_data = token_response.json()
-            if "error" in token_data:
-                raise ValueError(f"Google OAuth error: {token_data['error']}")
+            # เช็คว่าได้ access token ไหม
+            if "access_token" not in token_data:
+                raise HTTPException(status_code=400, detail="Google token error")
+            # เก็บ access token 
             access_token = token_data.get("access_token")
 
+            # ขอข้อมูล user จาก google
             user_info_response = await client.get(
                 GOOGLE_USERINFO_URL,
                 headers={"Authorization": f"Bearer {access_token}"},
             )
             user_info = user_info_response.json()
-            logger.debug(f"Google profile: {user_info}")
-
+        google_email = user_info["email"]
+        logger.info(f"Google login attempt: {google_email}")
+        google_id = user_info["id"]
+        # เช็ค jwt ก่อน
+        token = request.cookies.get("jwt")
+        user = None
+        if token:
+            try:
+                payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+                user_id = payload.get("sub")
+                user = db.query(AuthUser).filter(
+                    AuthUser.auth_user_id == int(user_id)
+                ).first()
+            except JWTError:
+                user = None
+        # หา google account ใน provider ก่อน
         provider = db.query(AuthProvider).filter(
             AuthProvider.provider == "google",
-            AuthProvider.provider_user_id == user_info["id"]
+            AuthProvider.provider_user_id == google_id
         ).first()
-
+        # ถ้าเคย link แล้ว → login
         if provider:
+            user = provider.auth_user
+        # ถ้าไม่มี jwt → login ด้วย google
+        elif not user:
             user = db.query(AuthUser).filter(
-                AuthUser.auth_user_id == provider.auth_user_id
-            ).first()
-        else:
-            user = db.query(AuthUser).filter(
-                AuthUser.email == user_info["email"]
+                AuthUser.email == google_email
             ).first()
 
             if not user:
-                user = AuthUser(email=user_info["email"])
-                db.add(user)
-                db.commit()
-                db.refresh(user)
-
+                raise HTTPException(status_code=401, detail="User not registered")
+        # ยังไม่ link → สร้าง provider
+        if not provider:
             new_provider = AuthProvider(
                 auth_user_id=user.auth_user_id,
                 provider="google",
-                provider_user_id=user_info["id"]
+                provider_user_id=google_id
             )
-
             db.add(new_provider)
             db.commit()
+            db.refresh(new_provider)
 
+        if not user:
+            raise HTTPException(status_code=401, detail="User not registered")
+
+        # role
+        user_role = "student" if user.student else "teacher"
+        payload = {
+            "sub" : str(user.auth_user_id),
+            "user_role" : user_role
+        }
+        # สร้าง JWT token
         jwt_token = create_access_token(
-            data={
-                "sub": str(user.auth_user_id),
-                "email": user.email
-            },
-            expires_delta=timedelta(days=1)
+            payload,
+            expires_delta = timedelta(days=1)    
         )
-
-        frontend_url = settings.frontend_login_success_uri
-        logger.info(f"Redirecting to frontend with token for {user.email}")
-        return RedirectResponse(url=f"{frontend_url}?token={jwt_token}")
+        # ถ้ามี jwt แปลว่า user login อยู่ → connect google
+        if user_role == "student":
+            dashboard = "http://localhost:8080/student/dashboard"
+        else:
+            dashboard = "http://localhost:8080/teacher/courses"
+        # connect google
+        if token:
+            frontend_url = dashboard + "?google=connect_success"
+        # login with google
+        else:
+            frontend_url = dashboard
+        response = RedirectResponse(url=frontend_url)
+        # บันทึก JWT ลง cookie
+        response.set_cookie(
+            key="jwt",
+            value=jwt_token,
+            httponly=True,
+            secure=settings.jwt_cookie_secure,
+            samesite=settings.jwt_cookie_samesite
+        )
+        return response
 
     except Exception as e:
-        logger.error(f"Error processing Google auth callback: {e}")
-        return RedirectResponse(url=settings.frontend_login_failure_uri)
+        logger.error(f"Google auth error: {e}")
+        return RedirectResponse(url="/login")
 
 @router.post("/login")
 async def login(login_data: UserLogin,response: Response, db: Session = Depends(get_db)):
@@ -297,28 +321,31 @@ async def logout(response: Response):
 
 @router.get("/me", response_model=UserResponse)
 async def read_users_me(current_user: AuthUser = Depends(get_current_user)):
-    """
-    **Get Current User Profile**
 
-    Returns the profile information of the currently authenticated user.
-    Requires a valid JWT token in the `jwt` cookie or Authorization header (logic depends on `get_current_user`).
-    """
     logger.info(f"Fetching profile for {current_user.email}")
+    # เช็คว่า user เชื่อม google แล้วหรือยัง
+    google_connected = any(p.provider == "google" for p in current_user.providers)
     if current_user.student:
-        return {"id": current_user.auth_user_id,
-                "email": current_user.email, 
-                "first_name": current_user.student.first_name,
-                "middle_name": current_user.student.middle_name,
-                "last_name": current_user.student.last_name,
-                "avatar_url": current_user.student.avatar_url,
-                "student_id": current_user.student.student_id}
+        return {
+            "id": current_user.auth_user_id,
+            "email": current_user.email,
+            "first_name": current_user.student.first_name,
+            "middle_name": current_user.student.middle_name,
+            "last_name": current_user.student.last_name,
+            "avatar_url": current_user.student.avatar_url,
+            "student_id": current_user.student.student_id,
+            "google_connected": google_connected
+        }
     else:
-        return {"id": current_user.auth_user_id,
-                "email": current_user.email, 
-                "first_name": current_user.teacher.first_name,
-                "middle_name": current_user.teacher.middle_name,
-                "last_name": current_user.teacher.last_name,
-                "avatar_url": current_user.teacher.avatar_url}
+        return {
+            "id": current_user.auth_user_id,
+            "email": current_user.email,
+            "first_name": current_user.teacher.first_name,
+            "middle_name": current_user.teacher.middle_name,
+            "last_name": current_user.teacher.last_name,
+            "avatar_url": current_user.teacher.avatar_url,
+            "google_connected": google_connected
+        }
 
 def register_routes(router_instance: APIRouter):
     router_instance.include_router(router)
