@@ -194,20 +194,19 @@ async def upload_csv(quiz_id: int,course_id: int,file: UploadFile = File(...),db
         number_student += 1
         # เช็ค student มีจริงไหม ถ้าไม่มีใฟ้สร้างใหม่เลย
         user = db.query(AuthUser).filter(AuthUser.email == stu_email).first()
-
+        # ถ้าไม่มี user แสดงว่าไม่มี student แน่นอน
         if not user:
-            user = AuthUser(email=stu_email)
-            db.add(user)
+            new_user = AuthUser(email=stu_email)
+            db.add(new_user)
             db.commit()
-            db.refresh(user)
-        student = db.query(Student).filter(Student.student_id == stu_id).first()
-        if not student:
+            db.refresh(new_user)
             new_stu = Student(
                 student_id=stu_id,
-                auth_user_id=user.auth_user_id)
+                auth_user_id=new_user.auth_user_id)
             db.add(new_stu)
             db.commit()
             db.refresh(new_stu)
+        # มี user แล้ว ให้หา student แล้ว update ข้อมูลเอา
 
         # สร้างหรือ update score ใน quiz นั้นๆ
         # มีคะแนนของ นักเรียน id นี้หรือยัง
