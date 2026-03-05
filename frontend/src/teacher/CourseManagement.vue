@@ -216,7 +216,7 @@
                       class="material-symbols-outlined text-text-muted-light dark:text-text-muted-dark mr-1 text-lg"
                       >people</span
                     >
-                    {{ course.student_count ?? 0 }}
+                    {{ course.course_stu_number ?? 0 }}
                   </div>
                   <div
                     class="text-xs text-text-muted-light dark:text-text-muted-dark uppercase mt-0.5"

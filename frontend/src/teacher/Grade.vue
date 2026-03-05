@@ -293,12 +293,17 @@
                           <div
                             class="font-semibold text-gray-900 dark:text-white"
                           >
-                            {{ student.student_name }}
+                            {{ student.stu_fname }} {{ student.stu_mname }} {{ student.stu_lname }}
                           </div>
                           <div
                             class="text-xs text-text-muted-light dark:text-text-muted-dark"
                           >
                             ID: {{ student.student_id }}
+                          </div>
+                          <div
+                            class="text-xs text-text-muted-light dark:text-text-muted-dark"
+                          >
+                            section : {{ student.section }}
                           </div>
                         </div>
                       </div>
