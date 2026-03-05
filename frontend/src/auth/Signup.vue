@@ -266,7 +266,7 @@ const lastName = ref("");
 const middleName = ref("");
 
 const email = ref("");
-const studentID = ref(0);
+const studentID = ref(null);
 const password = ref("");
 const showPassword = ref(false);
 
@@ -278,6 +278,10 @@ const togglePassword = () => {
 
 const handleSignup = async () => {
   try {
+    if (!firstName.value && !lastName.value){
+      alert("Enter your name")
+      return;
+    }
     const response = await fetch("http://localhost:56733/register", {
       method: "POST",
       headers: {

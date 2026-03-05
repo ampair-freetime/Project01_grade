@@ -526,6 +526,7 @@ const handleFileUpload = async (event) => {
     }
 
     alert("CSV uploaded successfully");
+    location.reload()
     await fetchStudentScore(quizID.value);
   } catch (err) {
     console.error(err);
