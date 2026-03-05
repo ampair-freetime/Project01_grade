@@ -83,22 +83,18 @@
         </div>
       </div>
     </header>
-    <main class="w-full">
-      <div class="max-w-7xl mx-auto px-6 py-8 space-y-8">
-        <nav
-          aria-label="Breadcrumb"
-          class="mb-6 text-sm text-text-muted-light dark:text-text-muted-dark"
-        >
-          <!-- Return -->
-          <button
-            class="group inline-flex items-center gap-3 font-bold text-[#111811] dark:text-white hover:text-primary transition-colors"
-            type="button"
-            @click="router.push(`/teacher/assignments/${assign_id}`)"
+    <main class="flex-1 flex-row flex-col h-full overflow-hidden relative">
+      <div class="flex-1 overflow-y-auto p-8 lg:p-12">
+        <div class="max-w-5xl mx-auto flex flex-col gap-8">
+          <nav
+            aria-label="Breadcrumb"
+            class="flex flex-col gap-4 mb-6 text-sm text-text-muted-light dark:text-text-muted-dark"
           >
             <!-- Return -->
-            <a
+            <button
               class="group inline-flex items-center gap-3 font-bold text-[#111811] dark:text-white hover:text-primary transition-colors"
-              href="#"
+              type="button"
+              @click="router.push(`/teacher/assignments/${courseId}`)"
             >
               <div
                 class="flex size-9 items-center justify-center rounded-full bg-surface-light dark:bg-surface-dark border border-border-light dark:border-border-dark shadow-sm group-hover:border-primary group-hover:text-primary transition-colors"
@@ -107,75 +103,77 @@
                   arrow_back
                 </span>
               </div>
-            </a>
-            <span>Return</span>
-          </button>
-
-          <!-- Path -->
-          <div class="flex flex-wrap items-center gap-2 mt-4">
-            <button
-              class="hover:text-primary font-medium"
-              @click="router.push(`/teacher/courses/`)"
-            >
-              Course Management
+              <span>Return</span>
             </button>
 
-            <span class="font-medium">/</span>
-
-            <a class="hover:text-primary font-medium" href="#">
-              CS101 - Intro to Algorithms
-            </a>
-
-            <span class="font-medium">/</span>
-
-            <span class="text-[#111811] dark:text-white font-medium">
-              {{ assignmentName || "Assignment" }}
-            </span>
-          </div>
-        </nav>
-        <div>
-            <div class="flex items-center gap-3 mb-1">
-              <h1 class="text-3xl font-bold text-gray-900 dark:text-white">
-                {{ assignmentName || "Assignment" }}
-              </h1>
-            <span
-              class="px-2.5 py-0.5 rounded-full bg-sky-50 dark:bg-sky-900/20 text-sky-700 dark:text-sky-300 text-xs font-semibold border border-sky-700 dark:border-sky-500"
-              >Section A</span
-            >
-            <label
-              class="inline-flex items-center px-4 py-2 bg-white dark:bg-slate-800 border border-gray-300 dark:border-slate-600 rounded-lg text-sm font-medium text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-slate-700 shadow-sm transition-colors"
-            >
-              <span class="material-symbols-outlined text-lg mr-2"
-                >upload_file</span
+            <!-- Path -->
+            <div class="flex flex-wrap items-center gap-2">
+              <button
+                class="hover:text-primary font-medium"
+                @click="router.push(`/teacher/courses`)"
               >
-              Import CSV
-              <input
-                type="file"
-                accept=".csv"
-                class="hidden"
-                @change="handleFileUpload"
-              />
-            </label>
-            <button
-              class="inline-flex items-center px-4 py-2 bg-slate-900 dark:bg-slate-700 border border-transparent rounded-lg text-sm font-medium text-white hover:bg-slate-800 dark:hover:bg-slate-600 shadow-sm transition-colors"
-            >
-              <span class="material-symbols-outlined text-lg mr-2"
-                >publish</span
+                Course Management
+              </button>
+
+              <span class="font-medium">/</span>
+
+              <button
+                class="hover:text-primary font-medium"
+                @click="router.push(`/teacher/assignments/${courseId}`)"
               >
-              Publish Scores
-            </button>
-            <button
-              class="inline-flex items-center px-4 py-2 bg-sky-500 dark:bg-sky-600 border border-transparent rounded-lg text-sm font-medium text-white hover:opacity-90 shadow-sm transition-colors"
-            >
-              <span class="material-symbols-outlined text-lg mr-2">save</span>
-              Save Changes
-            </button>
+                {{
+                  courseTitle ||
+                  (courseId ? `Course #${courseId}` : "Assignments")
+                }}
+              </button>
+
+              <span class="font-medium">/</span>
+
+              <span class="text-[#111811] dark:text-white font-medium">
+                {{ assignment_title || "Assignment" }}
+              </span>
+            </div>
+          </nav>
+          <div class="flex items-center justify-between mb-4 flex-wrap gap-4">
+            <h1 class="text-3xl font-bold text-gray-900 dark:text-white">
+              {{ assignment_title || "Assignment" }}
+            </h1>
+            <div class="flex items-center gap-3">
+              <label
+                class="inline-flex items-center px-4 py-2 bg-white dark:bg-slate-800 border border-gray-300 dark:border-slate-600 rounded-lg text-sm font-medium text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-slate-700 shadow-sm transition-colors"
+              >
+                <span class="material-symbols-outlined text-lg mr-2"
+                  >upload_file</span
+                >
+                Import CSV
+                <input
+                  type="file"
+                  accept=".csv"
+                  class="hidden"
+                  @change="handleFileUpload"
+                />
+              </label>
+              <button
+                class="inline-flex items-center px-4 py-2 bg-slate-900 dark:bg-slate-700 border border-transparent rounded-lg text-sm font-medium text-white hover:bg-slate-800 dark:hover:bg-slate-600 shadow-sm transition-colors"
+              >
+                <span class="material-symbols-outlined text-lg mr-2"
+                  >publish</span
+                >
+                Publish Scores
+              </button>
+              <button
+                class="inline-flex items-center px-4 py-2 bg-sky-500 dark:bg-sky-600 border border-transparent rounded-lg text-sm font-medium text-white hover:opacity-90 shadow-sm transition-colors"
+              >
+                <span class="material-symbols-outlined text-lg mr-2">save</span>
+                Save Changes
+              </button>
+            </div>
           </div>
 
           <div
-            class="px-4 py-6 bg-surface-light dark:bg-surface-dark rounded-xl border border-border-light dark:border-border-dark p-2 flex flex-col md:flex-row items-center justify-between gap-4 shadow-sm"
+            class="px-4 py-6 bg-surface-light dark:bg-surface-dark rounded-xl border border-border-light dark:border-border-dark flex flex-col md:flex-row items-center justify-between gap-4 shadow-sm"
           >
-            <div class="relative w-full md:w-96">
+            <div class="relative w-full md:w-96 min-w-0">
               <span
                 class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none"
               >
@@ -185,42 +183,67 @@
                 >
               </span>
               <input
+                v-model="searchTerm"
                 class="pl-10 pr-4 py-2 w-full bg-gray-50 dark:bg-slate-800/50 border border-gray-200 dark:border-slate-700 rounded-lg text-sm focus:ring-2 focus:ring-sky-500 focus:border-transparent dark:text-white dark:placeholder-gray-500"
                 placeholder="Search by name or student ID..."
                 type="text"
               />
             </div>
             <div
-              class="flex items-center gap-4 w-full md:w-auto justify-between md:justify-end overflow-x-auto pb-2 md:pb-0"
+              class="flex items-center gap-4 w-full md:w-auto justify-between md:justify-end overflow-x-auto pb-2 md:pb-0 flex-shrink-0"
             >
               <div class="flex flex-wrap items-center gap-2 text-sm">
                 <span
                   class="uppercase text-xs font-bold tracking-wider mr-1 text-gray-500 dark:text-gray-300"
                   >Status :</span
                 >
-                <button
-                  class="px-3 py-1.5 bg-surface-dark dark:bg-surface-light text-white dark:text-slate-900 rounded-md font-medium text-xs"
-                >
-                  All Students
-                </button>
-                <button
-                  class="px-3 py-1.5 text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-slate-700 rounded-md font-medium text-xs flex items-center gap-1 transition-colors"
-                >
-                  Read
-                  <span
-                    class="bg-sky-100 dark:bg-sky-800 text-sky-700 dark:text-sky-100 px-1.5 py-0.5 rounded-full text-[10px]"
-                    >12</span
+                <div class="flex flex-nowrap items-center gap-2">
+                  <button
+                    @click="statusFilter = 'all'"
+                    :class="[
+                      'px-3 py-1.5 whitespace-nowrap rounded-md font-medium text-xs',
+                      statusFilter === 'all'
+                        ? 'bg-gray-300 text-black dark:bg-gray-400 dark:text-black'
+                        : 'text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-slate-700',
+                    ]"
                   >
-                </button>
-                <button
-                  class="px-3 py-1.5 text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-slate-700 rounded-md font-medium text-xs flex items-center gap-1 transition-colors"
-                >
-                  Unread
-                  <span
-                    class="bg-amber-200 dark:bg-yellow-600 text-amber-900 dark:text-yellow-50 px-1.5 py-0.5 rounded-full text-[10px]"
-                    >4</span
+                    All Students
+                  </button>
+
+                  <button
+                    @click="statusFilter = 'Read'"
+                    :class="[
+                      'px-3 py-1.5 rounded-md font-medium text-xs flex items-center gap-1 transition-colors',
+                      statusFilter === 'Read'
+                        ? 'bg-gray-300 text-black dark:bg-gray-400 dark:text-black'
+                        : 'text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-slate-700',
+                    ]"
                   >
-                </button>
+                    Read
+                    <span
+                      class="bg-sky-100 dark:bg-sky-800 text-sky-700 dark:text-sky-100 px-1.5 py-0.5 rounded-full text-[10px]"
+                    >
+                      {{ readCount }}
+                    </span>
+                  </button>
+
+                  <button
+                    @click="statusFilter = 'Unread'"
+                    :class="[
+                      'px-3 py-1.5 rounded-md font-medium text-xs flex items-center gap-1 transition-colors',
+                      statusFilter === 'Unread'
+                        ? 'bg-gray-300 text-black dark:bg-gray-400 dark:text-black'
+                        : 'text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-slate-700',
+                    ]"
+                  >
+                    Unread
+                    <span
+                      class="bg-amber-200 dark:bg-yellow-600 text-amber-900 dark:text-yellow-50 px-1.5 py-0.5 rounded-full text-[10px]"
+                    >
+                      {{ unreadCount }}
+                    </span>
+                  </button>
+                </div>
               </div>
               <div
                 class="w-px h-6 bg-gray-200 dark:bg-gray-700 hidden md:block"
@@ -282,31 +305,33 @@
                   class="divide-y divide-border-light dark:divide-border-dark"
                 >
                   <tr
-                    v-for="student in students"
+                    v-for="student in paginatedStudents"
                     :key="student.student_id"
                     class="group hover:bg-gray-50 dark:hover:bg-slate-800/50 transition-colors"
                   >
                     <td class="p-4 pl-6">
                       <div class="flex items-center gap-3">
                         <div
-                          class="w-10 h-10 rounded-full overflow-hidden flex-shrink-0"
+                          class="w-10 h-10 rounded-full bg-sky-100 dark:bg-sky-900 text-sky-700 dark:text-sky-200 flex items-center justify-center font-bold text-sm flex-shrink-0"
                         >
-                          <img
-                            alt="Alice Johnson"
-                            class="w-full h-full object-cover"
-                            src="https://lh3.googleusercontent.com/aida-public/AB6AXuBkSaqLRo55aSxruOMViPHwv4KXrCEh-Jt4rRHt0pzsYYkq6PChv3pfMUyxSiCkxd2z0z0KRTtThtJX_QiepD7rSfF-oqCMtqoraUVKfMl_Q2qr8ooHr1DTbhKfoD5zSIQjukFXEShxlvU6EHk3FUhKhMxXdVgoOq8RHG3MHaxcdHo98M6JRhOfbVQzjy0oGXGOx3h6FRjg4ASkFah3R-BqKPGHv_My_GLm8rsCnirFjXf6kvCJ-pUG5JzfUo4gpgfVm87sVrEbOw"
-                          />
+                          {{ student.student_name?.charAt(0) || "KUY" }}
                         </div>
                         <div>
                           <div
                             class="font-semibold text-gray-900 dark:text-white"
                           >
-                            {{ student.student_name }}
+                            {{ student.stu_fname }} {{ student.stu_mname }}
+                            {{ student.stu_lname }}
                           </div>
                           <div
                             class="text-xs text-text-muted-light dark:text-text-muted-dark"
                           >
                             ID: {{ student.student_id }}
+                          </div>
+                          <div
+                            class="text-xs text-text-muted-light dark:text-text-muted-dark"
+                          >
+                            section : {{ student.section }}
                           </div>
                         </div>
                       </div>
@@ -320,236 +345,27 @@
                     </td>
                     <td class="p-4 text-center">
                       <span
-                        class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-sky-100 dark:bg-sky-700/40 text-sky-700 dark:text-sky-200"
+                        class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium"
+                        :class="
+                          student.status === 'Unread'
+                            ? 'bg-amber-100 dark:bg-yellow-900/50 text-amber-700 dark:text-yellow-300'
+                            : 'bg-sky-100 dark:bg-sky-700/40 text-sky-700 dark:text-sky-200'
+                        "
                       >
                         <span
-                          class="w-1.5 h-1.5 rounded-full bg-sky-500"
+                          class="w-1.5 h-1.5 rounded-full"
+                          :class="
+                            student.status === 'Unread'
+                              ? 'bg-amber-500 dark:bg-yellow-400'
+                              : 'bg-sky-500'
+                          "
                         ></span>
                         {{ student.status }}
                       </span>
                     </td>
                     <td class="p-4 text-center">
                       <button
-                        class="p-2 rounded-full hover:bg-red-50 text-gray-400 hover:text-red-500 dark:hover:bg-red-900/20 dark:hover:text-red-400 transition-colors"
-                        title="Delete record"
-                      >
-                        <span class="material-symbols-outlined text-[20px]"
-                          >delete</span
-                        >
-                      </button>
-                    </td>
-                  </tr>
-                  <tr
-                    class="group hover:bg-gray-50 dark:hover:bg-slate-800/50 transition-colors"
-                  >
-                    <td class="p-4 pl-6">
-                      <div class="flex items-center gap-3">
-                        <div
-                          class="w-10 h-10 rounded-full bg-blue-100 dark:bg-blue-900 text-blue-600 dark:text-blue-300 flex items-center justify-center font-bold text-sm flex-shrink-0"
-                        >
-                          BS
-                        </div>
-                        <div>
-                          <div
-                            class="font-semibold text-gray-900 dark:text-white"
-                          >
-                            Bob Smith
-                          </div>
-                          <div
-                            class="text-xs text-text-muted-light dark:text-text-muted-dark"
-                          >
-                            ID: 2023002
-                          </div>
-                        </div>
-                      </div>
-                    </td>
-                    <td class="p-4 text-center">
-                      <div
-                        class="w-16 h-10 mx-auto border border-gray-200 dark:border-slate-600 rounded-lg flex items-center justify-center font-semibold text-gray-900 dark:text-white bg-white dark:bg-slate-900"
-                      >
-                        85
-                      </div>
-                    </td>
-                    <td class="p-4 text-center">
-                      <span
-                        class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-amber-100 dark:bg-yellow-900/50 text-amber-700 dark:text-yellow-300"
-                      >
-                        <span
-                          class="w-1.5 h-1.5 rounded-full bg-amber-500 dark:bg-yellow-400"
-                        ></span>
-                        Unread
-                      </span>
-                    </td>
-                    <td class="p-4 text-center">
-                      <button
-                        class="p-2 rounded-full hover:bg-red-50 text-gray-400 hover:text-red-500 dark:hover:bg-red-900/20 dark:hover:text-red-400 transition-colors"
-                        title="Delete record"
-                      >
-                        <span class="material-symbols-outlined text-[20px]"
-                          >delete</span
-                        >
-                      </button>
-                    </td>
-                  </tr>
-                  <tr
-                    class="bg-sky-50/50 dark:bg-sky-900/10 border-l-4 border-l-sky-500"
-                  >
-                    <td class="p-4 pl-6">
-                      <div class="flex items-center gap-3">
-                        <div
-                          class="w-10 h-10 rounded-full overflow-hidden flex-shrink-0 border-2 border-sky-100 dark:border-sky-800"
-                        >
-                          <img
-                            alt="Charlie Brown"
-                            class="w-full h-full object-contain bg-amber-50"
-                            src="https://lh3.googleusercontent.com/aida-public/AB6AXuBN0g-WHePpThTNMUhPAiYyolESpOvQwcvWsK86MgulRv8D3VHb3aOZJJV34TDq1T4OcXDsgb6hyBSaJgeedYQwQwGhlcX-dZLSF70FjunbM15RLBTgJk3IrodQswRdAM_26LPuhmB4M-ws_MQE4UJs0SAB2qtD755nqywNpp8Si9MBghBdT_dCxzvYrd4sml8IgvIY2OL0tul0_FlLUpiL_6M6-mrIyurLIqDHaFVTN6X8edP6SRuHWUQx5YPNnZJDocL6xbwJwA"
-                          />
-                        </div>
-                        <div>
-                          <div
-                            class="font-semibold text-gray-900 dark:text-white"
-                          >
-                            Charlie Brown
-                          </div>
-                          <div
-                            class="text-xs text-text-muted-light dark:text-text-muted-dark"
-                          >
-                            ID: 2023003
-                          </div>
-                        </div>
-                      </div>
-                    </td>
-                    <td class="p-4 text-center">
-                      <div class="relative w-20 mx-auto">
-                        <div
-                          class="w-16 h-10 mx-auto border border-gray-200 dark:border-slate-600 rounded-lg flex items-center justify-center font-semibold text-gray-900 dark:text-white bg-white dark:bg-slate-900"
-                        >
-                          75
-                        </div>
-                      </div>
-                    </td>
-                    <td class="p-4 text-center">
-                      <span
-                        class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-sky-100 dark:bg-sky-700/40 text-sky-700 dark:text-sky-200"
-                      >
-                        <span
-                          class="w-1.5 h-1.5 rounded-full bg-sky-500"
-                        ></span>
-                        Read
-                      </span>
-                    </td>
-                    <td class="p-4 text-center">
-                      <button
-                        class="p-2 rounded-full hover:bg-red-50 text-gray-400 hover:text-red-500 dark:hover:bg-red-900/20 dark:hover:text-red-400 transition-colors"
-                        title="Delete record"
-                      >
-                        <span class="material-symbols-outlined text-[20px]"
-                          >delete</span
-                        >
-                      </button>
-                    </td>
-                  </tr>
-                  <tr
-                    class="group hover:bg-gray-50 dark:hover:bg-slate-800/50 transition-colors"
-                  >
-                    <td class="p-4 pl-6">
-                      <div class="flex items-center gap-3">
-                        <div
-                          class="w-10 h-10 rounded-full bg-pink-100 dark:bg-pink-900 text-pink-600 dark:text-pink-300 flex items-center justify-center font-bold text-sm flex-shrink-0"
-                        >
-                          DW
-                        </div>
-                        <div>
-                          <div
-                            class="font-semibold text-gray-900 dark:text-white"
-                          >
-                            Daisy Wong
-                          </div>
-                          <div
-                            class="text-xs text-text-muted-light dark:text-text-muted-dark"
-                          >
-                            ID: 2023004
-                          </div>
-                        </div>
-                      </div>
-                    </td>
-                    <td class="p-4 text-center">
-                      <div
-                        class="w-16 h-10 mx-auto border border-gray-200 dark:border-slate-600 rounded-lg flex items-center justify-center font-semibold text-gray-900 dark:text-white bg-white dark:bg-slate-900"
-                      >
-                        78
-                      </div>
-                    </td>
-                    <td class="p-4 text-center">
-                      <span
-                        class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-sky-100 dark:bg-sky-700/40 text-sky-700 dark:text-sky-200"
-                      >
-                        <span
-                          class="w-1.5 h-1.5 rounded-full bg-sky-500"
-                        ></span>
-                        Read
-                      </span>
-                    </td>
-                    <td class="p-4 text-center">
-                      <button
-                        class="p-2 rounded-full hover:bg-red-50 text-gray-400 hover:text-red-500 dark:hover:bg-red-900/20 dark:hover:text-red-400 transition-colors"
-                        title="Delete record"
-                      >
-                        <span class="material-symbols-outlined text-[20px]"
-                          >delete</span
-                        >
-                      </button>
-                    </td>
-                  </tr>
-                  <tr
-                    class="group hover:bg-gray-50 dark:hover:bg-slate-800/50 transition-colors"
-                  >
-                    <td class="p-4 pl-6">
-                      <div class="flex items-center gap-3">
-                        <div
-                          class="w-10 h-10 rounded-full overflow-hidden flex-shrink-0"
-                        >
-                          <img
-                            alt="Evan Lee"
-                            class="w-full h-full object-cover"
-                            src="https://lh3.googleusercontent.com/aida-public/AB6AXuAOq5HIJrHhf31413-hbBg16dhLQOUngJZZhzPEXKub1u8NDLyzOpPeGQMUmYSlXk-4lPjAgrF1HhfEkYSXW8VvyL1ZjQJdBJmuSTAP27pFTTwzSD2a1M0CDqZUC54Mu8M9Y4OqxWhphFcgjoWwhUyBlnXYhEBnL0P4oNp84OIEzpB4e9sEDWos5bPJSrzNrpw__Jb3KaGwHYT1AQau6R2sbUKS0RxojV6vxXSOt-IA_xIOf9iLdzWyxWxcQMGNCE2_QIEavwcWRA"
-                          />
-                        </div>
-                        <div>
-                          <div
-                            class="font-semibold text-gray-900 dark:text-white"
-                          >
-                            Evan Lee
-                          </div>
-                          <div
-                            class="text-xs text-text-muted-light dark:text-text-muted-dark"
-                          >
-                            ID: 2023005
-                          </div>
-                        </div>
-                      </div>
-                    </td>
-                    <td class="p-4 text-center">
-                      <div class="relative w-20 mx-auto">
-                        <div
-                          class="w-16 h-10 mx-auto border border-gray-200 dark:border-slate-600 rounded-lg flex items-center justify-center font-semibold text-gray-900 dark:text-white bg-white dark:bg-slate-900"
-                        >
-                          74
-                        </div>
-                      </div>
-                    </td>
-                    <td class="p-4 text-center">
-                      <span
-                        class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-amber-100 dark:bg-yellow-900/50 text-amber-700 dark:text-yellow-300"
-                      >
-                        <span
-                          class="w-1.5 h-1.5 rounded-full bg-amber-500"
-                        ></span>
-                        Unread
-                      </span>
-                    </td>
-                    <td class="p-4 text-center">
-                      <button
+                        @click="deleteScore(student)"
                         class="p-2 rounded-full hover:bg-red-50 text-gray-400 hover:text-red-500 dark:hover:bg-red-900/20 dark:hover:text-red-400 transition-colors"
                         title="Delete record"
                       >
@@ -571,20 +387,44 @@
                 <span class="font-bold text-gray-900 dark:text-white"></span>
                 <span class="font-bold text-gray-900 dark:text-white"></span>
               </div>
-              <div class="flex space-x-2">
+              <div class="flex items-center space-x-1">
+                <!-- previous -->
                 <button
-                  class="p-2 border border-border-light dark:border-border-dark rounded-md text-gray-400 hover:text-gray-500 dark:hover:text-gray-300 bg-white dark:bg-surface-dark hover:bg-gray-50 dark:hover:bg-gray-700"
+                  @click="prevPage"
+                  :disabled="currentPage === 1"
+                  class="p-2 border rounded-md disabled:opacity-40"
                 >
-                  <span class="material-symbols-outlined text-sm"
-                    >chevron_left</span
-                  >
+                  <span class="material-symbols-outlined text-sm">
+                    chevron_left
+                  </span>
                 </button>
+
+                <!-- page numbers -->
                 <button
-                  class="p-2 border border-border-light dark:border-border-dark rounded-md text-gray-400 hover:text-gray-500 dark:hover:text-gray-300 bg-white dark:bg-surface-dark hover:bg-gray-50 dark:hover:bg-gray-700"
+                  v-for="page in pages"
+                  :key="page"
+                  @click="page !== '...' && goToPage(page)"
+                  class="px-3 py-1 border rounded-md text-sm"
+                  :disabled="page === '...'"
+                  :class="[
+                    page === currentPage
+                      ? 'bg-primary text-white'
+                      : 'bg-white dark:bg-surface-dark',
+                    page === '...' ? 'cursor-default opacity-60' : '',
+                  ]"
                 >
-                  <span class="material-symbols-outlined text-sm"
-                    >chevron_right</span
-                  >
+                  {{ page }}
+                </button>
+
+                <!-- next -->
+                <button
+                  @click="nextPage"
+                  :disabled="currentPage === totalPages"
+                  class="p-2 border rounded-md disabled:opacity-40"
+                >
+                  <span class="material-symbols-outlined text-sm">
+                    chevron_right
+                  </span>
                 </button>
               </div>
             </div>
@@ -609,31 +449,39 @@ const isOpen = ref(false);
 const dropdownRef = ref(null);
 
 const students = ref([]);
+const searchTerm = ref("");
 const sortKey = ref("");
 const sortOption = ref("id_lowhigh");
 const sortOpen = ref(false);
+const statusFilter = ref("all");
+
+const currentPage = ref(1);
+const itemsPerPage = 5;
 
 const quizID = computed(() => Number(route.params.quiz_id));
+const courseId = computed(() => Number(route.query.course_id));
+const courseTitle = computed(() =>
+  route.query.course_title ? String(route.query.course_title) : "",
+);
 
 const randomAvatar = ref("");
 const userProfile = ref(null);
-const assignmentName = ref("");
+const assignment_title = ref("");
+const csrfToken = localStorage.getItem("csrf_token");
 
+const readCount = computed(
+  () => students.value.filter((s) => s.status === "Read").length,
+);
+const unreadCount = computed(
+  () => students.value.filter((s) => s.status === "Unread").length,
+);
 const BASE_URL = "http://localhost:56733";
 
-const toggleDropdown = () => {
-  isOpen.value = !isOpen.value;
-};
+// ########################################### fetch ###################################################################################################################
 
-const handleClickOutside = (event) => {
-  if (dropdownRef.value && !dropdownRef.value.contains(event.target)) {
-    isOpen.value = false;
-  }
-};
-
-const fetchStudentScore = async () => {
+const fetchStudentScore = async (quiz_id) => {
   try {
-    const response = await fetch(`${BASE_URL}/stu_score/${quizID}`, {
+    const response = await fetch(`${BASE_URL}/teacher/stu_score/${quiz_id}`, {
       method: "GET",
       credentials: "include",
     });
@@ -644,15 +492,16 @@ const fetchStudentScore = async () => {
     }
 
     const data = await response.json();
-    assignmentName.value = data?.assignment?.assign_name || "Assignment";
+    assignment_title.value = data?.assignment?.assign_name;
 
     const scoreList = Array.isArray(data?.score) ? data.score : [];
 
     students.value = scoreList.map((s) => ({
+      score_id: s.score_id,
       student_id: s.stu_id,
-      student_name: [s.stu_fname, s.stu_mname, s.stu_lname]
-        .filter(Boolean)
-        .join(" "),
+      stu_fname: s.stu_fname,
+      stu_mname: s.stu_mname,
+      stu_lname: s.stu_lname,
       score: s.score,
       section: s.section,
       status: s.unread_flag ? "Unread" : "Read",
@@ -663,6 +512,7 @@ const fetchStudentScore = async () => {
     console.error(err);
   }
 };
+
 const fetchUserProfile = async () => {
   try {
     const response = await fetch(`${BASE_URL}/me`, {
@@ -680,35 +530,124 @@ const fetchUserProfile = async () => {
     console.error("Fetch profile error:", error);
   }
 };
+// ########################################### pop-up ###################################################################################################################
+
+const filteredStudents = computed(() => {
+  const term = searchTerm.value.trim().toLowerCase();
+
+  return students.value.filter((s) => {
+    const name = `${s.stu_fname || ""} ${s.stu_lname || ""}`.toLowerCase();
+    const id = String(s.student_id || "");
+
+    const matchSearch = !term || name.includes(term) || id.includes(term);
+
+    const matchStatus =
+      statusFilter.value === "all" || s.status === statusFilter.value;
+
+    return matchSearch && matchStatus;
+  });
+});
+
+const toggleDropdown = () => {
+  isOpen.value = !isOpen.value;
+};
+
+const handleClickOutside = (event) => {
+  if (dropdownRef.value && !dropdownRef.value.contains(event.target)) {
+    isOpen.value = false;
+  }
+};
+
+// ########################################### grade ###################################################################################################################
 
 const handleFileUpload = async (event) => {
   const file = event.target.files[0];
-  if (!file) {
+  if (!file || !courseId.value || !quizID.value) {
     return;
   }
+
   const formdata = new FormData();
   formdata.append("file", file);
 
   try {
-    const token = localStorage.getItem("csrf_token");
-    const response = await fetch(`http://localhost:56733/upload/${quizID}`, {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${token}`,
+    const csrfToken = localStorage.getItem("csrf_token") || "";
+    const response = await fetch(
+      `${BASE_URL}/teacher/upload/${courseId.value}/${quizID.value}`,
+      {
+        method: "POST",
+        credentials: "include",
+        headers: {
+          "X-CSRF-Token": csrfToken,
+        },
+        body: formdata,
       },
-      body: formdata,
-    });
+    );
+
     if (!response.ok) {
-      const errorData = await response.json();
-      alert(errorData.detail || "Upload failed");
+      const errorData = await response.json().catch(() => null);
+      alert(errorData?.detail || "Upload failed");
+      return;
     }
+
     alert("CSV uploaded successfully");
-    fetchStudentScore();
+    location.reload();
+    await fetchStudentScore(quizID.value);
   } catch (err) {
     console.error(err);
+    alert("Upload failed");
   }
 };
 
+const deleteScore = async (student) => {
+  if (!confirm(`You want to delete this score?`)) return;
+  try {
+    const response = await fetch(
+      `${BASE_URL}/teacher/delete_score/${quizID.value}/${student.score_id}`,
+      {
+        method: "POST",
+        credentials: "include",
+        headers: {
+          "X-CSRF-Token": csrfToken,
+        },
+      },
+    );
+
+    if (!response.ok) {
+      throw new Error("Delete failed");
+      return;
+    }
+    if (quizID.value) {
+      await fetchStudentScore(quizID.value);
+    }
+  } catch (error) {
+    console.error("Delete score failed:", error);
+    alert("ลบคะแนนไม่สำเร็จ");
+  }
+};
+
+// ########################## method ####################################################################################################################################
+
+const sortPeople = () => {
+  switch (sortOption.value) {
+    case "id_lowhigh":
+      students.value.sort(
+        (a, b) => Number(a.student_id) - Number(b.student_id),
+      );
+      break;
+
+    case "name_atoz":
+      students.value.sort((a, b) =>
+        a.student_name.localeCompare(b.student_name),
+      );
+      break;
+
+    case "section_lowhigh":
+      students.value.sort((a, b) => a.section.localeCompare(b.section));
+      break;
+  }
+};
+
+// ##############################################################################################################################################################
 const handleLogout = async () => {
   try {
     const response = await fetch(`${BASE_URL}/logout`, {
@@ -729,23 +668,61 @@ const handleLogout = async () => {
   }
 };
 
-const sortPeople = () => {
-  switch (sortOption.value) {
-    case "id_lowhigh":
-      students.value.sort(
-        (a, b) => Number(a.student_id) - Number(b.student_id)
-      );
-      break;
+// ######################## page ###################################################################################################################################
+const totalPages = computed(() => {
+  return Math.ceil(filteredStudents.value.length / itemsPerPage);
+});
 
-    case "name_atoz":
-      students.value.sort((a, b) =>
-        a.student_name.localeCompare(b.student_name)
-      );
-      break;
+const paginatedStudents = computed(() => {
+  const start = (currentPage.value - 1) * itemsPerPage;
+  const end = start + itemsPerPage;
+  return filteredStudents.value.slice(start, end);
+});
 
-    case "section_lowhigh":
-      students.value.sort((a, b) => a.section.localeCompare(b.section));
-      break;
+const pages = computed(() => {
+  const total = totalPages.value;
+  const current = currentPage.value;
+  const result = [];
+
+  if (total <= 5) {
+    return Array.from({ length: total }, (_, i) => i + 1);
+  }
+
+  result.push(1);
+
+  if (current > 3) {
+    result.push("...");
+  }
+
+  const start = Math.max(2, current - 1);
+  const end = Math.min(total - 1, current + 1);
+
+  for (let i = start; i <= end; i++) {
+    result.push(i);
+  }
+
+  if (current < total - 2) {
+    result.push("...");
+  }
+
+  result.push(total);
+
+  return result;
+});
+
+const goToPage = (page) => {
+  currentPage.value = page;
+};
+
+const nextPage = () => {
+  if (currentPage.value < totalPages.value) {
+    currentPage.value++;
+  }
+};
+
+const prevPage = () => {
+  if (currentPage.value > 1) {
+    currentPage.value--;
   }
 };
 
@@ -754,7 +731,9 @@ onMounted(() => {
   const seed = Math.random().toString(36).substring(7);
   randomAvatar.value = `https://robohash.org/${seed}.png`;
   fetchUserProfile();
-  fetchStudentScore();
+  if (quizID.value) {
+    fetchStudentScore(quizID.value);
+  }
 });
 
 onBeforeUnmount(() => {

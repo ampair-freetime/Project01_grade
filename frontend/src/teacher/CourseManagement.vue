@@ -84,7 +84,7 @@
         </div>
       </div>
     </header>
-    <main class="flex-1 flex flex-col h-full overflow-hidden relative">
+    <main class="flex-1 flex-row flex-col h-full overflow-hidden relative">
       <div class="flex-1 overflow-y-auto p-8 lg:p-12">
         <div class="max-w-5xl mx-auto flex flex-col gap-8">
           <h1
@@ -92,6 +92,7 @@
           >
             Course Management
           </h1>
+
           <div
             class="bg-surface-light dark:bg-surface-dark rounded-xl shadow-sm border border-border-light dark:border-border-dark p-4 mb-6 flex flex-col sm:flex-row justify-between items-center gap-4"
           >
@@ -182,34 +183,28 @@
             </div>
             <ul class="divide-y divide-border-light dark:divide-border-dark">
               <li
-                v-for="course in filteredCourses"
+                v-for="course in paginatedCourses"
                 :key="course.course_id"
                 class="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors duration-150"
               >
                 <div
                   class="px-6 py-5 flex items-center justify-between cursor-pointer"
+                  @click="goToAssignment(course.course_id)"
                 >
-                  <a
-                    href="#"
-                    class="block cursor-pointer"
-                    @click.prevent="goToAssignment(course.course_id)"
-                  >
-                    <div class="flex-1 min-w-0">
-                      <!-- <div class="text-base font-bold">
-                    {{ course.course_id }}
-                  </div> -->
-                      <div
-                        class="text-l font-bold dark:text-primary-light uppercase tracking-wide"
-                      >
-                        {{ course.course_name }}
-                      </div>
-                      <div
-                        class="text-xs text-gray-500 dark:text-gray-400tracking-wide"
-                      >
-                        Course ID: {{ course.course_id }}
-                      </div>
+                  <div class="flex-1 min-w-0">
+                    <div
+                      class="text-l font-bold dark:text-primary-light uppercase tracking-wide"
+                    >
+                      {{ course.course_name }}
                     </div>
-                  </a>
+
+                    <div
+                      class="text-xs text-gray-500 dark:text-gray-400 tracking-wide"
+                    >
+                      Course ID: {{ course.course_id }}
+                    </div>
+                  </div>
+
                   <div class="flex items-center gap-6 shrink-0">
                     <div class="flex flex-col items-end min-w-[80px]">
                       <div
@@ -219,32 +214,33 @@
                           class="material-symbols-outlined text-text-muted-light dark:text-text-muted-dark mr-1 text-lg"
                           >people</span
                         >
-                        {{ course.student_count ?? 0 }}
+                        {{ course.course_stu_number ?? 0 }}
                       </div>
+
                       <div
                         class="text-xs text-text-muted-light dark:text-text-muted-dark uppercase mt-0.5"
                       >
                         Students
                       </div>
                     </div>
+
                     <div class="flex items-end min-w-[50px]">
                       <button
                         @click.stop="deleteCourse(course.course_id)"
                         class="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-900/30 rounded-full transition-colors duration-200 group"
                         title="Delete Course"
                       >
-                        <span
-                          class="material-symbols-outlined text-xl group-hover:text-red-600"
+                        <span class="material-symbols-outlined text-xl"
                           >delete</span
                         >
                       </button>
+
                       <button
-                        @click="archiveCourse(course.course_id)"
+                        @click.stop="archiveCourse(course.course_id)"
                         class="p-2 text-gray-400 hover:text-yellow-600 hover:bg-yellow-50 dark:hover:bg-yellow-900/30 rounded-full transition-colors duration-200 group"
                         title="Archive Course"
                       >
-                        <span
-                          class="material-symbols-outlined text-xl group-hover:text-yellow-600"
+                        <span class="material-symbols-outlined text-xl"
                           >archive</span
                         >
                       </button>
@@ -262,20 +258,45 @@
                 <span class="font-bold text-gray-900 dark:text-white"></span>
                 <span class="font-bold text-gray-900 dark:text-white"></span>
               </div>
-              <div class="flex space-x-2">
+              <div class="flex items-center space-x-1">
+                <!-- previous -->
                 <button
-                  class="p-2 border border-border-light dark:border-border-dark rounded-md text-gray-400 hover:text-gray-500 dark:hover:text-gray-300 bg-white dark:bg-surface-dark hover:bg-gray-50 dark:hover:bg-gray-700"
+                  @click="prevPage"
+                  :disabled="currentPage === 1"
+                  class="p-2 border rounded-md disabled:opacity-40"
                 >
-                  <span class="material-symbols-outlined text-sm"
-                    >chevron_left</span
-                  >
+                  <span class="material-symbols-outlined text-sm">
+                    chevron_left
+                  </span>
                 </button>
+
+                <!-- page numbers -->
+                <!-- page numbers -->
                 <button
-                  class="p-2 border border-border-light dark:border-border-dark rounded-md text-gray-400 hover:text-gray-500 dark:hover:text-gray-300 bg-white dark:bg-surface-dark hover:bg-gray-50 dark:hover:bg-gray-700"
+                  v-for="page in pages"
+                  :key="page"
+                  @click="page !== '...' && goToPage(page)"
+                  class="px-3 py-1 border rounded-md text-sm"
+                  :disabled="page === '...'"
+                  :class="[
+                    page === currentPage
+                      ? 'bg-primary text-white'
+                      : 'bg-white dark:bg-surface-dark',
+                    page === '...' ? 'cursor-default opacity-60' : '',
+                  ]"
                 >
-                  <span class="material-symbols-outlined text-sm"
-                    >chevron_right</span
-                  >
+                  {{ page }}
+                </button>
+
+                <!-- next -->
+                <button
+                  @click="nextPage"
+                  :disabled="currentPage === totalPages"
+                  class="p-2 border rounded-md disabled:opacity-40"
+                >
+                  <span class="material-symbols-outlined text-sm">
+                    chevron_right
+                  </span>
                 </button>
               </div>
             </div>
@@ -388,6 +409,8 @@ const archivedCourses = ref([]);
 const userProfile = ref(null);
 const csrf_token = localStorage.getItem("csrf_token");
 const randomAvatar = ref("");
+const currentPage = ref(1);
+const itemsPerPage = 5;
 
 const BASE_URL = "http://localhost:56733";
 
@@ -641,6 +664,63 @@ const handleLogout = async () => {
     router.push("/login");
   } catch (error) {
     console.error("Logout failed:", error);
+  }
+};
+
+// ######################## page ###################################################################################################################################
+const totalPages = computed(() => {
+  return Math.ceil(filteredCourses.value.length / itemsPerPage);
+});
+
+const paginatedCourses = computed(() => {
+  const start = (currentPage.value - 1) * itemsPerPage;
+  const end = start + itemsPerPage;
+  return filteredCourses.value.slice(start, end);
+});
+
+const pages = computed(() => {
+  const total = totalPages.value;
+  const current = currentPage.value;
+  const maxButtons = 5;
+
+  if (total <= maxButtons) {
+    return Array.from({ length: total }, (_, i) => i + 1);
+  }
+
+  let start = current - Math.floor(maxButtons / 2);
+  let end = current + Math.floor(maxButtons / 2);
+
+  if (start < 1) {
+    start = 1;
+    end = maxButtons;
+  }
+
+  if (end > total) {
+    end = total;
+    start = total - maxButtons + 1;
+  }
+
+  const result = [];
+  for (let i = start; i <= end; i++) {
+    result.push(i);
+  }
+
+  return result;
+});
+
+const goToPage = (page) => {
+  currentPage.value = page;
+};
+
+const nextPage = () => {
+  if (currentPage.value < totalPages.value) {
+    currentPage.value++;
+  }
+};
+
+const prevPage = () => {
+  if (currentPage.value > 1) {
+    currentPage.value--;
   }
 };
 
