@@ -295,7 +295,7 @@ const handleSignup = async () => {
       return;
     }
 
-    // ถ้าเป็น student email (มี _ และ cmu)
+    // ถ้าเป็น student email มี_
     if (email.value.includes("_") && email.value.endsWith("@cmu.ac.th")) {
       if (!studentID.value) {
         alert("ใส่ Student ID ด้วยจ้า");
