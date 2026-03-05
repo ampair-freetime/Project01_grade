@@ -289,10 +289,25 @@ const togglePassword = () => {
 
 const handleSignup = async () => {
   try {
+
     if (!firstName.value ||!lastName.value ||!email.value || !password.value) {
       alert("ใส่ให้ครบจ้า");
       return;
     }
+
+    // ถ้าเป็น student email (มี _ และ cmu)
+    if (email.value.includes("_") && email.value.endsWith("@cmu.ac.th")) {
+      if (!studentID.value) {
+        alert("ใส่ Student ID ด้วยจ้า");
+        return;
+      }
+    }
+
+    // ถ้าเป็น teacher email (มี .)
+    if (email.value.includes(".") && email.value.endsWith("@cmu.ac.th")) {
+      studentID.value = null;
+    }
+
     const response = await fetch("http://localhost:56733/register", {
       method: "POST",
       headers: {

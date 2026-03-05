@@ -148,6 +148,14 @@ async def google_auth(request: Request, db: Session = Depends(get_db)):
             user_info = user_info_response.json()
             logger.debug(f"Google profile: {user_info}")
 
+        # new_provider = AuthProvider(
+                # auth_user_id= current_user.auth_user_id,
+                # email_provider = user_info["email"]
+                # provider="google",
+                # provider_user_id=user_info["id"]
+            # )
+
+
         provider = db.query(AuthProvider).filter(
             AuthProvider.provider == "google",
             AuthProvider.provider_user_id == user_info["id"]
@@ -162,20 +170,20 @@ async def google_auth(request: Request, db: Session = Depends(get_db)):
                 AuthUser.email == user_info["email"]
             ).first()
 
-            if not user:
-                user = AuthUser(email=user_info["email"])
-                db.add(user)
-                db.commit()
-                db.refresh(user)
+            # if not user:
+            #     user = AuthUser(email=user_info["email"])
+            #     db.add(user)
+            #     db.commit()
+            #     db.refresh(user)
 
-            new_provider = AuthProvider(
-                auth_user_id=user.auth_user_id,
-                provider="google",
-                provider_user_id=user_info["id"]
-            )
+            # new_provider = AuthProvider(
+            #     auth_user_id=user.auth_user_id,
+            #     provider="google",
+            #     provider_user_id=user_info["id"]
+            # )
 
-            db.add(new_provider)
-            db.commit()
+            # db.add(new_provider)
+            # db.commit()
 
         jwt_token = create_access_token(
             data={
@@ -238,7 +246,9 @@ async def register(signin_data: UserSignin, db: Session = Depends(get_db)):
             raise HTTPException(status_code=401, detail="Yor are not invited")
         #this user not rewrite 2 ขั้น ใช้ password เป็น none และ student_id เทียบกัน
         avatar = f"https://ui-avatars.com/api/?name={signin_data.first_name}&size=128&background=random"
-        if user.student and user.password is None and user.student.student_id == signin_data.student_id:
+        if user.student.student_id != signin_data.student_id:
+            raise HTTPException(status_code=401, detail="ID not match please enter new ID")
+        if user.student and user.password is None:
             user.student.first_name = signin_data.first_name
             user.student.last_name = signin_data.last_name
             user.student.middle_name = signin_data.middle_name
