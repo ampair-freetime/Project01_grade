@@ -91,175 +91,206 @@
           >
             Course Management
           </h1>
-          <div
-            class="bg-surface-light dark:bg-surface-dark rounded-xl shadow-sm border border-border-light dark:border-border-dark p-4 mb-6 flex flex-col sm:flex-row justify-between items-center gap-4"
-          >
-            <div class="relative w-full sm:max-w-md">
-              <div
-                class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none"
-              >
-                <span class="material-symbols-outlined text-gray-400"
-                  >search</span
-                >
-              </div>
-              <input
-                v-model="searchTerm"
-                class="block w-full pl-10 pr-3 py-2 border-none bg-gray-50 dark:bg-gray-800 rounded-lg text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary sm:text-sm"
-                id="search"
-                name="search"
-                placeholder="Search Course Code or Name..."
-                type="text"
-              />
-            </div>
-            <div class="flex w-full sm:w-auto items-center gap-4">
-              <button
-                @click="createCourse"
-                class="inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-lg shadow-sm text-white bg-primary hover:bg-primary-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary transition-colors whitespace-nowrap"
-              >
-                <span class="material-symbols-outlined text-white text-lg mr-2"
-                  >add</span
-                >
-                Create Course
-              </button>
-            </div>
+        </div>
+        <div
+          class="bg-surface-light dark:bg-surface-dark rounded-xl shadow-sm border border-border-light dark:border-border-dark p-4 mb-6 flex flex-col sm:flex-row justify-between items-center gap-4"
+        >
+          <div class="relative w-full sm:max-w-md">
             <div
-              v-if="startCreate"
-              class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
-              @click.self="cancleCreate"
+              class="bg-surface-light dark:bg-surface-dark rounded-xl shadow-sm border border-border-light dark:border-border-dark p-4 mb-6 flex flex-col sm:flex-row justify-between items-center gap-4"
             >
-              <div
-                class="bg-white dark:bg-gray-800 w-[600px] rounded-xl shadow-xl p-6 relative"
-              >
-                <button
-                  @click="cancleCreate"
-                  class="absolute top-3 right-3 text-2xl text-gray-500 hover:text-red-500"
+              <div class="relative w-full sm:max-w-md">
+                <div
+                  class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none"
                 >
-                  ✕
-                </button>
-
-                <h2 class="text-2xl font-semibold mb-4">Create New Course</h2>
-                <div class="mb-4">
-                  <label class="block py-1">Course Name</label>
-                  <input
-                    v-model="courseName"
-                    type="text"
-                    class="w-full border border-gray-300 dark:border-gray-800 rounded-md dark:bg-gray-700 px-3 py-2 focus:outline-none focus:ring-green-200"
-                    placeholder="e.g., Intro to Computer Science"
-                  />
-                </div>
-                <div class="flex justify-end gap-3">
-                  <button
-                    @click="submit"
-                    class="px-6 py-3 rounded-md bg-primary hover:bg-primary-dark text-white text-base"
+                  <span class="material-symbols-outlined text-gray-400"
+                    >search</span
                   >
-                    Create Course
-                  </button>
                 </div>
+                <input
+                  v-model="searchTerm"
+                  class="block w-full pl-10 pr-3 py-2 border-none bg-gray-50 dark:bg-gray-800 rounded-lg text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary sm:text-sm"
+                  id="search"
+                  name="search"
+                  placeholder="Search Course Code or Name..."
+                  type="text"
+                />
               </div>
-            </div>
-          </div>
-          <div
-            class="bg-surface-light dark:bg-surface-dark shadow-sm rounded-xl border border-border-light dark:border-border-dark overflow-hidden"
-          >
-            <div
-              class="px-8 py-4 border-b border-border-light dark:border-border-dark flex justify-between items-center bg-gray-50/50 dark:bg-gray-800/30"
-            >
-              <span
-                class="text-xs font-semibold text-text-muted-light dark:text-text-muted-dark uppercase tracking-wider"
-                >Course Info</span
-              >
-              <div class="flex items-center gap-6">
-                <span
-                  class="text-xs font-semibold text-text-muted-light dark:text-text-muted-dark uppercase tracking-wider"
-                  >Enrolled</span
+              <div class="flex w-full sm:w-auto items-center gap-4">
+                <button
+                  @click="createCourse"
+                  class="inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-lg shadow-sm text-white bg-primary hover:bg-primary-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary transition-colors whitespace-nowrap"
                 >
-                <span
-                  class="text-xs font-semibold text-text-muted-light dark:text-text-muted-dark uppercase tracking-wider"
-                  >Actions</span
-                >
+                  <span
+                    class="material-symbols-outlined text-white text-lg mr-2"
+                    >add</span
+                  >
+                  Create Course
+                </button>
               </div>
-            </div>
-            <ul class="divide-y divide-border-light dark:divide-border-dark">
-              <li
-                v-for="course in filteredCourses"
-                :key="course.course_id"
-                class="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors duration-150"
+              <div
+                v-if="startCreate"
+                class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+                @click.self="cancleCreate"
               >
                 <div
-                  class="px-6 py-5 flex items-center justify-between cursor-pointer"
-                  @click="goToAssignment(course.course_id)"
+                  class="bg-white dark:bg-gray-800 w-[600px] rounded-xl shadow-xl p-6 relative"
                 >
-                  <div class="flex-1 min-w-0">
-                    <div
-                      class="text-l font-bold dark:text-primary-light uppercase tracking-wide"
-                    >
-                      {{ course.course_name }}
-                    </div>
-                    <div
-                      class="text-xs text-gray-500 dark:text-gray-400tracking-wide"
-                    >
-                      Course ID: {{ course.course_id }}
-                    </div>
-                  </div>
+                  <button
+                    @click="cancleCreate"
+                    class="absolute top-3 right-3 text-2xl text-gray-500 hover:text-red-500"
+                  >
+                    ✕
+                  </button>
 
+                  <h2 class="text-2xl font-semibold mb-4">Create New Course</h2>
+                  <div class="mb-4">
+                    <label class="block py-1">Course Name</label>
+                    <input
+                      v-model="courseName"
+                      type="text"
+                      class="w-full border border-gray-300 dark:border-gray-800 rounded-md dark:bg-gray-700 px-3 py-2 focus:outline-none focus:ring-green-200"
+                      placeholder="e.g., Intro to Computer Science"
+                    />
+                  </div>
                   <div class="flex items-center gap-6 shrink-0">
                     <div class="flex flex-col items-end min-w-[80px]">
-                      <div class="flex items-center font-semibold">
-                        <span class="material-symbols-outlined mr-1 text-lg"
+                      <div
+                        class="flex items-center text-gray-900 dark:text-white font-semibold"
+                      >
+                        <span
+                          class="material-symbols-outlined text-text-muted-light dark:text-text-muted-dark mr-1 text-lg"
                           >people</span
                         >
-                        {{ course.student_count ?? 0 }}
+                        {{ course.course_stu_number ?? 0 }}
                       </div>
-                      <div class="text-xs uppercase mt-0.5">Students</div>
+                      <div
+                        class="text-xs text-text-muted-light dark:text-text-muted-dark uppercase mt-0.5"
+                      >
+                        Students
+                      </div>
                     </div>
-
-                    <div class="flex items-center">
+                    <div class="flex items-end min-w-[50px]">
                       <button
-                        @click.stop="deleteCourse(course.course_id)"
-                        class="p-2 rounded-full"
+                        @click="submit"
+                        class="px-6 py-3 rounded-md bg-primary hover:bg-primary-dark text-white text-base"
                       >
-                        <span class="material-symbols-outlined text-xl"
-                          >delete</span
-                        >
-                      </button>
-
-                      <button
-                        @click.stop="archiveCourse(course.course_id)"
-                        class="p-2 rounded-full"
-                      >
-                        <span class="material-symbols-outlined text-xl"
-                          >archive</span
-                        >
+                        Create Course
                       </button>
                     </div>
                   </div>
                 </div>
-              </li>
-            </ul>
-            <div
-              class="px-6 py-4 border-t border-border-light dark:border-border-dark flex items-center justify-between"
-            >
-              <div
-                class="text-sm text-text-muted-light dark:text-text-muted-dark"
-              >
-                <span class="font-bold text-gray-900 dark:text-white"></span>
-                <span class="font-bold text-gray-900 dark:text-white"></span>
               </div>
-              <div class="flex space-x-2">
-                <button
-                  class="p-2 border border-border-light dark:border-border-dark rounded-md text-gray-400 hover:text-gray-500 dark:hover:text-gray-300 bg-white dark:bg-surface-dark hover:bg-gray-50 dark:hover:bg-gray-700"
+              <div
+                class="bg-surface-light dark:bg-surface-dark shadow-sm rounded-xl border border-border-light dark:border-border-dark overflow-hidden"
+              >
+                <div
+                  class="px-8 py-4 border-b border-border-light dark:border-border-dark flex justify-between items-center bg-gray-50/50 dark:bg-gray-800/30"
                 >
-                  <span class="material-symbols-outlined text-sm"
-                    >chevron_left</span
+                  <span
+                    class="text-xs font-semibold text-text-muted-light dark:text-text-muted-dark uppercase tracking-wider"
+                    >Course Info</span
                   >
-                </button>
-                <button
-                  class="p-2 border border-border-light dark:border-border-dark rounded-md text-gray-400 hover:text-gray-500 dark:hover:text-gray-300 bg-white dark:bg-surface-dark hover:bg-gray-50 dark:hover:bg-gray-700"
+                  <div class="flex items-center gap-6">
+                    <span
+                      class="text-xs font-semibold text-text-muted-light dark:text-text-muted-dark uppercase tracking-wider"
+                      >Enrolled</span
+                    >
+                    <span
+                      class="text-xs font-semibold text-text-muted-light dark:text-text-muted-dark uppercase tracking-wider"
+                      >Actions</span
+                    >
+                  </div>
+                </div>
+                <ul
+                  class="divide-y divide-border-light dark:divide-border-dark"
                 >
-                  <span class="material-symbols-outlined text-sm"
-                    >chevron_right</span
+                  <li
+                    v-for="course in filteredCourses"
+                    :key="course.course_id"
+                    class="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors duration-150"
                   >
-                </button>
+                    <div
+                      class="px-6 py-5 flex items-center justify-between cursor-pointer"
+                      @click="goToAssignment(course.course_id)"
+                    >
+                      <div class="flex-1 min-w-0">
+                        <div
+                          class="text-l font-bold dark:text-primary-light uppercase tracking-wide"
+                        >
+                          {{ course.course_name }}
+                        </div>
+                        <div
+                          class="text-xs text-gray-500 dark:text-gray-400tracking-wide"
+                        >
+                          Course ID: {{ course.course_id }}
+                        </div>
+                      </div>
+
+                      <div class="flex items-center gap-6 shrink-0">
+                        <div class="flex flex-col items-end min-w-[80px]">
+                          <div class="flex items-center font-semibold">
+                            <span class="material-symbols-outlined mr-1 text-lg"
+                              >people</span
+                            >
+                            {{ course.student_count ?? 0 }}
+                          </div>
+                          <div class="text-xs uppercase mt-0.5">Students</div>
+                        </div>
+
+                        <div class="flex items-center">
+                          <button
+                            @click.stop="deleteCourse(course.course_id)"
+                            class="p-2 rounded-full"
+                          >
+                            <span class="material-symbols-outlined text-xl"
+                              >delete</span
+                            >
+                          </button>
+
+                          <button
+                            @click.stop="archiveCourse(course.course_id)"
+                            class="p-2 rounded-full"
+                          >
+                            <span class="material-symbols-outlined text-xl"
+                              >archive</span
+                            >
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </li>
+                </ul>
+                <div
+                  class="px-6 py-4 border-t border-border-light dark:border-border-dark flex items-center justify-between"
+                >
+                  <div
+                    class="text-sm text-text-muted-light dark:text-text-muted-dark"
+                  >
+                    <span
+                      class="font-bold text-gray-900 dark:text-white"
+                    ></span>
+                    <span
+                      class="font-bold text-gray-900 dark:text-white"
+                    ></span>
+                  </div>
+                  <div class="flex space-x-2">
+                    <button
+                      class="p-2 border border-border-light dark:border-border-dark rounded-md text-gray-400 hover:text-gray-500 dark:hover:text-gray-300 bg-white dark:bg-surface-dark hover:bg-gray-50 dark:hover:bg-gray-700"
+                    >
+                      <span class="material-symbols-outlined text-sm"
+                        >chevron_left</span
+                      >
+                    </button>
+                    <button
+                      class="p-2 border border-border-light dark:border-border-dark rounded-md text-gray-400 hover:text-gray-500 dark:hover:text-gray-300 bg-white dark:bg-surface-dark hover:bg-gray-50 dark:hover:bg-gray-700"
+                    >
+                      <span class="material-symbols-outlined text-sm"
+                        >chevron_right</span
+                      >
+                    </button>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -304,9 +335,7 @@
                 <div class="text-m font-bold text-gray-900 dark:text-white">
                   {{ course.course_name }}
                 </div>
-                <div
-                  class="text-xs text-gray-500 dark:text-text-muted-dark"
-                >
+                <div class="text-xs text-gray-500 dark:text-text-muted-dark">
                   Course ID: {{ course.course_id }}
                 </div>
               </div>

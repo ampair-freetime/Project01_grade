@@ -213,10 +213,11 @@ async def upload_csv(quiz_id: int,course_id: int,file: UploadFile = File(...),db
         score = db.query(Score).filter(Score.student_id == stu_id,Score.quiz_id == quiz_id).first()
         # ถ้ายังให้สร้าง ถ้ามีให้ update
         if score:
-            #update
+            # update คะแนนเดิม (รวมถึงกรณีเคยถูก soft delete มาก่อน)
             score.score = score_v
             score.unread_flag = True
             score.section = section
+            score.is_deleted = False
             db.commit()
         else:
             new_score = Score(
@@ -267,7 +268,7 @@ async def delete_assignments(score_id:int,assign_id:int,db: Session = Depends(ge
     #หา Quiz ที่เชื่อมกับอาจารคนนี้ก่อน และส่งมาเป็น quiz ไหน
     assignment = db.query(Quiz).join(Course).filter(Quiz.quiz_id == assign_id,Course.teacher_id == teacher.teacher_id).first()
     # เอา quiz ที่หามาได้ไปหา score ใน database อีกที
-    score = db.query(Score).filter(Score.score_id == score_id,Score.quiz_id == assignment.quiz_id)
+    score = db.query(Score).filter(Score.score_id == score_id,Score.quiz_id == assignment.quiz_id).first()
     if not score:
         raise HTTPException(status=404,detail="Score not found")
     score.is_deleted = True
