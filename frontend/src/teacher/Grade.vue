@@ -86,91 +86,94 @@
     <main class="flex-1 flex-row flex-col h-full overflow-hidden relative">
       <div class="flex-1 overflow-y-auto p-8 lg:p-12">
         <div class="max-w-5xl mx-auto flex flex-col gap-8">
-        <nav
-          aria-label="Breadcrumb"
-          class="mb-6 text-sm text-text-muted-light dark:text-text-muted-dark"
-        >
-          <!-- Return -->
-          <button
-            class="group inline-flex items-center gap-3 font-bold text-[#111811] dark:text-white hover:text-primary transition-colors"
-            type="button"
-            @click="router.push(`/teacher/assignments/${courseId}`)"
+          <nav
+            aria-label="Breadcrumb"
+            class="flex flex-col gap-4 mb-6 text-sm text-text-muted-light dark:text-text-muted-dark"
           >
-            <div
-              class="flex size-9 items-center justify-center rounded-full bg-surface-light dark:bg-surface-dark border border-border-light dark:border-border-dark shadow-sm group-hover:border-primary group-hover:text-primary transition-colors"
-            >
-              <span class="material-symbols-outlined text-[20px]">
-                arrow_back
-              </span>
-            </div>
-            <span>Return</span>
-          </button>
-
-          <!-- Path -->
-          <div class="flex flex-wrap items-center gap-2 mt-4">
+            <!-- Return -->
             <button
-              class="hover:text-primary font-medium"
-              @click="router.push(`/teacher/courses`)"
-            >
-              Course Management
-            </button>
-
-            <span class="font-medium">/</span>
-
-            <button
-              class="hover:text-primary font-medium"
+              class="group inline-flex items-center gap-3 font-bold text-[#111811] dark:text-white hover:text-primary transition-colors"
+              type="button"
               @click="router.push(`/teacher/assignments/${courseId}`)"
             >
-              {{ courseTitle || (courseId ? `Course #${courseId}` : "Assignments") }}
+              <div
+                class="flex size-9 items-center justify-center rounded-full bg-surface-light dark:bg-surface-dark border border-border-light dark:border-border-dark shadow-sm group-hover:border-primary group-hover:text-primary transition-colors"
+              >
+                <span class="material-symbols-outlined text-[20px]">
+                  arrow_back
+                </span>
+              </div>
+              <span>Return</span>
             </button>
 
-            <span class="font-medium">/</span>
+            <!-- Path -->
+            <div class="flex flex-wrap items-center gap-2">
+              <button
+                class="hover:text-primary font-medium"
+                @click="router.push(`/teacher/courses`)"
+              >
+                Course Management
+              </button>
 
-            <span class="text-[#111811] dark:text-white font-medium">
-              {{ assignment_title || "Assignment" }}
-            </span>
-          </div>
-        </nav>
-        <div>
-            <div class="flex items-center gap-3 mb-1">
-              <h1 class="text-3xl font-bold text-gray-900 dark:text-white">
+              <span class="font-medium">/</span>
+
+              <button
+                class="hover:text-primary font-medium"
+                @click="router.push(`/teacher/assignments/${courseId}`)"
+              >
+                {{
+                  courseTitle ||
+                  (courseId ? `Course #${courseId}` : "Assignments")
+                }}
+              </button>
+
+              <span class="font-medium">/</span>
+
+              <span class="text-[#111811] dark:text-white font-medium">
                 {{ assignment_title || "Assignment" }}
-              </h1>
-              <div></div>
-            <label
-              class="inline-flex items-center px-4 py-2 bg-white dark:bg-slate-800 border border-gray-300 dark:border-slate-600 rounded-lg text-sm font-medium text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-slate-700 shadow-sm transition-colors"
-            >
-              <span class="material-symbols-outlined text-lg mr-2"
-                >upload_file</span
+              </span>
+            </div>
+          </nav>
+          <div class="flex items-center justify-between mb-4 flex-wrap gap-4">
+            <h1 class="text-3xl font-bold text-gray-900 dark:text-white">
+              {{ assignment_title || "Assignment" }}
+            </h1>
+            <div class="flex items-center gap-3">
+              <label
+                class="inline-flex items-center px-4 py-2 bg-white dark:bg-slate-800 border border-gray-300 dark:border-slate-600 rounded-lg text-sm font-medium text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-slate-700 shadow-sm transition-colors"
               >
-              Import CSV
-              <input
-                type="file"
-                accept=".csv"
-                class="hidden"
-                @change="handleFileUpload"
-              />
-            </label>
-            <button
-              class="inline-flex items-center px-4 py-2 bg-slate-900 dark:bg-slate-700 border border-transparent rounded-lg text-sm font-medium text-white hover:bg-slate-800 dark:hover:bg-slate-600 shadow-sm transition-colors"
-            >
-              <span class="material-symbols-outlined text-lg mr-2"
-                >publish</span
+                <span class="material-symbols-outlined text-lg mr-2"
+                  >upload_file</span
+                >
+                Import CSV
+                <input
+                  type="file"
+                  accept=".csv"
+                  class="hidden"
+                  @change="handleFileUpload"
+                />
+              </label>
+              <button
+                class="inline-flex items-center px-4 py-2 bg-slate-900 dark:bg-slate-700 border border-transparent rounded-lg text-sm font-medium text-white hover:bg-slate-800 dark:hover:bg-slate-600 shadow-sm transition-colors"
               >
-              Publish Scores
-            </button>
-            <button
-              class="inline-flex items-center px-4 py-2 bg-sky-500 dark:bg-sky-600 border border-transparent rounded-lg text-sm font-medium text-white hover:opacity-90 shadow-sm transition-colors"
-            >
-              <span class="material-symbols-outlined text-lg mr-2">save</span>
-              Save Changes
-            </button>
+                <span class="material-symbols-outlined text-lg mr-2"
+                  >publish</span
+                >
+                Publish Scores
+              </button>
+              <button
+                class="inline-flex items-center px-4 py-2 bg-sky-500 dark:bg-sky-600 border border-transparent rounded-lg text-sm font-medium text-white hover:opacity-90 shadow-sm transition-colors"
+              >
+                <span class="material-symbols-outlined text-lg mr-2">save</span>
+                Save Changes
+              </button>
+            </div>
           </div>
 
           <div
-            class="px-4 py-6 bg-surface-light dark:bg-surface-dark rounded-xl border border-border-light dark:border-border-dark p-2 flex flex-col md:flex-row items-center justify-between gap-4 shadow-sm"
+            class="px-4 py-6 bg-surface-light dark:bg-surface-dark rounded-xl border border-border-light dark:border-border-dark flex flex-col md:flex-row items-center justify-between gap-4 shadow-sm"
           >
-            <div class="relative w-full md:w-96">
+            <div class="relative w-full md:w-96 min-w-0">
               <span
                 class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none"
               >
@@ -187,36 +190,60 @@
               />
             </div>
             <div
-              class="flex items-center gap-4 w-full md:w-auto justify-between md:justify-end overflow-x-auto pb-2 md:pb-0"
+              class="flex items-center gap-4 w-full md:w-auto justify-between md:justify-end overflow-x-auto pb-2 md:pb-0 flex-shrink-0"
             >
               <div class="flex flex-wrap items-center gap-2 text-sm">
                 <span
                   class="uppercase text-xs font-bold tracking-wider mr-1 text-gray-500 dark:text-gray-300"
                   >Status :</span
                 >
-                <button
-                  class="px-3 py-1.5 bg-surface-dark dark:bg-surface-light text-white dark:text-slate-900 rounded-md font-medium text-xs"
-                >
-                  All Students
-                </button>
-                <button
-                  class="px-3 py-1.5 text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-slate-700 rounded-md font-medium text-xs flex items-center gap-1 transition-colors"
-                >
-                  Read
-                  <span
-                    class="bg-sky-100 dark:bg-sky-800 text-sky-700 dark:text-sky-100 px-1.5 py-0.5 rounded-full text-[10px]"
-                    >{{ readCount }}</span
+                <div class="flex flex-nowrap items-center gap-2">
+                  <button
+                    @click="statusFilter = 'all'"
+                    :class="[
+                      'px-3 py-1.5 whitespace-nowrap rounded-md font-medium text-xs',
+                      statusFilter === 'all'
+                        ? 'bg-gray-300 text-black dark:bg-gray-400 dark:text-black'
+                        : 'text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-slate-700',
+                    ]"
                   >
-                </button>
-                <button
-                  class="px-3 py-1.5 text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-slate-700 rounded-md font-medium text-xs flex items-center gap-1 transition-colors"
-                >
-                  Unread
-                  <span
-                    class="bg-amber-200 dark:bg-yellow-600 text-amber-900 dark:text-yellow-50 px-1.5 py-0.5 rounded-full text-[10px]"
-                    >{{ unreadCount }}</span
+                    All Students
+                  </button>
+
+                  <button
+                    @click="statusFilter = 'Read'"
+                    :class="[
+                      'px-3 py-1.5 rounded-md font-medium text-xs flex items-center gap-1 transition-colors',
+                      statusFilter === 'Read'
+                        ? 'bg-gray-300 text-black dark:bg-gray-400 dark:text-black'
+                        : 'text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-slate-700',
+                    ]"
                   >
-                </button>
+                    Read
+                    <span
+                      class="bg-sky-100 dark:bg-sky-800 text-sky-700 dark:text-sky-100 px-1.5 py-0.5 rounded-full text-[10px]"
+                    >
+                      {{ readCount }}
+                    </span>
+                  </button>
+
+                  <button
+                    @click="statusFilter = 'Unread'"
+                    :class="[
+                      'px-3 py-1.5 rounded-md font-medium text-xs flex items-center gap-1 transition-colors',
+                      statusFilter === 'Unread'
+                        ? 'bg-gray-300 text-black dark:bg-gray-400 dark:text-black'
+                        : 'text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-slate-700',
+                    ]"
+                  >
+                    Unread
+                    <span
+                      class="bg-amber-200 dark:bg-yellow-600 text-amber-900 dark:text-yellow-50 px-1.5 py-0.5 rounded-full text-[10px]"
+                    >
+                      {{ unreadCount }}
+                    </span>
+                  </button>
+                </div>
               </div>
               <div
                 class="w-px h-6 bg-gray-200 dark:bg-gray-700 hidden md:block"
@@ -278,7 +305,7 @@
                   class="divide-y divide-border-light dark:divide-border-dark"
                 >
                   <tr
-                    v-for="student in filteredStudents"
+                    v-for="student in paginatedStudents"
                     :key="student.student_id"
                     class="group hover:bg-gray-50 dark:hover:bg-slate-800/50 transition-colors"
                   >
@@ -293,7 +320,8 @@
                           <div
                             class="font-semibold text-gray-900 dark:text-white"
                           >
-                            {{ student.stu_fname }} {{ student.stu_mname }} {{ student.stu_lname }}
+                            {{ student.stu_fname }} {{ student.stu_mname }}
+                            {{ student.stu_lname }}
                           </div>
                           <div
                             class="text-xs text-text-muted-light dark:text-text-muted-dark"
@@ -318,15 +346,19 @@
                     <td class="p-4 text-center">
                       <span
                         class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium"
-                        :class="student.status === 'Unread'
-                          ? 'bg-amber-100 dark:bg-yellow-900/50 text-amber-700 dark:text-yellow-300'
-                          : 'bg-sky-100 dark:bg-sky-700/40 text-sky-700 dark:text-sky-200'"
+                        :class="
+                          student.status === 'Unread'
+                            ? 'bg-amber-100 dark:bg-yellow-900/50 text-amber-700 dark:text-yellow-300'
+                            : 'bg-sky-100 dark:bg-sky-700/40 text-sky-700 dark:text-sky-200'
+                        "
                       >
                         <span
                           class="w-1.5 h-1.5 rounded-full"
-                          :class="student.status === 'Unread'
-                            ? 'bg-amber-500 dark:bg-yellow-400'
-                            : 'bg-sky-500'"
+                          :class="
+                            student.status === 'Unread'
+                              ? 'bg-amber-500 dark:bg-yellow-400'
+                              : 'bg-sky-500'
+                          "
                         ></span>
                         {{ student.status }}
                       </span>
@@ -355,26 +387,49 @@
                 <span class="font-bold text-gray-900 dark:text-white"></span>
                 <span class="font-bold text-gray-900 dark:text-white"></span>
               </div>
-              <div class="flex space-x-2">
+              <div class="flex items-center space-x-1">
+                <!-- previous -->
                 <button
-                  class="p-2 border border-border-light dark:border-border-dark rounded-md text-gray-400 hover:text-gray-500 dark:hover:text-gray-300 bg-white dark:bg-surface-dark hover:bg-gray-50 dark:hover:bg-gray-700"
+                  @click="prevPage"
+                  :disabled="currentPage === 1"
+                  class="p-2 border rounded-md disabled:opacity-40"
                 >
-                  <span class="material-symbols-outlined text-sm"
-                    >chevron_left</span
-                  >
+                  <span class="material-symbols-outlined text-sm">
+                    chevron_left
+                  </span>
                 </button>
+
+                <!-- page numbers -->
                 <button
-                  class="p-2 border border-border-light dark:border-border-dark rounded-md text-gray-400 hover:text-gray-500 dark:hover:text-gray-300 bg-white dark:bg-surface-dark hover:bg-gray-50 dark:hover:bg-gray-700"
+                  v-for="page in pages"
+                  :key="page"
+                  @click="page !== '...' && goToPage(page)"
+                  class="px-3 py-1 border rounded-md text-sm"
+                  :disabled="page === '...'"
+                  :class="[
+                    page === currentPage
+                      ? 'bg-primary text-white'
+                      : 'bg-white dark:bg-surface-dark',
+                    page === '...' ? 'cursor-default opacity-60' : '',
+                  ]"
                 >
-                  <span class="material-symbols-outlined text-sm"
-                    >chevron_right</span
-                  >
+                  {{ page }}
+                </button>
+
+                <!-- next -->
+                <button
+                  @click="nextPage"
+                  :disabled="currentPage === totalPages"
+                  class="p-2 border rounded-md disabled:opacity-40"
+                >
+                  <span class="material-symbols-outlined text-sm">
+                    chevron_right
+                  </span>
                 </button>
               </div>
             </div>
           </div>
         </div>
-      </div>
       </div>
     </main>
   </div>
@@ -398,6 +453,10 @@ const searchTerm = ref("");
 const sortKey = ref("");
 const sortOption = ref("id_lowhigh");
 const sortOpen = ref(false);
+const statusFilter = ref("all");
+
+const currentPage = ref(1);
+const itemsPerPage = 5;
 
 const quizID = computed(() => Number(route.params.quiz_id));
 const courseId = computed(() => Number(route.query.course_id));
@@ -422,13 +481,10 @@ const BASE_URL = "http://localhost:56733";
 
 const fetchStudentScore = async (quiz_id) => {
   try {
-    const response = await fetch(
-      `${BASE_URL}/teacher/stu_score/${quiz_id}`,
-      {
-        method: "GET",
-        credentials: "include",
-      },
-    );
+    const response = await fetch(`${BASE_URL}/teacher/stu_score/${quiz_id}`, {
+      method: "GET",
+      credentials: "include",
+    });
     if (!response.ok) {
       const text = await response.text().catch(() => "");
       console.error("Fetch student score failed:", response.status, text);
@@ -443,6 +499,9 @@ const fetchStudentScore = async (quiz_id) => {
     students.value = scoreList.map((s) => ({
       score_id: s.score_id,
       student_id: s.stu_id,
+      stu_fname: s.stu_fname,
+      stu_mname: s.stu_mname,
+      stu_lname: s.stu_lname,
       score: s.score,
       section: s.section,
       status: s.unread_flag ? "Unread" : "Read",
@@ -475,12 +534,17 @@ const fetchUserProfile = async () => {
 
 const filteredStudents = computed(() => {
   const term = searchTerm.value.trim().toLowerCase();
-  if (!term) return students.value;
 
   return students.value.filter((s) => {
-    const name = (s.student_name || "").toLowerCase();
+    const name = `${s.stu_fname || ""} ${s.stu_lname || ""}`.toLowerCase();
     const id = String(s.student_id || "");
-    return name.includes(term) || id.includes(term);
+
+    const matchSearch = !term || name.includes(term) || id.includes(term);
+
+    const matchStatus =
+      statusFilter.value === "all" || s.status === statusFilter.value;
+
+    return matchSearch && matchStatus;
   });
 });
 
@@ -567,13 +631,13 @@ const sortPeople = () => {
   switch (sortOption.value) {
     case "id_lowhigh":
       students.value.sort(
-        (a, b) => Number(a.student_id) - Number(b.student_id)
+        (a, b) => Number(a.student_id) - Number(b.student_id),
       );
       break;
 
     case "name_atoz":
       students.value.sort((a, b) =>
-        a.student_name.localeCompare(b.student_name)
+        a.student_name.localeCompare(b.student_name),
       );
       break;
 
@@ -601,6 +665,64 @@ const handleLogout = async () => {
     router.push("/login");
   } catch (error) {
     console.error("Logout failed:", error);
+  }
+};
+
+// ######################## page ###################################################################################################################################
+const totalPages = computed(() => {
+  return Math.ceil(filteredStudents.value.length / itemsPerPage);
+});
+
+const paginatedStudents = computed(() => {
+  const start = (currentPage.value - 1) * itemsPerPage;
+  const end = start + itemsPerPage;
+  return filteredStudents.value.slice(start, end);
+});
+
+const pages = computed(() => {
+  const total = totalPages.value;
+  const current = currentPage.value;
+  const result = [];
+
+  if (total <= 5) {
+    return Array.from({ length: total }, (_, i) => i + 1);
+  }
+
+  result.push(1);
+
+  if (current > 3) {
+    result.push("...");
+  }
+
+  const start = Math.max(2, current - 1);
+  const end = Math.min(total - 1, current + 1);
+
+  for (let i = start; i <= end; i++) {
+    result.push(i);
+  }
+
+  if (current < total - 2) {
+    result.push("...");
+  }
+
+  result.push(total);
+
+  return result;
+});
+
+const goToPage = (page) => {
+  currentPage.value = page;
+};
+
+const nextPage = () => {
+  if (currentPage.value < totalPages.value) {
+    currentPage.value++;
+  }
+};
+
+const prevPage = () => {
+  if (currentPage.value > 1) {
+    currentPage.value--;
   }
 };
 

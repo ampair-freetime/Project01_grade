@@ -118,7 +118,7 @@
           <section class="flex flex-col gap-4">
             <div class="flex items-center justify-between mb-2">
               <h3
-                class="text-lg font-semibold text-[#111811] dark:text-white flex items-center gap-2"
+                class="text-l text-primary dark:text-white flex items-center gap-2"
               >
                 Current Enrolled Courses
               </h3>
