@@ -17,6 +17,7 @@ class Quiz(Base, SerializerMixin):
     full_mark = Column(Integer, default=100)
     # น้ำหนักคะแนน 
     weight = Column(Float, default=1.0)
+    is_publish = Column(Boolean,default=False)
 
     # update/create/delete
     created_at = Column(DateTime, default=datetime.utcnow)
