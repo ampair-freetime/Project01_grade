@@ -107,7 +107,7 @@
             </button>
 
             <!-- Path -->
-            <div class="flex flex-wrap items-center gap-2">
+            <!-- <div class="flex flex-wrap items-center gap-2">
               <button
                 class="hover:text-primary font-medium"
                 @click="router.push(`/teacher/courses`)"
@@ -132,7 +132,7 @@
               <span class="text-[#111811] dark:text-white font-medium">
                 {{ assignment_title || "Assignment" }}
               </span>
-            </div>
+            </div> -->
           </nav>
           <div class="flex items-center justify-between mb-4 flex-wrap gap-4">
             <h1 class="text-3xl font-bold text-gray-900 dark:text-white">
@@ -399,6 +399,7 @@
                   </span>
                 </button>
 
+                <!-- page numbers -->
                 <!-- page numbers -->
                 <button
                   v-for="page in pages"
@@ -682,30 +683,29 @@ const paginatedStudents = computed(() => {
 const pages = computed(() => {
   const total = totalPages.value;
   const current = currentPage.value;
-  const result = [];
+  const maxButtons = 5;
 
-  if (total <= 5) {
+  if (total <= maxButtons) {
     return Array.from({ length: total }, (_, i) => i + 1);
   }
 
-  result.push(1);
+  let start = current - Math.floor(maxButtons / 2);
+  let end = current + Math.floor(maxButtons / 2);
 
-  if (current > 3) {
-    result.push("...");
+  if (start < 1) {
+    start = 1;
+    end = maxButtons;
   }
 
-  const start = Math.max(2, current - 1);
-  const end = Math.min(total - 1, current + 1);
+  if (end > total) {
+    end = total;
+    start = total - maxButtons + 1;
+  }
 
+  const result = [];
   for (let i = start; i <= end; i++) {
     result.push(i);
   }
-
-  if (current < total - 2) {
-    result.push("...");
-  }
-
-  result.push(total);
 
   return result;
 });

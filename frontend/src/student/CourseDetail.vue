@@ -191,14 +191,6 @@
                             item.percent
                           }}%)
                         </div>
-
-                        <!-- แจ้งเตือน unread
-                        <div
-                          v-if="item.unread_flag"
-                          class="text-xs text-red-500 mt-1"
-                        >
-                          ● New score
-                        </div> -->
                       </td>
 
                       <td class="p-4 text-center font-medium">
@@ -234,6 +226,8 @@ const isOpen = ref(false);
 
 const dropdownRef = ref(null);
 
+const BASE_URL = "http://localhost:56733";
+
 const fetchUserProfile = async () => {
   try {
     const response = await fetch(`${BASE_URL}/me`, {
@@ -258,7 +252,7 @@ const toggleDropdown = () => {
 
 const fetchCourseDetail = async () => {
   try {
-    const response = await fetch(`http://localhost:56733/course/${courseId}`, {
+    const response = await fetch(`http://localhost:56733/student/course/${courseId}`, {
       method: "GET",
       credentials: "include",
     });
