@@ -145,6 +145,7 @@
               <button
                 class="w-full h-12 bg-white dark:bg-transparent hover:bg-gray-50 dark:hover:bg-white/5 text-[#0f172a] dark:text-white text-base font-medium rounded-lg border border-border-color dark:border-[#1e293b] transition-all duration-200 flex items-center justify-center gap-3 shadow-sm hover:shadow-md active:scale-[0.98]"
                 type="button"
+                @click="loginWithGoogle"
               >
                 <svg
                   class="w-5 h-5"
@@ -237,5 +238,10 @@ const handleLogin = async () => {
     alert(error.message);
   }
 };
+
+const loginWithGoogle = () => {
+  window.location.href = "http://localhost:56733/login_with_google";
+};
+
 name: "Login";
 </script>

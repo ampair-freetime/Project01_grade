@@ -19,7 +19,13 @@ const routes = [
   { path: '/', redirect: '/login' },
   { path: '/login', component: Login },
   { path: '/signin', component: Signin },
-
+  
+  // Connext Google
+  {
+  path: "/login-success",
+  redirect: "/student/dashboard"
+  },
+  
   // Student
   { path: '/student/dashboard', component: Dashboard },
   { path: '/student/course/:course_id', component: CourseDetail },
