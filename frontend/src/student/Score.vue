@@ -100,7 +100,7 @@
               <span>Return</span>
             </a>
 
-            <div class="flex flex-wrap gap-2 mt-4">
+            <!-- <div class="flex flex-wrap gap-2 mt-4">
               <a class="hover:text-primary font-medium" href="#">Courses</a>
               <span class="font-medium">/</span>
               <a class="hover:text-primary font-medium" href="#">
@@ -110,7 +110,7 @@
               <span class="text-[#111811] dark:text-white font-medium">
                 Assignment 1
               </span>
-            </div>
+            </div> -->
           </nav>
           <div
             class="flex flex-col md:flex-row md:items-center justify-between mb-8 gap-4"

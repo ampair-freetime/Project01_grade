@@ -99,13 +99,13 @@
               </div>
               <span>Return</span>
             </a>
-            <div class="flex flex-wrap gap-2 text-sm">
+            <!-- <div class="flex flex-wrap gap-2 text-sm">
               <a class="hover:text-primary font-medium" href="#"> Courses </a>
               <span class="font-medium"> / </span>
               <span class="text-[#111811] dark:text-white font-medium">{{
                 course?.course_name
               }}</span>
-            </div>
+            </div> -->
           </div>
           <section class="@container">
             <div
@@ -124,7 +124,7 @@
                     >school</span
                   >
                   <p class="text-base font-normal">
-                    Instructor: Katarina Bluu, PhD
+                    Instructor: {{ course?.teacher_name }}
                   </p>
                 </div>
               </div>

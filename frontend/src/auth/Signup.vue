@@ -32,7 +32,7 @@
     >
       <div class="layout-content-container flex flex-col w-full max-w-[480px]">
         <div
-          class="bg-surface-light dark:bg-surface-dark rounded-2xl shadow-soft border border-border-color dark:border-[#0c4a6e] overflow-hidden relative"
+          class="bg-surface-light dark:bg-surface-dark rounded-2xl shadow-soft border border-border-color dark:border-[#0c4a6e] overflow-hidden relative animate-card"
         >
           <div
             class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-primary/60 via-primary to-primary/60"
@@ -187,7 +187,7 @@
             <div class="flex flex-col gap-4 mt-2">
               <form @submit.prevent="handleSignup">
                 <button
-                  class="group relative w-full h-12 bg-primary hover:bg-primary-dark text-white text-base font-bold rounded-lg shadow-[0_2px_10px_rgba(56,189,248,0.2)] hover:shadow-glow hover:-translate-y-0.5 active:translate-y-0 transition-all duration-200 flex items-center justify-center gap-2 overflow-hidden"
+                  class="btn-animate group relative w-full h-12 bg-primary hover:bg-primary-dark text-white text-base font-bold rounded-lg shadow-[0_2px_10px_rgba(56,189,248,0.2)] hover:shadow-glow hover:-translate-y-0.5 active:translate-y-0 transition-all duration-200 flex items-center justify-center gap-2 overflow-hidden"
                   type="submit"
                 >
                   <span
@@ -200,20 +200,14 @@
                   <span class="relative z-10">Sign Up</span>
                 </button>
               </form>
-              <div class="relative flex items-center justify-center w-full">
-                <div class="absolute inset-0 flex items-center">
-                  <div
-                    class="w-full border-t border-border-color dark:border-[#0c4a6e]"
-                  ></div>
-                </div>
-              </div>
+              
             </div>
             <div class="text-center mt-2">
               <p class="text-sm text-[#64748b]">
                 Already have an account?
                 <router-link
                   to="/login"
-                  class="font-bold text-sky-600 dark:text-sky-500 hover:text-sky-700 dark:hover:text-sky-400 transition-colors duration-200"
+                  class="link-animate font-bold text-sky-600 dark:text-sky-500 hover:text-sky-700 dark:hover:text-sky-400 transition-colors duration-200"
                 >
                   Log in
                 </router-link>
@@ -300,3 +294,64 @@ const handleSignup = async () => {
   }
 };
 </script>
+
+<style scoped>
+@keyframes cardEnter {
+  0% {
+    opacity: 0;
+    transform: translateY(20px) scale(0.98);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.animate-card {
+  animation: cardEnter 0.5s ease-out;
+}
+
+.btn-animate {
+  transition: all 0.2s ease;
+  transform: translateY(0);
+}
+
+.btn-animate:hover {
+  transform: translateY(-2px);
+}
+
+.btn-animate:active {
+  transform: translateY(1px) scale(0.98);
+}
+
+/* glow effect */
+.btn-animate:hover {
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+}
+
+.link-animate {
+  position: relative;
+  transition: color 0.2s ease, transform 0.15s ease;
+}
+
+.link-animate:hover {
+  color: #0284c7;
+  transform: translateY(-1px);
+}
+
+/* underline animation */
+.link-animate::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -2px;
+  width: 0%;
+  height: 2px;
+  background: currentColor;
+  transition: width 0.25s ease;
+}
+
+.link-animate:hover::after {
+  width: 100%;
+}
+</style>
