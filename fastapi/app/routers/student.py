@@ -109,10 +109,14 @@ async def student_course_detail(course_id: int,db: Session = Depends(get_db),cur
     weighted_average = 0
     if total_weight > 0:
         weighted_average = round((total_weight_score / total_weight) * 100, 2)
-
+    if course.teacher.middle_name:
+        teacher_name = course.teacher.first_name + " " + course.teacher.middle_name + " " + course.teacher.last_name
+    else:
+        teacher_name = course.teacher.first_name + " " + course.teacher.last_name
     return {
         "course_id": course.course_id,
         "course_name": course.course_name,
+        "teacher_name": teacher_name,
         "weighted_average": weighted_average,
         "assessments": assessment
     }
