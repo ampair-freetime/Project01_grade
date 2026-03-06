@@ -303,7 +303,7 @@ async def restore_course(course_id: int, db: Session = Depends(get_db), current_
 
 @router.post("/publish/{assign_id}")
 async def publish(assign_id:int,db: Session = Depends(get_db),current_user: AuthUser = Depends(get_current_user)):
-    teacher = is_teacher(db,get_current_user)
+    teacher = is_teacher(db,current_user)
     assignment = db.query(Quiz).join(Course).filter(Quiz.quiz_id == assign_id,Course.teacher_id==teacher.teacher_id).first()
     if not assignment:
         raise HTTPException(status_code=404,detail="Assignment not found")
