@@ -301,7 +301,7 @@ const filteredCourses = computed(() => {
 });
 
 const goToAssignment = (course_id) => {
-  router.push(`/student/assignments/${course_id}`);
+  router.push(`/student/course/${course_id}`);
 };
 </script>
 
