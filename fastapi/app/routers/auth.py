@@ -155,6 +155,9 @@ async def google_auth(
             AuthProvider.provider == "google",
             AuthProvider.provider_user_id == google_id
         ).first()
+        # user = db.query(AuthUser).filter(AuthUser.email == google_email).first()
+        # if user and not provider and not token :
+        #     return RedirectResponse(url = "http://locolhost:8080/login?error=google_not_connected")
         # ถ้าเคย link แล้ว → login
         if provider:
             user = provider.auth_user
@@ -163,9 +166,8 @@ async def google_auth(
             user = db.query(AuthUser).filter(
                 AuthUser.email == google_email
             ).first()
-
             if not user:
-                raise HTTPException(status_code=401, detail="User not registered")
+                return RedirectResponse(url = "http://locolhost:8080/login?error=user_not_registered")
         # ยังไม่ link → สร้าง provider
         if not provider:
             new_provider = AuthProvider(

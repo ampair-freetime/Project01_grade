@@ -189,12 +189,16 @@
 
 <script setup>
 import { ref } from "vue";
-import { useRouter } from "vue-router";
+import { useRouter, useRoute} from "vue-router";
 
 const email = ref("");
 const password = ref("");
+const errorMessage = ref("")
 
 const router = useRouter();
+// if(router.query.error === "google_not_connected"){
+//   errorMessage.value = " Plese login and connect google"
+// }
 
 const showPassword = ref(false);
 
@@ -242,6 +246,8 @@ const handleLogin = async () => {
 const loginWithGoogle = () => {
   window.location.href = "http://localhost:56733/login_with_google";
 };
+
+
 
 name: "Login";
 </script>
