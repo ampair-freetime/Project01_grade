@@ -373,8 +373,7 @@ const BASE_URL = "http://localhost:56733";
 
 const fetchAssignment = async (course_id) => {
   try {
-    const response = await fetch(
-      `${BASE_URL}/teacher/assignment/${course_id}`,
+    const response = await fetch(`${BASE_URL}/teacher/assignment/${course_id}`,
       {
         method: "GET",
         credentials: "include",

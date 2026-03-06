@@ -234,6 +234,8 @@ const isOpen = ref(false);
 
 const dropdownRef = ref(null);
 
+const BASE_URL = "http://localhost:56733";
+
 const fetchUserProfile = async () => {
   try {
     const response = await fetch(`${BASE_URL}/me`, {
@@ -256,9 +258,9 @@ const toggleDropdown = () => {
   isOpen.value = !isOpen.value;
 };
 
-const fetchCourseDetail = async () => {
+const fetchCourseDetail = async (courseId) => {
   try {
-    const response = await fetch(`http://localhost:56733/course/${courseId}`, {
+    const response = await fetch(`${BASE_URL}/course/${courseId}`, {
       method: "GET",
       credentials: "include",
     });
