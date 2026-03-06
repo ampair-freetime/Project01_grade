@@ -26,6 +26,20 @@
       </div>
     </header>
 
+    <!-- LOADING OVERLAY -->
+    <div
+      v-if="loading"
+      class="fixed inset-0 flex flex-col items-center justify-center bg-white z-[999]"
+    >
+      <Vue3Lottie
+        :animationData="animationData"
+        :height="140"
+        :width="140"
+      />
+      <p class="text-gray-600 text-lg mt-2 font-medium">
+        Signing in...
+      </p>
+    </div>
     <!-- main -->
     <main
       class="flex-1 flex flex-col items-center justify-center p-4 sm:p-6 w-full"
@@ -128,7 +142,8 @@
                     class="material-symbols-outlined relative z-10 group-hover:rotate-12 transition-transform duration-300"
                     >login</span
                   >
-                  <span class="relative z-10">Login</span>
+                  <span v-if="!loading" class="relative z-10">Login</span>
+                  <span v-if="loading" class="relative z-10">Loading...</span>
                 </button>
               <div class="relative flex items-center py-2">
                 <div
@@ -190,34 +205,21 @@
 <script setup>
 import { ref, onMounted } from "vue";
 import { useRouter } from "vue-router";
-
+import { Vue3Lottie } from "vue3-lottie"
+import animationData from "@/assets/animations/education-loading.json"
 const email = ref("");
 const password = ref("");
 const router = useRouter();
-
-
-onMounted(() => {
-  const params = new URLSearchParams(window.location.search);
-  const error = params.get("error");
-
-  if (error === "google_not_connected") {
-    alert("Please login with email and connect your Google account first.");
-    window.history.replaceState({}, document.title, "/login");
-  }
-});
-
-const showPassword = ref(false);
-
-const togglePassword = () => {
-  showPassword.value = !showPassword.value;
-};
+const loading = ref(false)
 
 const handleLogin = async () => {
+  // เช็คว่าใส่ email password ครบไหม
+  if (!email.value || !password.value) {
+    alert("Please enter email and password.");
+    return;
+  }
+
   try {
-    if (!email.value || !password.value) {
-      alert("ใส่ให้ครบจ้า");
-      return;
-    }
     const response = await fetch("http://localhost:56733/login", {
       method: "POST",
       headers: {
@@ -229,13 +231,22 @@ const handleLogin = async () => {
         password: password.value,
       }),
     });
+
+    // ใส่ email หรือ password ผิด
     if (!response.ok) {
-      alert("not complete");
       const errorData = await response.json();
-      throw new Error(errorData.detail || "error for login");
+      alert(errorData.detail || "Email or password incorrect");
+      return;
     }
 
+    // animation loading..
+    loading.value = true
+
+    // render animation ก่อน
+    await new Promise(resolve => setTimeout(resolve, 2000))
+
     const data = await response.json();
+
     localStorage.setItem("csrf_token", data.csrf_token);
     localStorage.setItem("role", data.role);
 
@@ -244,8 +255,9 @@ const handleLogin = async () => {
     } else {
       router.push("/teacher/courses");
     }
+
   } catch (error) {
-    alert(error.message);
+    alert("Login failed");
   }
 };
 
