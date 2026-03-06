@@ -207,17 +207,25 @@ import { ref, onMounted } from "vue";
 import { useRouter } from "vue-router";
 import { Vue3Lottie } from "vue3-lottie"
 import animationData from "@/assets/animations/education-loading.json"
+
 const email = ref("");
 const password = ref("");
 const router = useRouter();
-const loading = ref(false)
+const loading = ref(false);
+
+const showPassword = ref(false)
+const togglePassword = () => {
+  showPassword.value = !showPassword.value
+}
 
 const handleLogin = async () => {
-  // เช็คว่าใส่ email password ครบไหม
+
   if (!email.value || !password.value) {
     alert("Please enter email and password.");
     return;
   }
+
+  loading.value = true
 
   try {
     const response = await fetch("http://localhost:56733/login", {
@@ -232,31 +240,28 @@ const handleLogin = async () => {
       }),
     });
 
-    // ใส่ email หรือ password ผิด
     if (!response.ok) {
+      loading.value = false
       const errorData = await response.json();
       alert(errorData.detail || "Email or password incorrect");
       return;
     }
-
-    // animation loading..
-    loading.value = true
-
-    // render animation ก่อน
-    await new Promise(resolve => setTimeout(resolve, 2000))
 
     const data = await response.json();
 
     localStorage.setItem("csrf_token", data.csrf_token);
     localStorage.setItem("role", data.role);
 
-    if (data.role === "student") {
+    await new Promise(resolve => setTimeout(resolve, 1000))
+
+    if (data.role && data.role.toLowerCase() === "student") {
       router.push("/student/dashboard");
     } else {
       router.push("/teacher/courses");
     }
-
+    
   } catch (error) {
+    loading.value = false
     alert("Login failed");
   }
 };
