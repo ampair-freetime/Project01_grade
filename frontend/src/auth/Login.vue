@@ -188,17 +188,23 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
-import { useRouter, useRoute} from "vue-router";
+import { ref, onMounted } from "vue";
+import { useRouter } from "vue-router";
 
 const email = ref("");
 const password = ref("");
-const errorMessage = ref("")
-
 const router = useRouter();
-// if(router.query.error === "google_not_connected"){
-//   errorMessage.value = " Plese login and connect google"
-// }
+
+
+onMounted(() => {
+  const params = new URLSearchParams(window.location.search);
+  const error = params.get("error");
+
+  if (error === "google_not_connected") {
+    alert("Please login with email and connect your Google account first.");
+    window.history.replaceState({}, document.title, "/login");
+  }
+});
 
 const showPassword = ref(false);
 
@@ -244,6 +250,13 @@ const handleLogin = async () => {
 };
 
 const loginWithGoogle = () => {
+  const csrf = localStorage.getItem("csrf_token");
+
+  if (csrf) {
+    alert("Please login with email and connect your Google account first.");
+    return;
+  }
+
   window.location.href = "http://localhost:56733/login_with_google";
 };
 

@@ -94,7 +94,7 @@ async def login(request: Request):
         f"&client_id={GOOGLE_CLIENT_ID}"
         f"&redirect_uri={redirect_uri}"
         f"&scope=openid%20email%20profile"
-        f"&prompt=select_account"
+        f"&prompt=select_account%20consent"
     )
     logger.info("Redirecting to Google OAuth")
     return RedirectResponse(url=auth_url)
@@ -155,9 +155,11 @@ async def google_auth(
             AuthProvider.provider == "google",
             AuthProvider.provider_user_id == google_id
         ).first()
-        # user = db.query(AuthUser).filter(AuthUser.email == google_email).first()
-        # if user and not provider and not token :
-        #     return RedirectResponse(url = "http://locolhost:8080/login?error=google_not_connected")
+        # login google แต่ยังไม่ได้ link account
+        if not provider and not token:
+            return RedirectResponse(
+                url="http://localhost:8080/login?error=google_not_connected"
+            )
         # ถ้าเคย link แล้ว → login
         if provider:
             user = provider.auth_user
@@ -167,7 +169,7 @@ async def google_auth(
                 AuthUser.email == google_email
             ).first()
             if not user:
-                return RedirectResponse(url = "http://locolhost:8080/login?error=user_not_registered")
+                raise HTTPException(status_code=401, detail="User not registered")
         # ยังไม่ link → สร้าง provider
         if not provider:
             new_provider = AuthProvider(
@@ -217,7 +219,7 @@ async def google_auth(
 
     except Exception as e:
         logger.error(f"Google auth error: {e}")
-        return RedirectResponse(url="/login")
+        return RedirectResponse(url="http://localhost:8080/login")
 
 @router.post("/login")
 async def login(login_data: UserLogin,response: Response, db: Session = Depends(get_db)):
