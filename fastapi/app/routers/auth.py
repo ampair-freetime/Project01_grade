@@ -156,6 +156,10 @@ async def google_auth(
             AuthProvider.provider_user_id == google_id
         ).first()
         # ถ้าเคย link แล้ว → login
+        #  ไม่เคยเชื่อมต่อ และยังไม่ได้   login
+        if user and not provider and not token:
+            return RedirectResponse(url = "http://localhost:8080/login?error=Please_login_and_connect_google")
+
         if provider:
             user = provider.auth_user
         # ถ้าไม่มี jwt → login ด้วย google
@@ -273,12 +277,12 @@ async def register(signin_data: UserSignin, db: Session = Depends(get_db)):
             db.commit()
             return {"message": "Account successful"}
         else:
-            raise HTTPException(status_code=401, detail="This user already used")
+            raise HTTPException(status_code=401, detail="This student user already used")
     else:
         #teacher
         user = db.query(AuthUser).filter(AuthUser.email == signin_data.email).first()
         if user:
-            raise HTTPException(status_code=401, detail="Email already used")
+            raise HTTPException(status_code=401, detail="Email teacher already used")
             #ต้องไม่มี ใน databse
         new_auth = AuthUser(
             email=signin_data.email,

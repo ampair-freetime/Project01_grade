@@ -161,6 +161,10 @@ async def create_assignments(assign: T_Assignment,db: Session= Depends(get_db),c
 async def upload_csv(quiz_id: int,course_id: int,file: UploadFile = File(...),db: Session = Depends(get_db),current_user: AuthUser = Depends(get_current_user)):
 
     teacher = is_teacher(db, current_user)
+    # ถ้ามีการ upload อีกครั้ง ก็ให้ยัง ไม่publish ต้องกดอีกครั้งถึงจะ publish
+    assignment = db.query(Quiz).join(Course).filter(Quiz.quiz_id == quiz_id,Course.teacher_id==teacher.teacher_id).first()
+    if assignment.is_publish:
+        assignment.is_publish = False
     file_name = file.filename
     new_upload = Upload(
         file_name=file_name,
@@ -296,3 +300,16 @@ async def restore_course(course_id: int, db: Session = Depends(get_db), current_
     course.is_archive = False
     db.commit()
     return {"message": "Restore course successfully"}
+
+@router.post("/publish/{assign_id}")
+async def publish(assign_id:int,db: Session = Depends(get_db),current_user: AuthUser = Depends(get_current_user)):
+    teacher = is_teacher(db,get_current_user)
+    assignment = db.query(Quiz).join(Course).filter(Quiz.quiz_id == assign_id,Course.teacher_id==teacher.teacher_id).first()
+    if not assignment:
+        raise HTTPException(status_code=404,detail="Assignment not found")
+    if assignment.is_publish:
+        raise HTTPException(status_code=409,detail="This assignment is already published")
+    assignment.is_publish = True
+    db.commit()
+
+    return {"message": "Publish successful"}

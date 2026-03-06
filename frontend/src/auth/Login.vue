@@ -220,7 +220,7 @@ const handleLogin = async () => {
       }),
     });
     if (!response.ok) {
-      alert("not complete");
+      // alert("not complete");
       const errorData = await response.json();
       throw new Error(errorData.detail || "error for login");
     }
