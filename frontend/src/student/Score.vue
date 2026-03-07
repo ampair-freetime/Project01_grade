@@ -569,7 +569,7 @@ const handleLogout = async () => {
 }
 
 .animate-card {
-  animation: cardEnter 0.55s cubic-bezier(0.16, 1, 0.3, 1);
+  animation: cardEnter 0.55s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
 .delay-1 {
