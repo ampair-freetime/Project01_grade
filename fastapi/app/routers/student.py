@@ -61,7 +61,7 @@ async def student_course_detail(course_id: int,db: Session = Depends(get_db),cur
     student = require_student(db, current_user)
 
     # เช็คว่า course มีอยู่จริงไหม
-    course = db.query(Course).filter(Course.course_id == course_id).first()
+    course = db.query(Course).filter(Course.course_id == course_id, Course.is_deleted == False).first()
 
     if not course:
         raise HTTPException(status_code=404,detail="Course not found")
@@ -73,7 +73,7 @@ async def student_course_detail(course_id: int,db: Session = Depends(get_db),cur
         raise HTTPException(status_code=403,detail="Not enrolled in this course")
 
     # ดึง quiz ทั้งหมดใน course 
-    quizzes = db.query(Quiz).filter(Quiz.course_id == course_id).all()
+    quizzes = db.query(Quiz).filter(Quiz.course_id == course_id,Quiz.is_deleted==False,Quiz.is_publish==True).all()
 
     # ดึงคะแนนทั้งหมด
     student_scores = db.query(Score).join(Quiz).filter(Quiz.course_id == course_id,Score.student_id == student.student_id,Score.is_deleted == False,Quiz.is_deleted==False,Quiz.is_publish==True).all()
