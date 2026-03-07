@@ -106,6 +106,15 @@
             </div>
             <span>Return</span>
           </button>
+            <div v-if="course_name || quiz_name" class="flex flex-wrap gap-2 mt-4">
+              <a class="hover:text-primary font-medium" href="#" @click.prevent="router.push('/student/dashboard')">Courses</a>
+              <template v-if="course_name">
+                <span class="font-medium">/</span>
+                <span class="text-[#111811] dark:text-white font-medium">{{ course_name }}</span>
+              </template>
+              <span class="font-medium">/</span>
+              <span class="text-[#111811] dark:text-white font-medium">{{ quiz_name }}</span>
+            </div>
           </nav>
           <div
             class="flex flex-col md:flex-row md:items-center justify-between gap-4"
@@ -186,7 +195,8 @@
               <div
                 class="ml-auto text-xs text-text-muted-light dark:text-text-muted-dark"
               >
-                Total Participants: {{ scoreData?.total_students ?? 0 }} Students
+                Total Participants:
+                {{ scoreData?.total_students ?? 0 }} Students
               </div>
             </div>
             <div class="grid grid-cols-2 md:grid-cols-5 gap-4">
@@ -300,7 +310,6 @@
                 class="absolute -top-7 transform -translate-x-1/2 flex flex-col items-center group cursor-pointer"
                 :style="{ left: `${myLeft}%` }"
               >
-              
                 <div
                   class="bg-primary text-white text-xs font-bold px-2 py-1 rounded mb-0.5 shadow-md whitespace-nowrap"
                 >
@@ -309,9 +318,8 @@
                 <div class="w-1 h-8 bg-primary rounded-full"></div>
               </div>
             </div>
-            </div>
           </div>
-        
+        </div>
       </div>
     </main>
   </div>

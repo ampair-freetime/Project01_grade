@@ -31,14 +31,8 @@
       v-if="loading"
       class="fixed inset-0 flex flex-col items-center justify-center bg-white z-[999]"
     >
-      <Vue3Lottie
-        :animationData="animationData"
-        :height="140"
-        :width="140"
-      />
-      <p class="text-gray-600 text-lg mt-2 font-medium">
-        Signing in...
-      </p>
+      <Vue3Lottie :animationData="animationData" :height="140" :width="140" />
+      <p class="text-gray-600 text-lg mt-2 font-medium">Signing in...</p>
     </div>
     <!-- main -->
     <main
@@ -46,7 +40,7 @@
     >
       <div class="layout-content-container flex flex-col w-full max-w-[440px]">
         <div
-          class="bg-surface-light dark:bg-surface-dark rounded-2xl shadow-soft border border-border-color dark:border-[#1e293b] overflow-hidden relative"
+          class="bg-surface-light dark:bg-surface-dark rounded-2xl shadow-soft border border-border-color dark:border-[#1e293b] overflow-hidden relative animate-card"
         >
           <div
             class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-primary/60 via-primary to-primary/60"
@@ -75,10 +69,18 @@
                 </div>
                 <input
                   v-model="email"
+                  list="email-suggestions"
                   class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-[#0f172a] dark:text-white placeholder:text-[#64748b]/60 focus:outline-0 focus:ring-4 focus:ring-primary/10 border border-border-color dark:border-[#1e293b] bg-white dark:bg-[#0c1821] h-12 pl-11 pr-4 text-base font-normal leading-normal transition-all hover:border-primary/50 focus:border-primary"
                   placeholder="example@cmu.ac.th"
                   type="email"
                 />
+                <!-- <datalist id="email-suggestions">
+                  <option
+                    v-for="savedEmail in savedEmails"
+                    :key="savedEmail"
+                    :value="savedEmail"
+                  />
+                </datalist> -->
               </div>
             </div>
             <div class="flex flex-col gap-1.5">
@@ -116,6 +118,7 @@
               >
                 <div class="relative flex items-center justify-center">
                   <input
+                    v-model="rememberMe"
                     class="peer h-5 w-5 appearance-none rounded border border-[#e0f2fe] bg-white dark:bg-[#0c1821] dark:border-[#64748b] checked:bg-primary checked:border-primary focus:ring-2 focus:ring-primary/20 transition-all cursor-pointer shadow-sm"
                     type="checkbox"
                   />
@@ -131,20 +134,20 @@
               </label>
             </div>
             <div class="flex flex-col gap-4 mt-2">
-                <button
-                  class="group relative w-full h-12 bg-primary hover:bg-primary-dark text-white text-base font-bold rounded-lg shadow-[0_2px_10px_rgba(56,189,248,0.2)] hover:shadow-glow hover:-translate-y-0.5 active:translate-y-0 transition-all duration-200 flex items-center justify-center gap-2 overflow-hidden"
-                  type="submit"
+              <button
+                class="btn-animate group relative w-full h-12 bg-primary hover:bg-primary-dark text-white text-base font-bold rounded-lg shadow-[0_2px_10px_rgba(56,189,248,0.2)] hover:shadow-glow hover:-translate-y-0.5 active:translate-y-0 transition-all duration-200 flex items-center justify-center gap-2 overflow-hidden"
+                type="submit"
+              >
+                <span
+                  class="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300 ease-out"
+                ></span>
+                <span
+                  class="material-symbols-outlined relative z-10 group-hover:rotate-12 transition-transform duration-300"
+                  >login</span
                 >
-                  <span
-                    class="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300 ease-out"
-                  ></span>
-                  <span
-                    class="material-symbols-outlined relative z-10 group-hover:rotate-12 transition-transform duration-300"
-                    >login</span
-                  >
-                  <span v-if="!loading" class="relative z-10">Login</span>
-                  <span v-if="loading" class="relative z-10">Loading...</span>
-                </button>
+                <span v-if="!loading" class="relative z-10">Login</span>
+                <span v-if="loading" class="relative z-10">Loading...</span>
+              </button>
               <div class="relative flex items-center py-2">
                 <div
                   class="flex-grow border-t border-border-color dark:border-[#1e293b]"
@@ -158,8 +161,7 @@
                 ></div>
               </div>
               <button
-                class="w-full h-12 bg-white dark:bg-transparent hover:bg-gray-50 dark:hover:bg-white/5 text-[#0f172a] dark:text-white text-base font-medium rounded-lg border border-border-color dark:border-[#1e293b] transition-all duration-200 flex items-center justify-center gap-3 shadow-sm hover:shadow-md active:scale-[0.98]"
-                type="button"
+                class="btn-animate w-full h-12 bg-white dark:bg-transparent hover:bg-gray-50 dark:hover:bg-white/5 text-[#0f172a] dark:text-white text-base font-medium rounded-lg border border-border-color dark:border-[#1e293b] transition-all duration-200 flex items-center justify-center gap-3 shadow-sm hover:shadow-md active:scale-[0.98]"
                 @click="loginWithGoogle"
               >
                 <svg
@@ -191,7 +193,7 @@
               Don't have an account?
               <router-link
                 to="/signin"
-                class="font-bold text-sky-600 dark:text-sky-500 hover:text-sky-700 dark:hover:text-sky-400 transition-colors duration-200"
+                class="link-animate font-bold text-sky-600 dark:text-sky-500 hover:text-sky-700 dark:hover:text-sky-400 transition-colors duration-200"
                 >Sign up</router-link
               >
             </div>
@@ -211,21 +213,44 @@ import animationData from "@/assets/animations/education-loading.json"
 const email = ref("");
 const password = ref("");
 const router = useRouter();
+const savedEmails = ref([]);
+
+onMounted(() => {
+  const params = new URLSearchParams(window.location.search);
+  const error = params.get("error");
+
+  if (error === "google_not_connected") {
+    alert("Please login with email and connect your Google account first.");
+    window.history.replaceState({}, document.title, "/login");
+  }
+
+  const storedEmails = JSON.parse(localStorage.getItem("login_emails") || "[]");
+  savedEmails.value = storedEmails;
+
+  const rememberedEmail = localStorage.getItem("remembered_email");
+  if (rememberedEmail) {
+    email.value = rememberedEmail;
+    rememberMe.value = true;
+  }
+});
+
+const showPassword = ref(false);
+
+const rememberMe = ref(false);
+
 const loading = ref(false);
 
-const showPassword = ref(false)
 const togglePassword = () => {
-  showPassword.value = !showPassword.value
-}
+  showPassword.value = !showPassword.value;
+};
 
 const handleLogin = async () => {
-
   if (!email.value || !password.value) {
     alert("Please enter email and password.");
     return;
   }
 
-  loading.value = true
+  loading.value = true;
 
   try {
     const response = await fetch("http://localhost:56733/login", {
@@ -241,7 +266,7 @@ const handleLogin = async () => {
     });
 
     if (!response.ok) {
-      loading.value = false
+      loading.value = false;
       const errorData = await response.json();
       alert(errorData.detail || "Email or password incorrect");
       return;
@@ -249,19 +274,32 @@ const handleLogin = async () => {
 
     const data = await response.json();
 
+    let storedEmails = JSON.parse(localStorage.getItem("login_emails") || "[]");
+
+    if (!storedEmails.includes(email.value)) {
+      storedEmails.push(email.value);
+      localStorage.setItem("login_emails", JSON.stringify(storedEmails));
+      savedEmails.value = storedEmails;
+    }
+
+    if (rememberMe.value) {
+      localStorage.setItem("remembered_email", email.value);
+    } else {
+      localStorage.removeItem("remembered_email");
+    }
+
     localStorage.setItem("csrf_token", data.csrf_token);
     localStorage.setItem("role", data.role);
 
-    await new Promise(resolve => setTimeout(resolve, 1000))
+    await new Promise((resolve) => setTimeout(resolve, 1000));
 
     if (data.role && data.role.toLowerCase() === "student") {
       router.push("/student/dashboard");
     } else {
       router.push("/teacher/courses");
     }
-    
   } catch (error) {
-    loading.value = false
+    loading.value = false;
     alert("Login failed");
   }
 };
@@ -277,7 +315,68 @@ const loginWithGoogle = () => {
   window.location.href = "http://localhost:56733/login_with_google";
 };
 
-
-
 name: "Login";
 </script>
+
+<style scoped>
+@keyframes cardEnter {
+  0% {
+    opacity: 0;
+    transform: translateY(20px) scale(0.98);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.animate-card {
+  animation: cardEnter 0.5s ease-out;
+}
+
+.btn-animate {
+  transition: all 0.2s ease;
+  transform: translateY(0);
+}
+
+.btn-animate:hover {
+  transform: translateY(-2px);
+}
+
+.btn-animate:active {
+  transform: translateY(1px) scale(0.98);
+}
+
+/* glow effect */
+.btn-animate:hover {
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+}
+
+.link-animate {
+  position: relative;
+  transition:
+    color 0.2s ease,
+    transform 0.15s ease;
+}
+
+.link-animate:hover {
+  color: #0284c7;
+  transform: translateY(-1px);
+}
+
+/* underline animation */
+.link-animate::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -2px;
+  width: 0%;
+  height: 2px;
+  background: currentColor;
+  transition: width 0.25s ease;
+}
+
+.link-animate:hover::after {
+  width: 100%;
+}
+</style>

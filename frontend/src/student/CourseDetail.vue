@@ -90,21 +90,21 @@
             class="text-sm text-text-muted-light dark:text-text-muted-dark"
           >
             <button
-            class="group inline-flex items-center gap-3 font-bold text-[#111811] dark:text-white hover:text-primary transition-colors"
-            type="button"
-            @click="router.push(`/student/dashboard`)"
-          >
-            <div
-              class="flex size-9 items-center justify-center rounded-full bg-surface-light dark:bg-surface-dark border border-border-light dark:border-border-dark shadow-sm group-hover:border-primary group-hover:text-primary transition-colors"
+              class="group inline-flex items-center gap-3 font-bold text-[#111811] dark:text-white hover:text-primary transition-colors"
+              type="button"
+              @click="router.push(`/student/dashboard`)"
             >
-              <span class="material-symbols-outlined text-[20px]">
-                arrow_back
-              </span>
-            </div>
-            <span>Return</span>
-          </button>
+              <div
+                class="flex size-9 items-center justify-center rounded-full bg-surface-light dark:bg-surface-dark border border-border-light dark:border-border-dark shadow-sm group-hover:border-primary group-hover:text-primary transition-colors"
+              >
+                <span class="material-symbols-outlined text-[20px]">
+                  arrow_back
+                </span>
+              </div>
+              <span>Return</span>
+            </button>
           </nav>
-          
+
           <section class="@container">
             <div
               class="flex flex-col md:flex-row gap-6 bg-surface-light dark:bg-surface-dark rounded-xl shadow-sm border border-border-light dark:border-border-dark overflow-hidden"
@@ -173,10 +173,15 @@
                       v-for="item in assessments"
                       :key="item.quiz_id"
                       class="hover:bg-[#fcfdfc] dark:hover:bg-[#1f2832] transition-colors group cursor-pointer"
-                      @click="router.push({
-                        path: `/student/score/${item.quiz_id}`,
-                        query: { quiz_name: item.quiz_name, course_name: course?.course_name }
-                      })"
+                      @click="
+                        router.push({
+                          path: `/student/score/${item.quiz_id}`,
+                          query: {
+                            quiz_name: item.quiz_name,
+                            course_name: course?.course_name,
+                          },
+                        })
+                      "
                     >
                       <td class="p-4">
                         <div class="font-bold text-[#111811] dark:text-white">
@@ -192,14 +197,6 @@
                             item.percent
                           }}%)
                         </div>
-
-                        <!-- แจ้งเตือน unread
-                        <div
-                          v-if="item.unread_flag"
-                          class="text-xs text-red-500 mt-1"
-                        >
-                          ● New score
-                        </div> -->
                       </td>
 
                       <td class="p-4 text-center font-medium">
@@ -261,6 +258,7 @@ const toggleDropdown = () => {
 
 const fetchCourseDetail = async (courseId) => {
   try {
+
     const response = await fetch(`${BASE_URL}/student/course/${courseId}`, {
       method: "GET",
       credentials: "include",
@@ -332,5 +330,17 @@ const handleLogout = async () => {
 .fade-enter-from,
 .fade-leave-to {
   opacity: 0;
+}
+
+.btn-animate {
+  transition: all 0.2s ease;
+}
+
+.btn-animate:hover {
+  transform: scale(1.05);
+}
+
+.btn-animate:active {
+  transform: scale(0.95);
 }
 </style>

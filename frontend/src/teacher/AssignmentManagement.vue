@@ -106,7 +106,7 @@
             <span>Return</span>
           </button>
 
-            <div class="flex flex-wrap items-center gap-2 mt-4">
+            <!-- <div class="flex flex-wrap items-center gap-2 mt-4">
               <button
                 class="hover:text-primary font-medium"
                 type="button"
@@ -118,7 +118,7 @@
               <span class="text-[#111811] dark:text-white font-medium">
                 {{ courseTitle || `Course #${courseID}` }}
               </span>
-            </div>
+            </div> -->
           </nav>
           <div
             class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8"

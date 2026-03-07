@@ -32,7 +32,7 @@
     >
       <div class="layout-content-container flex flex-col w-full max-w-[480px]">
         <div
-          class="bg-surface-light dark:bg-surface-dark rounded-2xl shadow-soft border border-border-color dark:border-[#0c4a6e] overflow-hidden relative"
+          class="bg-surface-light dark:bg-surface-dark rounded-2xl shadow-soft border border-border-color dark:border-[#0c4a6e] overflow-hidden relative animate-card"
         >
           <div
             class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-primary/60 via-primary to-primary/60"
@@ -178,11 +178,43 @@
                   </span>
                 </button>
               </div>
+              <div class="flex flex-col gap-1.5">
+                <label
+                  class="text-text-main dark:text-gray-200 text-sm font-semibold leading-normal ml-1"
+                >
+                  Confirm Password
+                </label>
+
+                <div class="relative flex items-center group">
+                  <div
+                    class="absolute left-4 text-[#64748b] group-focus-within:text-primary transition-colors pointer-events-none flex items-center justify-center"
+                  >
+                    <span class="material-symbols-outlined">lock</span>
+                  </div>
+
+                  <input
+                    v-model="confirmPassword"
+                    class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-text-main dark:text-white placeholder:text-[#64748b]/60 focus:outline-0 focus:ring-4 focus:ring-primary/10 border border-border-color dark:border-[#0c4a6e] bg-white dark:bg-[#0c4a6e] h-12 pl-11 pr-4 text-base font-normal leading-normal transition-all hover:border-primary/50 focus:border-primary"
+                    placeholder="Confirm your password"
+                    :type="showConfirmPassword ? 'text' : 'password'"
+                  />
+                  <button
+                    aria-label="Toggle password visibility"
+                    @click="toggleConfirmPassword"
+                    type="button"
+                    class="absolute right-3 p-1.5 rounded-md flex items-center justify-center text-[#64748b] hover:bg-background-light dark:hover:bg-[#0c4a6e] hover:text-text-main dark:hover:text-white transition-colors cursor-pointer"
+                  >
+                    <span class="material-symbols-outlined text-[20px]">
+                      {{ showConfirmPassword ? "visibility_off" : "visibility" }}
+                    </span>
+                  </button>
+                </div>
+              </div>
             </div>
             <div class="flex flex-col gap-4 mt-2">
               <form @submit.prevent="handleSignup">
                 <button
-                  class="group relative w-full h-12 bg-primary hover:bg-primary-dark text-white text-base font-bold rounded-lg shadow-[0_2px_10px_rgba(56,189,248,0.2)] hover:shadow-glow hover:-translate-y-0.5 active:translate-y-0 transition-all duration-200 flex items-center justify-center gap-2 overflow-hidden"
+                  class="btn-animate group relative w-full h-12 bg-primary hover:bg-primary-dark text-white text-base font-bold rounded-lg shadow-[0_2px_10px_rgba(56,189,248,0.2)] hover:shadow-glow hover:-translate-y-0.5 active:translate-y-0 transition-all duration-200 flex items-center justify-center gap-2 overflow-hidden"
                   type="submit"
                 >
                   <span
@@ -195,20 +227,13 @@
                   <span class="relative z-10">Sign Up</span>
                 </button>
               </form>
-              <div class="relative flex items-center justify-center w-full">
-                <div class="absolute inset-0 flex items-center">
-                  <div
-                    class="w-full border-t border-border-color dark:border-[#0c4a6e]"
-                  ></div>
-                </div>
-              </div>
             </div>
             <div class="text-center mt-2">
               <p class="text-sm text-[#64748b]">
                 Already have an account?
                 <router-link
                   to="/login"
-                  class="font-bold text-sky-600 dark:text-sky-500 hover:text-sky-700 dark:hover:text-sky-400 transition-colors duration-200"
+                  class="link-animate font-bold text-sky-600 dark:text-sky-500 hover:text-sky-700 dark:hover:text-sky-400 transition-colors duration-200"
                 >
                   Log in
                 </router-link>
@@ -239,6 +264,8 @@ const email = ref("");
 const studentID = ref(null);
 const password = ref("");
 const showPassword = ref(false);
+const confirmPassword = ref("");
+const showConfirmPassword = ref(false);
 
 let email_first = "";
 
@@ -246,14 +273,18 @@ const togglePassword = () => {
   showPassword.value = !showPassword.value;
 };
 
+const toggleConfirmPassword = () => {
+  showConfirmPassword.value = !showConfirmPassword.value;
+};
+
 const isStudentEmail = computed(() => {
-      if (!email.value.endsWith("@cmu.ac.th")) return false;
+  if (!email.value.endsWith("@cmu.ac.th")) return false;
 
-      const prefix = email.value.split("@")[0];
-      const parts = prefix.split("_");
+  const prefix = email.value.split("@")[0];
+  const parts = prefix.split("_");
 
-      return parts.length === 2 && parts[0].length > 0 && parts[1].length > 0;
-    });
+  return parts.length === 2 && parts[0].length > 0 && parts[1].length > 0;
+});
 
 const handleSignup = async () => {
   try {
@@ -284,11 +315,20 @@ const handleSignup = async () => {
     }
     //เป็น teacher แน่นอน
     if (!studentID.value) {
-      if (!email_first[0].includes(".") || email_first[0].endsWith(".") || email_first[0].startsWith(".")) {
+      if (
+        !email_first[0].includes(".") ||
+        email_first[0].endsWith(".") ||
+        email_first[0].startsWith(".")
+      ) {
         alert("CMU mail not correct pattern");
         return;
       }
     }
+     
+    if (password.value !== confirmPassword.value) {
+      alert("Passwords do not match");
+      return;
+    }   
 
     const response = await fetch("http://localhost:56733/register", {
       method: "POST",
@@ -316,3 +356,66 @@ const handleSignup = async () => {
   }
 };
 </script>
+
+<style>
+@keyframes cardEnter {
+  0% {
+    opacity: 0;
+    transform: translateY(20px) scale(0.98);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.animate-card {
+  animation: cardEnter 0.5s ease-out;
+}
+
+.btn-animate {
+  transition: all 0.2s ease;
+  transform: translateY(0);
+}
+
+.btn-animate:hover {
+  transform: translateY(-2px);
+}
+
+.btn-animate:active {
+  transform: translateY(1px) scale(0.98);
+}
+
+/* glow effect */
+.btn-animate:hover {
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+}
+
+.link-animate {
+  position: relative;
+  transition:
+    color 0.2s ease,
+    transform 0.15s ease;
+}
+
+.link-animate:hover {
+  color: #0284c7;
+  transform: translateY(-1px);
+}
+
+/* underline animation */
+.link-animate::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -2px;
+  width: 0%;
+  height: 2px;
+  background: currentColor;
+  transition: width 0.25s ease;
+}
+
+.link-animate:hover::after {
+  width: 100%;
+}
+</style>
