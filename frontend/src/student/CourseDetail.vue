@@ -85,28 +85,26 @@
     <main class="flex-1 flex flex-col h-full overflow-hidden relative">
       <div class="flex-1 overflow-y-auto p-8 lg:p-12">
         <div class="max-w-5xl mx-auto flex flex-col gap-8">
-          <div class="flex flex-col gap-4">
-            <a
-              class="group flex w-fit items-center gap-3 text-sm font-bold text-[#111811] dark:text-white hover:text-primary transition-colors"
-              href="#"
+          <nav
+            aria-label="Breadcrumb"
+            class="text-sm text-text-muted-light dark:text-text-muted-dark"
+          >
+            <button
+            class="group inline-flex items-center gap-3 font-bold text-[#111811] dark:text-white hover:text-primary transition-colors"
+            type="button"
+            @click="router.push(`/student/dashboard`)"
+          >
+            <div
+              class="flex size-9 items-center justify-center rounded-full bg-surface-light dark:bg-surface-dark border border-border-light dark:border-border-dark shadow-sm group-hover:border-primary group-hover:text-primary transition-colors"
             >
-              <div
-                class="flex size-9 items-center justify-center rounded-full bg-surface-light dark:bg-surface-dark border border-border-light dark:border-border-dark shadow-sm group-hover:border-primary group-hover:text-primary transition-colors"
-              >
-                <span class="material-symbols-outlined text-[20px]"
-                  >arrow_back</span
-                >
-              </div>
-              <span>Return</span>
-            </a>
-            <div class="flex flex-wrap gap-2 text-sm">
-              <a class="hover:text-primary font-medium" href="#"> Courses </a>
-              <span class="font-medium"> / </span>
-              <span class="text-[#111811] dark:text-white font-medium">{{
-                course?.course_name
-              }}</span>
+              <span class="material-symbols-outlined text-[20px]">
+                arrow_back
+              </span>
             </div>
-          </div>
+            <span>Return</span>
+          </button>
+          </nav>
+          
           <section class="@container">
             <div
               class="flex flex-col md:flex-row gap-6 bg-surface-light dark:bg-surface-dark rounded-xl shadow-sm border border-border-light dark:border-border-dark overflow-hidden"
@@ -175,7 +173,10 @@
                       v-for="item in assessments"
                       :key="item.quiz_id"
                       class="hover:bg-[#fcfdfc] dark:hover:bg-[#1f2832] transition-colors group cursor-pointer"
-                      @click="router.push(`/student/score/${item.quiz_id}`)"
+                      @click="router.push({
+                        path: `/student/score/${item.quiz_id}`,
+                        query: { quiz_name: item.quiz_name, course_name: course?.course_name }
+                      })"
                     >
                       <td class="p-4">
                         <div class="font-bold text-[#111811] dark:text-white">
@@ -258,7 +259,7 @@ const toggleDropdown = () => {
   isOpen.value = !isOpen.value;
 };
 
-const fetchCourseDetail = async (courseId) => { 
+const fetchCourseDetail = async (courseId) => {
   try {
     const response = await fetch(`${BASE_URL}/student/course/${courseId}`, {
       method: "GET",
