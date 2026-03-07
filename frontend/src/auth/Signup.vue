@@ -178,6 +178,10 @@
                   </span>
                 </button>
               </div>
+              <p class="mt-1 text-xs text-[#64748b] dark:text-gray-300 ml-1">
+                Password ต้องมีตัวอักษรพิมพ์ใหญ่ (A-Z) อย่างน้อย 1 ตัว
+                และตัวเลขอย่างน้อย 1 ตัว
+              </p>
               <div class="flex flex-col gap-1.5">
                 <label
                   class="text-text-main dark:text-gray-200 text-sm font-semibold leading-normal ml-1"
@@ -205,7 +209,9 @@
                     class="absolute right-3 p-1.5 rounded-md flex items-center justify-center text-[#64748b] hover:bg-background-light dark:hover:bg-[#0c4a6e] hover:text-text-main dark:hover:text-white transition-colors cursor-pointer"
                   >
                     <span class="material-symbols-outlined text-[20px]">
-                      {{ showConfirmPassword ? "visibility_off" : "visibility" }}
+                      {{
+                        showConfirmPassword ? "visibility_off" : "visibility"
+                      }}
                     </span>
                   </button>
                 </div>
@@ -297,6 +303,13 @@ const handleSignup = async () => {
       alert("ใส่ให้ครบจ้า");
       return;
     }
+
+    if (!/[A-Z]/.test(password.value) || !/\d/.test(password.value)) {
+      alert(
+        "Password ต้องมีตัวอักษรพิมพ์ใหญ่ (A-Z) อย่างน้อย 1 ตัว และตัวเลขอย่างน้อย 1 ตัว"
+      );
+      return;
+    }
     //  เช็คว่า email ต้อง ลงท้ายด้วย @cmu.ac.th
     if (email.value.endsWith("@cmu.ac.th")) {
       email_first = email.value.split("@cmu.ac.th");
@@ -324,11 +337,11 @@ const handleSignup = async () => {
         return;
       }
     }
-     
+
     if (password.value !== confirmPassword.value) {
       alert("Passwords do not match");
       return;
-    }   
+    }
 
     const response = await fetch("http://localhost:56733/register", {
       method: "POST",
@@ -393,9 +406,7 @@ const handleSignup = async () => {
 
 .link-animate {
   position: relative;
-  transition:
-    color 0.2s ease,
-    transform 0.15s ease;
+  transition: color 0.2s ease, transform 0.15s ease;
 }
 
 .link-animate:hover {

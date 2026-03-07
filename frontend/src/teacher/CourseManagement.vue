@@ -306,7 +306,7 @@
                   v-for="page in pages"
                   :key="page"
                   @click="page !== '...' && goToPage(page)"
-                  class="px-3 py-1 border rounded-md text-sm"
+                  class="btn-animate delay-2 px-3 py-1 border rounded-md text-sm"
                   :disabled="page === '...'"
                   :class="[
                     page === currentPage

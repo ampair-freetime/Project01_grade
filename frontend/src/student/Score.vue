@@ -522,6 +522,7 @@ const handleLogout = async () => {
   opacity: 0;
 }
 
+
 @keyframes cardEnter {
   0% {
     opacity: 0;
@@ -556,3 +557,4 @@ const handleLogout = async () => {
   animation-delay: 0.25s;
 }
 </style>
+

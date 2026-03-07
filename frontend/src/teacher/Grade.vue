@@ -390,7 +390,7 @@
                 <button
                   @click="goToFirstPage"
                   :disabled="currentPage === 1"
-                  class="p-2 border rounded-md disabled:opacity-40"
+                  class="btn-animate delay-2 p-2 border rounded-md disabled:opacity-40"
                 >
                   <span class="material-symbols-outlined text-sm">
                     first_page
@@ -401,7 +401,7 @@
                 <button
                   @click="prevPage"
                   :disabled="currentPage === 1"
-                  class="p-2 border rounded-md disabled:opacity-40"
+                  class="btn-animate delay-2 p-2 border rounded-md disabled:opacity-40"
                 >
                   <span class="material-symbols-outlined text-sm">
                     chevron_left
@@ -413,7 +413,7 @@
                   v-for="page in pages"
                   :key="page"
                   @click="page !== '...' && goToPage(page)"
-                  class="px-3 py-1 border rounded-md text-sm"
+                  class="btn-animate delay-2 px-3 py-1 border rounded-md text-sm"
                   :disabled="page === '...'"
                   :class="[
                     page === currentPage
@@ -429,7 +429,7 @@
                 <button
                   @click="nextPage"
                   :disabled="currentPage === totalPages"
-                  class="p-2 border rounded-md disabled:opacity-40"
+                  class="btn-animate delay-2 p-2 border rounded-md disabled:opacity-40"
                 >
                   <span class="material-symbols-outlined text-sm">
                     chevron_right
@@ -440,7 +440,7 @@
                 <button
                   @click="goToLastPage"
                   :disabled="currentPage === totalPages"
-                  class="p-2 border rounded-md disabled:opacity-40"
+                  class="btn-animate delay-2 p-2 border rounded-md disabled:opacity-40"
                 >
                   <span class="material-symbols-outlined text-sm">
                     last_page
