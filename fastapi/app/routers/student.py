@@ -76,7 +76,7 @@ async def student_course_detail(course_id: int,db: Session = Depends(get_db),cur
     quizzes = db.query(Quiz).filter(Quiz.course_id == course_id).all()
 
     # ดึงคะแนนทั้งหมด
-    student_scores = db.query(Score).join(Quiz).filter(Quiz.course_id == course_id,Score.student_id == student.student_id,Score.is_deleted == False,Quiz.is_deleted==False).all()
+    student_scores = db.query(Score).join(Quiz).filter(Quiz.course_id == course_id,Score.student_id == student.student_id,Score.is_deleted == False,Quiz.is_deleted==False,Quiz.is_publish==True).all()
 
     score_map = {s.quiz_id: s for s in student_scores}
 

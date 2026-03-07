@@ -44,9 +44,7 @@
               Create Account
             </h1>
           </div>
-          <form
-            class="px-6 sm:px-8 pb-10 flex flex-col gap-5"
-          >
+          <form class="px-6 sm:px-8 pb-10 flex flex-col gap-5">
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
               <div class="flex flex-col gap-1.5">
                 <label
@@ -130,10 +128,7 @@
                 />
               </div>
             </div>
-            <div
-              v-if="email.includes('_') && email.endsWith('@cmu.ac.th')"
-              class="modal"
-            >
+            <div v-if="isStudentEmail">
               <div class="flex flex-col gap-1.5">
                 <label
                   class="text-[#0f172a] dark:text-gray-200 text-sm font-semibold leading-normal ml-1"
@@ -227,9 +222,8 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { ref, computed } from "vue";
 import { useRouter } from "vue-router";
-
 
 defineOptions({
   name: "SignIn",
@@ -246,32 +240,54 @@ const studentID = ref(null);
 const password = ref("");
 const showPassword = ref(false);
 
-const isModalOpen = ref(false);
-
+let email_first = "";
 
 const togglePassword = () => {
   showPassword.value = !showPassword.value;
 };
 
+const isStudentEmail = computed(() => {
+      if (!email.value.endsWith("@cmu.ac.th")) return false;
+
+      const prefix = email.value.split("@")[0];
+      const parts = prefix.split("_");
+
+      return parts.length === 2 && parts[0].length > 0 && parts[1].length > 0;
+    });
+
 const handleSignup = async () => {
   try {
-
-    if (!firstName.value ||!lastName.value ||!email.value || !password.value) {
+    if (
+      !firstName.value ||
+      !lastName.value ||
+      !email.value ||
+      !password.value
+    ) {
       alert("ใส่ให้ครบจ้า");
       return;
     }
+    //  เช็คว่า email ต้อง ลงท้ายด้วย @cmu.ac.th
+    if (email.value.endsWith("@cmu.ac.th")) {
+      email_first = email.value.split("@cmu.ac.th");
+    }
 
     // ถ้าเป็น student email มี_
-    if (email.value.includes("_") && email.value.endsWith("@cmu.ac.th")) {
+    if (!email_first[0]) {
+      alert("Not CMU mail");
+      return;
+    }
+    if (email_first[0].includes("_") && email.value.endsWith("@cmu.ac.th")) {
       if (!studentID.value) {
         alert("ใส่ Student ID ด้วยจ้า");
         return;
       }
     }
-
-    // ถ้าเป็น teacher email (มี .)
-    if (email.value.includes(".") && email.value.endsWith("@cmu.ac.th")) {
-      studentID.value = null;
+    //เป็น teacher แน่นอน
+    if (!studentID.value) {
+      if (!email_first[0].includes(".") || email_first[0].endsWith(".") || email_first[0].startsWith(".")) {
+        alert("CMU mail not correct pattern");
+        return;
+      }
     }
 
     const response = await fetch("http://localhost:56733/register", {
@@ -289,7 +305,7 @@ const handleSignup = async () => {
       }),
     });
     if (!response.ok) {
-      alert("not complete");
+      // alert("not complete");
       const errorData = await response.json();
       throw new Error(errorData.detail || "SignUp failed");
     }
