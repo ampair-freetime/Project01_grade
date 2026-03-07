@@ -119,197 +119,232 @@ async def list_archived_courses(db: Session = Depends(get_db), current_user: Aut
 @router.post("/create_course")
 async def create_course(course: Teacher_Course,db: Session = Depends(get_db),current_user: AuthUser = Depends(get_current_user)):
     # ครู?
-    teacher = is_teacher(db, current_user)
+    try:
+        teacher = is_teacher(db, current_user)
 
-    new_course = Course(
-        course_name=course.course_name,
-        teacher_id=teacher.teacher_id
-    )
+        new_course = Course(
+            course_name=course.course_name,
+            teacher_id=teacher.teacher_id
+        )
 
-    db.add(new_course)
-    db.commit()
-    db.refresh(new_course)
+        db.add(new_course)
+        db.commit()
+        db.refresh(new_course)
 
-    return {
-        "message": "Course created successfully",
-        "course_id": new_course.course_id
-    }
+        return {
+            "message": "Course created successfully",
+            "course_id": new_course.course_id
+        }
+    except Exception as e:
+        db.rollback()
+        raise HTTPException(status_code=400,detail=f"error: {str(e)}") 
 
 @router.post("/create_assign")
 async def create_assignments(assign: T_Assignment,db: Session= Depends(get_db),current_user: AuthUser = Depends(get_current_user)):
-    teacher = is_teacher(db,current_user)
+    try:
+        teacher = is_teacher(db,current_user)
+        # if ()
+        new_assignment = Quiz(
+            quiz_name=assign.quiz_name,
+            full_mark=assign.full_mark,
+            course_id=assign.course_id
+        )
 
-    new_assignment = Quiz(
-        quiz_name=assign.quiz_name,
-        full_mark=assign.full_mark,
-        course_id=assign.course_id
-    )
-
-    db.add(new_assignment)
-    db.commit()
-    db.refresh(new_assignment)
-    #สร้าง assignment
-    return {
-        "message":"Assignment created succeddfully",
-        "assign_id": new_assignment.quiz_id
-    }
+        db.add(new_assignment)
+        db.commit()
+        db.refresh(new_assignment)
+        #สร้าง assignment
+        return {
+            "message":"Assignment created succeddfully",
+            "assign_id": new_assignment.quiz_id
+        }
+    except Exception as e:
+        db.rollback()
+        raise HTTPException(status_code=400,detail=f"error: {str(e)}") 
 
 
 ####################################################################################################################################
 #  upload CSV แสดงว่าต้องมีหน้า quiz name อะไรอย่างนี้แล้ว
 @router.post("/upload/{course_id}/{quiz_id}")
 async def upload_csv(quiz_id: int,course_id: int,file: UploadFile = File(...),db: Session = Depends(get_db),current_user: AuthUser = Depends(get_current_user)):
+    try:
+        teacher = is_teacher(db, current_user)
+        # ถ้ามีการ upload อีกครั้ง ก็ให้ยัง ไม่publish ต้องกดอีกครั้งถึงจะ publish
+        assignment = db.query(Quiz).join(Course).filter(Quiz.quiz_id == quiz_id,Course.teacher_id==teacher.teacher_id).first()
+        if assignment.is_publish:
+            assignment.is_publish = False
+        file_name = file.filename
+        new_upload = Upload(
+            file_name=file_name,
+            teacher_id = teacher.teacher_id,
+            course_id=course_id
+        )
+        db.add(new_upload)
+        db.commit()
+        db.refresh(new_upload)
+        # อ่านละแปลงเป็นข้อความ
+        content = await file.read()
+        decoded = content.decode("utf-8-sig")
+        # แปลงเป็นตาราง
+        csv_reader = list(csv.DictReader(io.StringIO(decoded)))
 
-    teacher = is_teacher(db, current_user)
-    # ถ้ามีการ upload อีกครั้ง ก็ให้ยัง ไม่publish ต้องกดอีกครั้งถึงจะ publish
-    assignment = db.query(Quiz).join(Course).filter(Quiz.quiz_id == quiz_id,Course.teacher_id==teacher.teacher_id).first()
-    if assignment.is_publish:
-        assignment.is_publish = False
-    file_name = file.filename
-    new_upload = Upload(
-        file_name=file_name,
-        teacher_id = teacher.teacher_id,
-        course_id=course_id
-    )
-    db.add(new_upload)
-    db.commit()
-    db.refresh(new_upload)
-    # อ่านละแปลงเป็นข้อความ
-    content = await file.read()
-    decoded = content.decode("utf-8-sig")
-    # แปลงเป็นตาราง
-    csv_reader = list(csv.DictReader(io.StringIO(decoded)))
+        number_student = 0
+        emails_stu = [row["student_email"] for row in csv_reader]
+        id_stu = [row["student_id"] for row in csv_reader]
+        #หา user student ที่มี email ในนี้แล้ว แสดงว่าเราแค่เพิ่มหรือแก้ไขคะแนน
+        stu_signup = db.query(Student).join(AuthUser).filter(Student.student_id.in_(id_stu),AuthUser.email.in_(emails_stu)).all()
+        stu_index = {}
+        for u in stu_signup:
+            stu_index[u.student_id] = u
+        all_score =  db.query(Score).filter(Score.student_id.in_(id_stu),Score.quiz_id==quiz_id).all()
+        score_index = {}
+        for s in all_score:
+            score_index[s.student_id] = s
+        #ให้สร้างไอดี ใหม่ก่อนถ้ายังไมมี
+        for row in csv_reader:
+            stu_email = str(row["student_email"])
+            stu_id = int(row["student_id"])
+            score_v = float(row["score"])
+            section = str(row["section"])
+            number_student += 1
+            #ไม่มี ไอดีให้สร้างใหม่
+            t_stu = stu_index.get(stu_id)
+            if not t_stu:
+                new_user = AuthUser(email=stu_email)
+                db.add(new_user)
+                db.flush()
 
-    number_student = 0
-    emails_stu = [row["student_email"] for row in csv_reader]
-    id_stu = [row["student_id"] for row in csv_reader]
-    #หา user student ที่มี email ในนี้แล้ว แสดงว่าเราแค่เพิ่มหรือแก้ไขคะแนน
-    stu_signup = db.query(Student).filter(Student.student_id.in_(id_stu)).all()
-    stu_index = {}
-    for u in stu_signup:
-        stu_index[u.student_id] = u
-    all_score =  db.query(Score).filter(Score.student_id.in_(id_stu),Score.quiz_id==quiz_id).all()
-    score_index = {}
-    for s in all_score:
-        score_index[s.student_id] = s
-    #ให้สร้างไอดี ใหม่ก่อนถ้ายังไมมี
-    for row in csv_reader:
-        stu_email = str(row["student_email"])
-        stu_id = int(row["student_id"])
-        score_v = float(row["score"])
-        section = str(row["section"])
-        number_student += 1
-        #ไม่มี ไอดีให้สร้างใหม่
-        t_stu = stu_index.get(stu_id)
-        if not t_stu:
-            new_user = AuthUser(email=stu_email)
-            db.add(new_user)
-            db.flush()
+                new_stu = Student(
+                    student_id=stu_id,
+                    auth_user_id=new_user.auth_user_id)
+                db.add(new_stu)
+                stu_index[stu_id] = new_stu
+            else:
+                pass
+            t_score = score_index.get(stu_id)
 
-            new_stu = Student(
-                student_id=stu_id,
-                auth_user_id=new_user.auth_user_id)
-            db.add(new_stu)
-            stu_index[stu_id] = new_stu
-
-        t_score = score_index.get(stu_id)
-
-        if t_score:
-            # Update คะแนนเดิม
-            t_score.score = score_v
-            t_score.section = section
-            t_score.unread_flag = True
-            t_score.is_deleted = False
-        else:
-            # สร้างคะแนนใหม่
-            new_score = Score(
-                score=score_v,
-                section=section,
-                quiz_id=quiz_id,
-                student_id=stu_id
-            ) #
-            db.add(new_score)
+            if t_score:
+                # Update คะแนนเดิม
+                t_score.score = score_v
+                t_score.section = section
+                t_score.unread_flag = True
+                t_score.is_deleted = False
+            else:
+                # สร้างคะแนนใหม่
+                new_score = Score(
+                        score=score_v,
+                        section=section,
+                        quiz_id=quiz_id,
+                        student_id=stu_id
+                    ) #
+                db.add(new_score)
 
 
-    #อัปเดตจำนวนคนใน course
-    course = db.query(Course).filter(Course.course_id==course_id,Course.teacher_id==teacher.teacher_id).first()
-    if not course:
-        raise HTTPException(status_code=404,detail="course not found")
-    course.number_student = number_student
-    db.commit()
-        
+        #อัปเดตจำนวนคนใน course
+        course = db.query(Course).filter(Course.course_id==course_id,Course.teacher_id==teacher.teacher_id).first()
+        if not course:
+            raise HTTPException(status_code=404,detail="course not found")
+        course.number_student = number_student
+        db.commit()
 
-    return {"message": "CSV uploaded successfully"}
+
+        return {"message": "CSV uploaded successfully"}
+    except Exception as e:
+        db.rollback()
+        raise HTTPException(status_code=400,detail=f"Upload failed: {str(e)}")
 ############################################################################ deleted #####################################################################
 @router.post("/delete_course/{course_id}")
 async def delete_courses(course_id:int,db: Session = Depends(get_db),current_user: AuthUser = Depends(get_current_user)):
     # ลบ courses แบบ soft deleted'
-    teacher = is_teacher(db,current_user)
-    course = db.query(Course).filter(Course.course_id == course_id,Course.teacher_id == teacher.teacher_id).first()
-    if not course:
-        raise HTTPException(status=404,detail="course not found")
-    course.is_deleted = True
-    db.commit()
-    return {"message":"deleted course successfully"}
-
+    try:
+        teacher = is_teacher(db,current_user)
+        course = db.query(Course).filter(Course.course_id == course_id,Course.teacher_id == teacher.teacher_id).first()
+        if not course:
+            raise HTTPException(status=404,detail="course not found")
+        course.is_deleted = True
+        db.commit()
+        return {"message":"deleted course successfully"}
+    except Exception as e:
+        db.rollback()
+        raise HTTPException(status_code=400,detail=f"error: {str(e)}") 
 
 # ? หรือควรสร้าง delete อันเดียว แยก course กับ assign ?
 @router.post("/delete_assign/{assign_id}")
 async def delete_assignments(assign_id:int,db: Session = Depends(get_db),current_user: AuthUser = Depends(get_current_user)):
     #ลบ assignment
-    teacher = is_teacher(db,current_user)
-    assignment = db.query(Quiz).join(Course).filter(Quiz.quiz_id == assign_id,Course.teacher_id == teacher.teacher_id).first()
-    if not assignment:
-        raise HTTPException(status=404,detail="assignment not found")
-    assignment.is_deleted = True
-    db.commit()
-    return {"message":"deleted assignment successfully"}
+    try:
+        teacher = is_teacher(db,current_user)
+        assignment = db.query(Quiz).join(Course).filter(Quiz.quiz_id == assign_id,Course.teacher_id == teacher.teacher_id).first()
+        if not assignment:
+            raise HTTPException(status=404,detail="assignment not found")
+        assignment.is_deleted = True
+        db.commit()
+        return {"message":"deleted assignment successfully"}
+    except Exception as e:
+        db.rollback()
+        raise HTTPException(status_code=400,detail=f"error: {str(e)}") 
 
 @router.post("/delete_score/{assign_id}/{score_id}")
 async def delete_assignments(score_id:int,assign_id:int,db: Session = Depends(get_db),current_user: AuthUser = Depends(get_current_user)):
     #ลบ assignment
-    teacher = is_teacher(db,current_user)
-    #หา Quiz ที่เชื่อมกับอาจารคนนี้ก่อน และส่งมาเป็น quiz ไหน
-    assignment = db.query(Quiz).join(Course).filter(Quiz.quiz_id == assign_id,Course.teacher_id == teacher.teacher_id).first()
-    # เอา quiz ที่หามาได้ไปหา score ใน database อีกที
-    score = db.query(Score).filter(Score.score_id == score_id,Score.quiz_id == assignment.quiz_id).first()
-    if not score:
-        raise HTTPException(status=404,detail="Score not found")
-    score.is_deleted = True
-    db.commit()
-    return {"message":"deleted score successfully"}
+    try:
+        teacher = is_teacher(db,current_user)
+        #หา Quiz ที่เชื่อมกับอาจารคนนี้ก่อน และส่งมาเป็น quiz ไหน
+        assignment = db.query(Quiz).join(Course).filter(Quiz.quiz_id == assign_id,Course.teacher_id == teacher.teacher_id).first()
+        # เอา quiz ที่หามาได้ไปหา score ใน database อีกที
+        score = db.query(Score).filter(Score.score_id == score_id,Score.quiz_id == assignment.quiz_id).first()
+        if not score:
+            raise HTTPException(status=404,detail="Score not found")
+        score.is_deleted = True
+        db.commit()
+        return {"message":"deleted score successfully"}
+    except Exception as e:
+        db.rollback()
+        raise HTTPException(status_code=400,detail=f"error: {str(e)}") 
 ###########################################################################################################################################################
 
 @router.post("/archive/{course_id}")
 async def archive(course_id:int, db:Session = Depends(get_db), current_user: AuthUser=Depends(get_current_user)):
-    teacher = is_teacher(db,current_user)
-    course = db.query(Course).filter(Course.course_id == course_id,Course.teacher_id == teacher.teacher_id).first()
-    #จัดเก็บ course
-    if not course:
-        raise HTTPException(status=404,detail="Course not found")
-    course.is_archive = True
-    db.commit()
-    return {"message":"Archive course successfully"}
+    try:
+        teacher = is_teacher(db,current_user)
+        course = db.query(Course).filter(Course.course_id == course_id,Course.teacher_id == teacher.teacher_id).first()
+        #จัดเก็บ course
+        if not course:
+            raise HTTPException(status=404,detail="Course not found")
+        course.is_archive = True
+        db.commit()
+        return {"message":"Archive course successfully"}
+    except Exception as e:
+        db.rollback()
+        raise HTTPException(status_code=400,detail=f"error: {str(e)}") 
 
 @router.post("/restore_to_dash/{course_id}")
 async def restore_course(course_id: int, db: Session = Depends(get_db), current_user: AuthUser = Depends(get_current_user)):
-    teacher = is_teacher(db, current_user)
-    course = db.query(Course).filter(Course.course_id == course_id,Course.teacher_id == teacher.teacher_id,).first()
-    if not course:
-        raise HTTPException(status_code=404, detail="Course not found")
-    course.is_archive = False
-    db.commit()
-    return {"message": "Restore course successfully"}
+    try:
+        teacher = is_teacher(db, current_user)
+        course = db.query(Course).filter(Course.course_id == course_id,Course.teacher_id == teacher.teacher_id,).first()
+        if not course:
+            raise HTTPException(status_code=404, detail="Course not found")
+        course.is_archive = False
+        db.commit()
+        return {"message": "Restore course successfully"}
+    except Exception as e:
+        db.rollback()
+        raise HTTPException(status_code=400,detail=f"error: {str(e)}") 
 
 @router.post("/publish/{assign_id}")
 async def publish(assign_id:int,db: Session = Depends(get_db),current_user: AuthUser = Depends(get_current_user)):
-    teacher = is_teacher(db,current_user)
-    assignment = db.query(Quiz).join(Course).filter(Quiz.quiz_id == assign_id,Course.teacher_id==teacher.teacher_id).first()
-    if not assignment:
-        raise HTTPException(status_code=404,detail="Assignment not found")
-    if assignment.is_publish:
-        raise HTTPException(status_code=409,detail="This assignment is already published")
-    assignment.is_publish = True
-    db.commit()
+    try:
+        teacher = is_teacher(db,current_user)
+        assignment = db.query(Quiz).join(Course).filter(Quiz.quiz_id == assign_id,Course.teacher_id==teacher.teacher_id).first()
+        if not assignment:
+            raise HTTPException(status_code=404,detail="Assignment not found")
+        if assignment.is_publish:
+            raise HTTPException(status_code=409,detail="This assignment is already published")
+        assignment.is_publish = True
+        db.commit()
 
-    return {"message": "Publish successful"}
+        return {"message": "Publish successful"}
+    except Exception as e:
+        db.rollback()
+        raise HTTPException(status_code=400,detail=f"error: {str(e)}") 
