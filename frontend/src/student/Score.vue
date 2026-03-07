@@ -360,6 +360,8 @@ const quizId = computed(() => Number(route.params.quiz_id));
 
 const userProfile = ref(null);
 const scoreData = ref(null);
+const animatedPercent = ref(0)
+const animatedScore = ref(0)
 const loading = ref(false);
 const errorMessage = ref("");
 
@@ -380,12 +382,31 @@ const CIRCLE_CIRCUMFERENCE = 251.2;
 
 const clamp = (n, min, max) => Math.min(max, Math.max(min, n));
 
+const animatePercent = (percentTarget, scoreTarget) => {
+  animatedPercent.value = 0
+  animatedScore.value = 0
+
+  const percentInterval = setInterval(() => {
+    if (animatedPercent.value >= percentTarget) {
+      clearInterval(percentInterval)
+    } else {
+      animatedPercent.value += 1
+    }
+  }, 15)
+
+  const scoreInterval = setInterval(() => {
+    if (animatedScore.value >= scoreTarget) {
+      clearInterval(scoreInterval)
+    } else {
+      animatedScore.value += 1
+    }
+  }, 25)
+}
+
 const percentValue = computed(() => {
   const p = Number(scoreData.value?.percent);
   return Number.isFinite(p) ? clamp(p, 0, 100) : 0;
 });
-
-const animatedPercent = ref(0);
 
 const progressDashoffset = computed(() => {
   return CIRCLE_CIRCUMFERENCE * (1 - animatedPercent.value / 100);
@@ -397,7 +418,7 @@ const scoreText = computed(() => {
   if (my === null || my === undefined || full === null || full === undefined) {
     return "-/-";
   }
-  return `${my}/${full}`;
+  return `${animatedScore.value}/${full}`;
 });
 
 const percentText = computed(() => `${percentValue.value.toFixed(2)}%`);
@@ -459,8 +480,10 @@ const fetchStudentScore = async (quiz_id) => {
 
     const data = await response.json();
     scoreData.value = data;
-
-    animateScore(percentValue.value);
+    animatePercent(
+      data.percent ?? 0,
+      data.my_score ?? 0
+    )
   } catch (err) {
     console.error(err);
     errorMessage.value = "Network error while fetching score.";
@@ -546,7 +569,7 @@ const handleLogout = async () => {
 }
 
 .animate-card {
-  animation: cardEnter 0.55s cubic-bezier(0.16, 1, 0.3, 1);
+  animation: cardEnter 0.55s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
 .delay-1 {

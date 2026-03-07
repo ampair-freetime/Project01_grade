@@ -41,7 +41,8 @@
                 <img
                   alt="User profile picture"
                   class="h-10 w-10 rounded-full object-cover border-2 border-primary"
-                  :src="randomAvatar"
+                  :src="userProfile?.avatar_url"
+                  
                 />
               </div>
             </button>
@@ -54,8 +55,9 @@
                 <div class="flex items-center space-x-3">
                   <img
                     class="h-12 w-12 rounded-full object-cover"
-                    :src="randomAvatar"
+                    :src="userProfile?.avatar_url"
                   />
+                  
                   <div>
                     <p
                       class="font-semibold text-gray-900 dark:text-white break-all"
@@ -781,8 +783,6 @@ onMounted(() => {
   document.addEventListener("click", handleClickOutside);
   fetchDashboard();
   fetchUserProfile();
-  const seed = Math.random().toString(36).substring(7);
-  randomAvatar.value = `https://robohash.org/${seed}.png`;
   const params = new URLSearchParams(window.location.search);
   if (params.get("google") === "connect_success") {
     if (!sessionStorage.getItem("google_connected")) {
