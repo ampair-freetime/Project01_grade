@@ -12,15 +12,15 @@
         <div class="flex items-center gap-2">
           <div
             class="flex items-center gap-3"
-            @click="goToCourse"
           >
-            <div
+            <button
               class="bg-primary rounded-lg p-1.5 flex items-center justify-center text-white"
+              @click="router.go(-2)"
             >
               <span class="material-symbols-outlined text-white text-xl">
                 school
               </span>
-            </div>
+            </button>
             <h2 class="text-lg font-bold leading-tight tracking-[-0.015em]">
               University Grade Portal
             </h2>

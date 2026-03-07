@@ -105,7 +105,7 @@
     </header>
     <main class="flex-1 flex-row flex-col h-full overflow-hidden relative">
       <div class="flex-1 overflow-y-auto p-8 lg:p-12">
-        <div class="max-w-5xl mx-auto flex flex-col gap-8">
+        <div class="animate-card delay-1 max-w-5xl mx-auto flex flex-col gap-8">
           <h1
             class="text-3xl font-bold leading-7 text-gray-900 dark:text-white sm:text-3xl sm:truncate"
           >
@@ -113,7 +113,7 @@
           </h1>
 
           <div
-            class="bg-surface-light dark:bg-surface-dark rounded-xl shadow-sm border border-border-light dark:border-border-dark p-4 mb-6 flex flex-col sm:flex-row justify-between items-center gap-4"
+            class="animate-card delay-2 bg-surface-light dark:bg-surface-dark rounded-xl shadow-sm border border-border-light dark:border-border-dark p-4 mb-6 flex flex-col sm:flex-row justify-between items-center gap-4"
           >
             <div class="relative w-full sm:max-w-md">
               <div
@@ -145,11 +145,11 @@
             </div>
             <div
               v-if="startCreate"
-              class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+              class="modal-backdrop fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
               @click.self="cancleCreate"
             >
-              <div
-                class="bg-white dark:bg-gray-800 w-[600px] rounded-xl shadow-xl p-6 relative"
+              <div 
+                class="modal-box bg-white dark:bg-gray-800 w-[600px] rounded-xl shadow-xl p-6 relative"
               >
                 <button
                   @click="cancleCreate"
@@ -180,7 +180,7 @@
             </div>
           </div>
           <div
-            class="bg-surface-light dark:bg-surface-dark shadow-sm rounded-xl border border-border-light dark:border-border-dark overflow-hidden"
+            class="animate-card delay-3 bg-surface-light dark:bg-surface-dark shadow-sm rounded-xl border border-border-light dark:border-border-dark overflow-hidden"
           >
             <div
               class="px-8 py-4 border-b border-border-light dark:border-border-dark flex justify-between items-center bg-gray-50/50 dark:bg-gray-800/30"
@@ -202,9 +202,10 @@
             </div>
             <ul class="divide-y divide-border-light dark:divide-border-dark">
               <li
-                v-for="course in paginatedCourses"
+                v-for="(course, index) in paginatedCourses"
                 :key="course.course_id"
-                class="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors duration-150"
+                class="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-all duration-300 animate-card"
+                :style="{ animationDelay: `${index * 0.08}s` }"
               >
                 <div
                   class="px-6 py-5 flex items-center justify-between cursor-pointer"
@@ -359,7 +360,7 @@
       @click.self="closeArchive"
     >
       <div
-        class="bg-white dark:bg-gray-800 w-96 rounded-2xl shadow-xl p-6 relative"
+        class="modal-box bg-white dark:bg-gray-800 w-96 rounded-2xl shadow-xl p-6 relative"
       >
         <button
           @click="closeArchive"
@@ -804,5 +805,63 @@ onBeforeUnmount(() => {
 .fade-enter-from,
 .fade-leave-to {
   opacity: 0;
+}
+
+
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.2s ease;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+}
+
+@keyframes cardEnter {
+  0% {
+    opacity: 0;
+    transform: translateY(20px) scale(0.97);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.animate-card {
+  opacity: 0;
+  animation: cardEnter 0.55s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.delay-1 {
+  animation-delay: 0.08s;
+}
+
+.delay-2 {
+  animation-delay: 0.16s;
+}
+
+.delay-3 {
+  animation-delay: 0.24s;
+}
+
+.delay-4 {
+  animation-delay: 0.2s;
+}
+
+.delay-5 {
+  animation-delay: 0.25s;
+}
+
+@keyframes cardEnter {
+  0% {
+    opacity: 0;
+    transform: translateY(20px) scale(0.97);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
 }
 </style>
