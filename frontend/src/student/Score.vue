@@ -106,15 +106,6 @@
             </div>
             <span>Return</span>
           </button>
-            <div v-if="course_name || quiz_name" class="flex flex-wrap gap-2 mt-4">
-              <a class="hover:text-primary font-medium" href="#" @click.prevent="router.push('/student/dashboard')">Courses</a>
-              <template v-if="course_name">
-                <span class="font-medium">/</span>
-                <span class="text-[#111811] dark:text-white font-medium">{{ course_name }}</span>
-              </template>
-              <span class="font-medium">/</span>
-              <span class="text-[#111811] dark:text-white font-medium">{{ quiz_name }}</span>
-            </div>
           </nav>
           <div
             class="flex flex-col md:flex-row md:items-center justify-between gap-4"
@@ -340,13 +331,7 @@ const userProfile = ref(null);
 const scoreData = ref(null);
 const loading = ref(false);
 const errorMessage = ref("");
-
-const quiz_name = computed(() => {
-  const q = route.query.quiz_name;
-  if (q && typeof q === "string" && q.trim()) return q;
-  return `Quiz ${quizId.value}`;
-});
-const course_name = computed(() => route.query.course_name || "");
+const quiz_name = computed(() => String(route.query.quiz_name));
 
 const isOpen = ref(false);
 
