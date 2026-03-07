@@ -151,64 +151,62 @@
             <div
               class="animate-card delay-2 bg-surface-light dark:bg-surface-dark border border-border-light dark:border-border-dark rounded-xl overflow-hidden shadow-sm"
             >
-              <div class="overflow-x-auto">
-                <table class="w-full text-left border-collapse">
-                  <thead>
-                    <tr
-                      class="bg-background-light dark:bg-[#1a232c] border-b border-border-light dark:border-border-dark"
-                    >
-                      <th
-                        class="p-4 text-xs font-bold text-primary dark:text-primary uppercase tracking-wider"
-                      >
-                        Assessment
-                      </th>
-                      <th
-                        class="p-4 text-xs font-bold text-primary dark:text-primary uppercase tracking-wider w-24 text-center"
-                      >
-                        Weight
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody
-                    class="divide-y divide-border-light dark:divide-border-dark text-sm"
+              <table class="w-full text-left border-collapse">
+                <thead>
+                  <tr
+                    class="bg-background-light dark:bg-[#1a232c] border-b border-border-light dark:border-border-dark"
                   >
-                    <tr
-                      v-for="item in assessments"
-                      :key="item.quiz_id"
-                      class="hover:bg-[#fcfdfc] dark:hover:bg-[#1f2832] transition-all duration-200 hover:scale-[1.01] group cursor-pointer"
-                      @click="
-                        router.push({
-                          path: `/student/score/${item.quiz_id}`,
-                          query: {
-                            quiz_name: item.quiz_name,
-                            course_name: course?.course_name,
-                          },
-                        })
-                      "
+                    <th
+                      class="p-4 text-xs font-bold text-primary dark:text-primary uppercase tracking-wider"
                     >
-                      <td class="p-4">
-                        <div class="font-bold text-[#111811] dark:text-white">
-                          {{ item.quiz_name }}
-                        </div>
+                      Assessment
+                    </th>
+                    <th
+                      class="p-4 text-xs font-bold text-primary dark:text-primary uppercase tracking-wider w-24 text-center"
+                    >
+                      Weight
+                    </th>
+                  </tr>
+                </thead>
+                <tbody
+                  class="divide-border-light dark:divide-border-dark text-sm"
+                >
+                  <tr
+                    v-for="item in assessments"
+                    :key="item.quiz_id"
+                    class="hover:bg-[#fcfdfc] dark:hover:bg-[#1f2832] transition-all duration-200 hover:scale-[1.01] group cursor-pointer"
+                    @click="
+                      router.push({
+                        path: `/student/score/${item.quiz_id}`,
+                        query: {
+                          quiz_name: item.quiz_name,
+                          course_name: course?.course_name,
+                        },
+                      })
+                    "
+                  >
+                    <td class="p-4">
+                      <div class="font-bold text-[#111811] dark:text-white">
+                        {{ item.quiz_name }}
+                      </div>
 
-                        <!-- คะแนน -->
-                        <div
-                          v-if="item.my_score !== null"
-                          class="text-xs text-gray-500 mt-1"
-                        >
-                          Score: {{ item.my_score }} / {{ item.full_mark }} ({{
-                            item.percent
-                          }}%)
-                        </div>
-                      </td>
+                      <!-- คะแนน -->
+                      <div
+                        v-if="item.my_score !== null"
+                        class="text-xs text-gray-500 mt-1"
+                      >
+                        Score: {{ item.my_score }} / {{ item.full_mark }} ({{
+                          item.percent
+                        }}%)
+                      </div>
+                    </td>
 
-                      <td class="p-4 text-center font-medium">
-                        {{ item.weight }}%
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
+                    <td class="p-4 text-center font-medium">
+                      {{ item.weight }}%
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
             </div>
           </section>
         </div>
