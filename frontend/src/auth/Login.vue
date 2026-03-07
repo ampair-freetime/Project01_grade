@@ -228,7 +228,9 @@ onMounted(() => {
   savedEmails.value = storedEmails;
 
   const rememberedEmail = localStorage.getItem("remembered_email");
-  if (rememberedEmail) {
+
+
+  if (rememberedEmail){
     email.value = rememberedEmail;
     rememberMe.value = true;
   }
@@ -331,7 +333,7 @@ name: "Login";
 }
 
 .animate-card {
-  animation: cardEnter 0.5s ease-out;
+  animation: cardEnter 0.5s ease-out forwards;
 }
 
 .btn-animate {

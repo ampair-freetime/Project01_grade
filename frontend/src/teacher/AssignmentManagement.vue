@@ -11,13 +11,14 @@
       >
         <div class="flex items-center gap-2">
           <div class="flex items-center gap-3">
-            <div
+            <button
               class="bg-primary rounded-lg p-1.5 flex items-center justify-center text-white"
+              @click="router.go(-1)"
             >
               <span class="material-symbols-outlined text-white text-xl">
                 school
               </span>
-            </div>
+            </button>
             <h2 class="text-lg font-bold leading-tight tracking-[-0.015em]">
               University Grade Portal
             </h2>
@@ -92,19 +93,19 @@
             class="mb-6 text-sm text-text-muted-light dark:text-text-muted-dark"
           >
             <button
-            class="group inline-flex items-center gap-3 font-bold text-[#111811] dark:text-white hover:text-primary transition-colors"
-            type="button"
-            @click="router.push(`/teacher/courses`)"
-          >
-            <div
-              class="flex size-9 items-center justify-center rounded-full bg-surface-light dark:bg-surface-dark border border-border-light dark:border-border-dark shadow-sm group-hover:border-primary group-hover:text-primary transition-colors"
+              class="group inline-flex items-center gap-3 font-bold text-[#111811] dark:text-white hover:text-primary transition-colors"
+              type="button"
+              @click="router.push(`/teacher/courses`)"
             >
-              <span class="material-symbols-outlined text-[20px]">
-                arrow_back
-              </span>
-            </div>
-            <span>Return</span>
-          </button>
+              <div
+                class="flex size-9 items-center justify-center rounded-full bg-surface-light dark:bg-surface-dark border border-border-light dark:border-border-dark shadow-sm group-hover:border-primary group-hover:text-primary transition-colors"
+              >
+                <span class="material-symbols-outlined text-[20px]">
+                  arrow_back
+                </span>
+              </div>
+              <span>Return</span>
+            </button>
 
             <!-- <div class="flex flex-wrap items-center gap-2 mt-4">
               <button
@@ -126,10 +127,13 @@
             <h1
               class="text-3xl font-bold text-gray-900 dark:text-white break-words"
             >
-              {{ courseTitle || "Assignments" }}
+              {{ courseTitle }}
             </h1>
-            <div class="flex flex-col sm:flex-row gap-4 w-full md:w-auto">
-              <div class="relative w-full md:w-64">
+            <div
+              class="flex flex-col sm:flex-row gap-4 w-full md:w-auto"
+              style="animation-delay: 0.15s"
+            >
+              <div class="animate-card delay-1 relative w-full md:w-64">
                 <div
                   class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none"
                 >
@@ -149,7 +153,7 @@
               <div>
                 <button
                   @click="createAssignment"
-                  class="inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-primary hover:bg-primary-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary transition-colors whitespace-nowrap"
+                  class="animate-card btn-animate delay-2 inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-primary hover:bg-primary-dark"
                 >
                   <span class="material-symbols-outlined mr-2 text-lg"
                     >add</span
@@ -157,53 +161,55 @@
                   Create New Assignment
                 </button>
               </div>
-              <div
-                v-if="startCreate"
-                class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
-                @click.self="cancleCreate"
-              >
+              <transition name="modal">
                 <div
-                  class="bg-white dark:bg-gray-800 w-[600px] rounded-xl shadow-xl p-6 relative"
+                  v-if="startCreate"
+                  class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+                  @click.self="cancleCreate"
                 >
-                  <button
-                    @click="cancleCreate"
-                    class="absolute top-3 right-3 text-2xl text-gray-500 hover:text-red-500"
+                  <div
+                    class="bg-white dark:bg-gray-800 w-[600px] rounded-xl shadow-xl p-6 relative"
                   >
-                    ✕
-                  </button>
-
-                  <h2 class="text-2xl font-semibold mb-4">
-                    Create New Assignment
-                  </h2>
-                  <div class="mb-4">
-                    <label class="block text-lg py-1">Assignment Title</label>
-                    <input
-                      v-model="assignmentTitle"
-                      type="text"
-                      class="w-full border border-gray-300 dark:border-gray-800 rounded-md dark:bg-gray-700 px-3 py-2 focus:outline-none focus:ring-green-200"
-                      placeholder="e.g., HW01 - Python001"
-                    />
-                  </div>
-                  <div class="mb-4">
-                    <label class="block text-lg py-1">Score</label>
-                    <input
-                      v-model="score"
-                      type="number"
-                      class="w-full border border-gray-300 dark:border-gray-800 rounded-md dark:bg-gray-700 px-3 py-2 focus:outline-none focus:ring-green-200"
-                      placeholder="e.g., 30"
-                    />
-                  </div>
-
-                  <div class="flex justify-end gap-3">
                     <button
-                      @click="submit"
-                      class="px-6 py-3 rounded-md bg-green-600 hover:bg-green-800 text-white text-base"
+                      @click="cancleCreate"
+                      class="absolute top-3 right-3 text-2xl text-gray-500 hover:text-red-500"
                     >
-                      Create Assignment
+                      ✕
                     </button>
+
+                    <h2 class="text-2xl font-semibold mb-4">
+                      Create New Assignment
+                    </h2>
+                    <div class="mb-4">
+                      <label class="block text-lg py-1">Assignment Title</label>
+                      <input
+                        v-model="assignmentTitle"
+                        type="text"
+                        class="w-full border border-gray-300 dark:border-gray-800 rounded-md dark:bg-gray-700 px-3 py-2 focus:outline-none focus:ring-green-200"
+                        placeholder="e.g., HW01 - Python001"
+                      />
+                    </div>
+                    <div class="mb-4">
+                      <label class="block text-lg py-1">Score</label>
+                      <input
+                        v-model="score"
+                        type="number"
+                        class="w-full border border-gray-300 dark:border-gray-800 rounded-md dark:bg-gray-700 px-3 py-2 focus:outline-none focus:ring-green-200"
+                        placeholder="e.g., 30"
+                      />
+                    </div>
+
+                    <div class="flex justify-end gap-3">
+                      <button
+                        @click="submit"
+                        class="px-6 py-3 rounded-md bg-green-600 hover:bg-green-800 text-white text-base"
+                      >
+                        Create Assignment
+                      </button>
+                    </div>
                   </div>
                 </div>
-              </div>
+              </transition>
             </div>
           </div>
           <div class="flex flex-col space-y-4">
@@ -215,9 +221,10 @@
             </div>
 
             <div
-              v-for="assignment in filteredAssignment"
+              v-for="(assignment, index) in filteredAssignment"
               :key="assignment.assign_id"
-              class="bg-white dark:bg-surface-dark border border-border-light dark:border-border-dark rounded-xl px-6 py-5 shadow-sm hover:shadow-md transition-shadow"
+              class="card-hover bg-white dark:bg-surface-dark border border-border-light dark:border-border-dark rounded-xl px-6 py-5 shadow-sm"
+              :style="{ animationDelay: `${index * 0.07}s` }"
             >
               <div class="flex items-center justify-between">
                 <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
@@ -241,7 +248,7 @@
 
                   <button
                     @click="archiveAssignment(assignment)"
-                    class="p-2 text-gray-400 hover:text-yellow-600 hover:bg-yellow-50 dark:hover:bg-yellow-900/30 rounded-full transition-colors duration-200 group"
+                    class="btn-animate delay-2 p-2 text-gray-400 hover:text-yellow-600 hover:bg-yellow-50 dark:hover:bg-yellow-900/30 rounded-full transition-colors duration-200 group"
                     title="Archive Assignment"
                   >
                     <span class="material-symbols-outlined text-xl"
@@ -373,11 +380,12 @@ const BASE_URL = "http://localhost:56733";
 
 const fetchAssignment = async (course_id) => {
   try {
-    const response = await fetch(`${BASE_URL}/teacher/assignment/${course_id}`,
+    const response = await fetch(
+      `${BASE_URL}/teacher/assignment/${course_id}`,
       {
         method: "GET",
         credentials: "include",
-      }
+      },
     );
 
     if (!response.ok) {
@@ -520,7 +528,7 @@ const deleteAssign = async (assign_id) => {
           "X-CSRF-Token": csrf_token,
         },
         credentials: "include",
-      }
+      },
     );
 
     if (!response.ok) {
@@ -539,7 +547,7 @@ const archiveAssignment = async (assignment) => {
   try {
     archivedAssignments.value.push(assignment);
     assignments.value = assignments.value.filter(
-      (a) => a.assign_id !== assignment.assign_id
+      (a) => a.assign_id !== assignment.assign_id,
     );
   } catch (err) {
     console.error("Archive failed", err);
@@ -550,7 +558,7 @@ const archiveAssignment = async (assignment) => {
 //คาดว่าจะลบ
 const restoreArchivedAssignment = (assignment) => {
   archivedAssignments.value = archivedAssignments.value.filter(
-    (a) => a.assign_id !== assignment.assign_id
+    (a) => a.assign_id !== assignment.assign_id,
   );
   assignments.value.push(assignment);
 };
@@ -558,7 +566,7 @@ const restoreArchivedAssignment = (assignment) => {
 const deleteArchivedAssignment = async (assign_id) => {
   if (!confirm("Permanently delete this assignment?")) return;
   archivedAssignments.value = archivedAssignments.value.filter(
-    (a) => a.assign_id !== assign_id
+    (a) => a.assign_id !== assign_id,
   );
 };
 
@@ -617,4 +625,71 @@ onBeforeUnmount(() => {
 .fade-leave-to {
   opacity: 0;
 }
+
+
+@keyframes cardEnter {
+  0% {
+    opacity: 0;
+    transform: translateY(25px) scale(0.97);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.animate-card {
+  opacity: 0;
+  transform: translateY(25px) scale(0.97);
+  animation: cardEnter 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  will-change: transform, opacity;
+}
+
+.delay-1 {
+  animation-delay: 0.08s;
+}
+
+.delay-2 {
+  animation-delay: 0.16s;
+}
+
+.delay-3 {
+  animation-delay: 0.24s;
+}
+
+.delay-4 {
+  animation-delay: 0.2s;
+}
+
+.delay-5 {
+  animation-delay: 0.25s;
+}
+
+.btn-animate {
+  transition: all 0.18s ease;
+}
+
+.btn-animate:hover {
+  transform: translateY(-2px);
+}
+
+.btn-animate:active {
+  transform: scale(0.95);
+}
+
+.modal-enter-active {
+  animation: modalIn 0.25s ease;
+}
+
+@keyframes modalIn {
+  0% {
+    opacity: 0;
+    transform: scale(0.9) translateY(15px);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
 </style>

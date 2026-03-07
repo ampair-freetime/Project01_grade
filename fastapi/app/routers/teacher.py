@@ -78,15 +78,20 @@ async def teacher_score(quiz_id: int,db:Session=Depends(get_db),current_user: Au
         raise HTTPException(status_code=404,detail="score not found")
 
     student_score = []
-    all_score = db.query(Score).filter(Score.quiz_id==quiz_id,Score.is_deleted==False).all()
+    all_score = db.query(Score).filter(Score.quiz_id == quiz_id, Score.is_deleted == False).all()
     for s in all_score:
-        #check is deleted???
+        # ข้อมูลนักศึกษาสำหรับแสดงชื่อ/รูปโปรไฟล์ในหน้า Grade
+        stu = s.student
         student_score.append({
                 "score_id": s.score_id,
                 "score": s.score,
                 "unread_flag": s.unread_flag,
                 "section": s.section,
-                "stu_id":s.student_id
+                "stu_id": s.student_id,
+                "stu_fname": stu.first_name if stu else None,
+                "stu_mname": stu.middle_name if stu else None,
+                "stu_lname": stu.last_name if stu else None,
+                "avatar_url": stu.avatar_url if stu else None
             })
     return {
         "assignment":{

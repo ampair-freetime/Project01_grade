@@ -11,13 +11,14 @@
       >
         <div class="flex items-center gap-2">
           <div class="flex items-center gap-3">
-            <div
+            <button
               class="bg-primary rounded-lg p-1.5 flex items-center justify-center text-white"
+              @click="router.go(-2)"
             >
               <span class="material-symbols-outlined text-white text-xl">
                 school
               </span>
-            </div>
+            </button>
             <h2 class="text-lg font-bold leading-tight tracking-[-0.015em]">
               University Grade Portal
             </h2>
@@ -90,12 +91,12 @@
         <div class="max-w-5xl mx-auto flex flex-col gap-8">
           <nav
             aria-label="Breadcrumb"
-            class="text-sm text-text-muted-light dark:text-text-muted-dark"
+            class="animate-card delay-1 text-sm text-text-muted-light dark:text-text-muted-dark"
           >
             <button
               class="group inline-flex items-center gap-3 font-bold text-[#111811] dark:text-white hover:text-primary transition-colors"
               type="button"
-              @click="router.push(`/student/dashboard`)"
+              @click="router.back()"
             >
               <div
                 class="flex size-9 items-center justify-center rounded-full bg-surface-light dark:bg-surface-dark border border-border-light dark:border-border-dark shadow-sm group-hover:border-primary group-hover:text-primary transition-colors"
@@ -106,7 +107,7 @@
               </div>
               <span>Return</span>
             </button>
-            <div
+            <!-- <div
               v-if="course_name || quiz_name"
               class="flex flex-wrap gap-2 mt-4"
             >
@@ -126,10 +127,10 @@
               <span class="text-[#111811] dark:text-white font-medium">{{
                 quiz_name
               }}</span>
-            </div>
+            </div> -->
           </nav>
           <div
-            class="flex flex-col md:flex-row md:items-center justify-between gap-4"
+            class="animate-card delay-1 flex flex-col md:flex-row md:items-center justify-between gap-4"
           >
             <div class="flex items-center gap-4">
               <h1 class="text-4xl font-bold text-gray-900 dark:text-white">
@@ -194,7 +195,7 @@
               </div>
             </div>
           </div>
-          <div class="mb-8">
+          <div class="animate-card delay-3 mb-8">
             <div class="flex items-center gap-2 mb-4">
               <span class="material-symbols-outlined text-primary"
                 >analytics</span
@@ -213,7 +214,7 @@
             </div>
             <div class="grid grid-cols-2 md:grid-cols-5 gap-4">
               <div
-                class="bg-card-light dark:bg-card-dark p-5 rounded-xl border border-border-light dark:border-blue-700 shadow-sm text-center transition-transform hover:scale-105 duration-200"
+                class="animate-card delay-1 bg-card-light dark:bg-card-dark p-5 rounded-xl border border-border-light dark:border-blue-700 shadow-sm text-center transition-transform hover:scale-105 duration-200"
               >
                 <div
                   class="text-xs font-semibold text-text-muted-light dark:text-text-muted-dark uppercase tracking-wide mb-1"
@@ -225,7 +226,7 @@
                 </div>
               </div>
               <div
-                class="bg-card-light dark:bg-card-dark p-5 rounded-xl border border-border-light dark:border-blue-700 shadow-sm text-center transition-transform hover:scale-105 duration-200"
+                class="animate-card delay-1 bg-card-light dark:bg-card-dark p-5 rounded-xl border border-border-light dark:border-blue-700 shadow-sm text-center transition-transform hover:scale-105 duration-200"
               >
                 <div
                   class="text-xs font-semibold text-text-muted-light dark:text-text-muted-dark uppercase tracking-wide mb-1"
@@ -237,7 +238,7 @@
                 </div>
               </div>
               <div
-                class="bg-card-light dark:bg-card-dark p-5 rounded-xl border border-border-light dark:border-blue-700 shadow-sm text-center transition-transform hover:scale-105 duration-200 col-span-2 md:col-span-1"
+                class="animate-card delay-1 bg-card-light dark:bg-card-dark p-5 rounded-xl border border-border-light dark:border-blue-700 shadow-sm text-center transition-transform hover:scale-105 duration-200"
               >
                 <div
                   class="text-xs font-semibold text-text-muted-light dark:text-text-muted-dark uppercase tracking-wide mb-1"
@@ -249,7 +250,7 @@
                 </div>
               </div>
               <div
-                class="bg-card-light dark:bg-card-dark p-5 rounded-xl border border-border-light dark:border-blue-700 shadow-sm text-center transition-transform hover:scale-105 duration-200"
+                class="animate-card delay-1 bg-card-light dark:bg-card-dark p-5 rounded-xl border border-border-light dark:border-blue-700 shadow-sm text-center transition-transform hover:scale-105 duration-200"
               >
                 <div
                   class="text-xs font-semibold text-text-muted-light dark:text-text-muted-dark uppercase tracking-wide mb-1"
@@ -262,8 +263,8 @@
                   {{ scoreData?.highest ?? "-" }}
                 </div>
               </div>
-              <div
-                class="bg-card-light dark:bg-card-dark p-5 rounded-xl border border-border-light dark:border-blue-700 shadow-sm text-center transition-transform hover:scale-105 duration-200"
+             <div
+                class="animate-card delay-1 bg-card-light dark:bg-card-dark p-5 rounded-xl border border-border-light dark:border-blue-700 shadow-sm text-center transition-transform hover:scale-105 duration-200"
               >
                 <div
                   class="text-xs font-semibold text-text-muted-light dark:text-text-muted-dark uppercase tracking-wide mb-1"
@@ -277,7 +278,7 @@
             </div>
           </div>
           <div
-            class="bg-card-light dark:bg-card-dark rounded-xl shadow-sm border border-border-light dark:border-blue-700 p-8"
+            class="animate-card delay-4 bg-card-light dark:bg-card-dark rounded-xl shadow-sm border border-border-light dark:border-blue-700 p-8"
           >
             <h3
               class="text-sm font-bold uppercase tracking-wider text-text-muted-light dark:text-text-muted-dark mb-10"
@@ -308,6 +309,12 @@
                 High: {{ scoreData?.highest ?? 0 }}
               </div>
               <div
+                class="absolute top-9 text-[10px] font-semibold text-text-muted-light dark:text-text-muted-dark transform -translate-x-1/2"
+                :style="{ left: `${lowestLeft}%` }"
+              >
+                Low: {{ scoreData?.lowest ?? 0 }}
+              </div>
+              <div
                 class="absolute top-0 w-full h-3 bg-gray-100 dark:bg-blue-900/50 rounded-full mt-2"
               ></div>
               <div
@@ -317,6 +324,10 @@
               <div
                 class="absolute top-0 w-0.5 h-7 bg-gray-400 dark:bg-blue-500 transform -translate-x-1/2"
                 :style="{ left: `${highestLeft}%` }"
+              ></div>
+              <div
+                class="absolute top-0 w-0.5 h-7 bg-gray-400 dark:bg-blue-500 transform -translate-x-1/2"
+                :style="{ left: `${lowestLeft}%` }"
               ></div>
               <div
                 class="absolute -top-7 transform -translate-x-1/2 flex flex-col items-center group cursor-pointer"
@@ -421,6 +432,7 @@ const toLeftPercent = (value) => {
 
 const meanLeft = computed(() => toLeftPercent(scoreData.value?.mean));
 const highestLeft = computed(() => toLeftPercent(scoreData.value?.highest));
+const lowestLeft = computed(() => toLeftPercent(scoreData.value?.lowest));
 const myLeft = computed(() => toLeftPercent(scoreData.value?.my_score));
 
 const toggleDropdown = () => {
@@ -496,6 +508,22 @@ onMounted(() => {
   }
 });
 
+const animateScore = (target) => {
+  const duration = 1200;
+  const start = performance.now();
+
+  const step = (timestamp) => {
+    const progress = Math.min((timestamp - start) / duration, 1);
+    animatedPercent.value = target * progress;
+
+    if (progress < 1) {
+      requestAnimationFrame(step);
+    }
+  };
+
+  requestAnimationFrame(step);
+};
+
 onBeforeUnmount(() => {
   document.removeEventListener("click", handleClickOutside);
 });
@@ -527,4 +555,40 @@ const handleLogout = async () => {
 .fade-leave-to {
   opacity: 0;
 }
+
+
+@keyframes cardEnter {
+  0% {
+    opacity: 0;
+    transform: translateY(20px) scale(0.97);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.animate-card {
+  animation: cardEnter 0.55s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.delay-1 {
+  animation-delay: 0.08s;
+}
+
+.delay-2 {
+  animation-delay: 0.16s;
+}
+
+.delay-3 {
+  animation-delay: 0.24s;
+}
+
+.delay-4 {
+  animation-delay: 0.2s;
+}
+.delay-5 {
+  animation-delay: 0.25s;
+}
 </style>
+
