@@ -702,7 +702,8 @@ const handleLogout = async () => {
       throw new Error();
     }
 
-    localStorage.clear();
+    localStorage.removeItem("csrf_token");
+    localStorage.removeItem("role");
     router.push("/login");
   } catch (error) {
     console.error("Logout failed:", error);

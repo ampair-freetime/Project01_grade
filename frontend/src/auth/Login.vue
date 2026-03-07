@@ -112,27 +112,6 @@
                 </button>
               </div>
             </div>
-            <div class="flex items-center justify-between pt-1">
-              <label
-                class="flex items-center gap-2.5 cursor-pointer group select-none"
-              >
-                <div class="relative flex items-center justify-center">
-                  <input
-                    v-model="rememberMe"
-                    class="peer h-5 w-5 appearance-none rounded border border-[#e0f2fe] bg-white dark:bg-[#0c1821] dark:border-[#64748b] checked:bg-primary checked:border-primary focus:ring-2 focus:ring-primary/20 transition-all cursor-pointer shadow-sm"
-                    type="checkbox"
-                  />
-                  <span
-                    class="material-symbols-outlined absolute text-[#0c4a6e] text-[16px] opacity-0 peer-checked:opacity-100 pointer-events-none font-bold scale-75 peer-checked:scale-100 transition-transform"
-                    >check</span
-                  >
-                </div>
-                <span
-                  class="text-sm font-medium text-[#64748b] group-hover:text-[#0f172a] dark:group-hover:text-white transition-colors"
-                  >Remember me</span
-                >
-              </label>
-            </div>
             <div class="flex flex-col gap-4 mt-2">
               <button
                 class="btn-animate group relative w-full h-12 bg-primary hover:bg-primary-dark text-white text-base font-bold rounded-lg shadow-[0_2px_10px_rgba(56,189,248,0.2)] hover:shadow-glow hover:-translate-y-0.5 active:translate-y-0 transition-all duration-200 flex items-center justify-center gap-2 overflow-hidden"
@@ -275,22 +254,6 @@ const handleLogin = async () => {
     }
 
     const data = await response.json();
-
-    let storedEmails = JSON.parse(localStorage.getItem("login_emails") || "[]");
-
-    if (!storedEmails.includes(email.value)) {
-      storedEmails.push(email.value);
-      localStorage.setItem("login_emails", JSON.stringify(storedEmails));
-      savedEmails.value = storedEmails;
-    }
-
-    if (rememberMe.value) {
-      localStorage.setItem("remembered_email", email.value);
-      localStorage.setItem("remembered_password", password.value);
-    } else {
-      localStorage.removeItem("remembered_email");
-      localStorage.removeItem("remembered_password");
-    }
 
     localStorage.setItem("csrf_token", data.csrf_token);
     localStorage.setItem("role", data.role);

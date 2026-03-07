@@ -127,77 +127,81 @@ async def student_course_detail(course_id: int,db: Session = Depends(get_db),cur
 async def student_score_detail(quiz_id: int,db: Session = Depends(get_db),current_user: AuthUser = Depends(get_current_user)):
 
     # เช็คว่าเป็นนักเรียนจริงไหม
-    student = require_student(db, current_user)
+    try:
+        student = require_student(db, current_user)
 
-    # ดึงคะแนนของตัวเอง
-    my_score = db.query(Score).filter(Score.quiz_id == quiz_id,Score.student_id == student.student_id,Score.is_deleted==False).first()
+        # ดึงคะแนนของตัวเอง
+        my_score = db.query(Score).filter(Score.quiz_id == quiz_id,Score.student_id == student.student_id,Score.is_deleted==False).first()
 
-    # ไม่มีคะแนน
-    if not my_score:
-        raise HTTPException(status_code=404,detail="Score not found")
-    
-    # mark read
-    if my_score.unread_flag:
-        my_score.unread_flag = False
-        db.commit()
+        # ไม่มีคะแนน
+        if not my_score:
+            raise HTTPException(status_code=404,detail="Score not found")
+        
+        # mark read
+        if my_score.unread_flag:
+            my_score.unread_flag = False
+            db.commit()
 
-    # คะแนนของทุกคน 
-    all_scores = db.query(Score).filter(Score.quiz_id == quiz_id,Score.is_deleted==False).all()
+        # คะแนนของทุกคน 
+        all_scores = db.query(Score).filter(Score.quiz_id == quiz_id,Score.is_deleted==False).all()
 
-    score_list = [s.score for s in all_scores if s.score is not None]
+        score_list = [s.score for s in all_scores if s.score is not None]
 
-    if not score_list:
+        if not score_list:
+            return {
+                "my_score": my_score.score,
+                "full_mark": my_score.quiz.full_mark,
+                "percent": 0,
+                "mean": 0,
+                "median": 0,
+                "std": 0,
+                "highest": 0,
+                "lowest": 0,
+                "total_students": 0,
+                "ranking": None
+            }
+
+        # คำนวณ mean
+        mean = sum(score_list) / len(score_list)
+        # คะแนนสูงสุด
+        highest = max(score_list)
+        # คะแนนต้ำสุด
+        lowest = min(score_list)
+        # เรียงลำดับ
+        sort_score = sorted(score_list)
+        n = len(sort_score)
+
+        # คำนวณ median
+        if n % 2 == 0:
+            median = (sort_score[n//2 - 1] + sort_score[n//2]) / 2
+        else:
+            median = sort_score[n//2]
+
+        # คำนวณ std
+        variance = sum((x - mean) ** 2 for x in score_list) / n
+        std = variance ** 0.5
+
+        # คำนวณเปอร์เซ็น
+        if my_score.quiz.full_mark > 0:
+            percent = round((my_score.score / my_score.quiz.full_mark) * 100, 2)
+        else:
+            percent = 0
+
+        # ranking
+        ranking = sum(1 for s in score_list if s > my_score.score) + 1
+
         return {
             "my_score": my_score.score,
             "full_mark": my_score.quiz.full_mark,
-            "percent": 0,
-            "mean": 0,
-            "median": 0,
-            "std": 0,
-            "highest": 0,
-            "lowest": 0,
-            "total_students": 0,
-            "ranking": None
+            "percent": percent,
+            "mean": round(mean, 2),
+            "median": round(median, 2),
+            "std": round(std, 2),
+            "highest": highest,
+            "lowest": lowest,
+            "total_students": len(score_list),
+            "ranking": ranking
         }
-
-    # คำนวณ mean
-    mean = sum(score_list) / len(score_list)
-    # คะแนนสูงสุด
-    highest = max(score_list)
-    # คะแนนต้ำสุด
-    lowest = min(score_list)
-    # เรียงลำดับ
-    sort_score = sorted(score_list)
-    n = len(sort_score)
-
-    # คำนวณ median
-    if n % 2 == 0:
-        median = (sort_score[n//2 - 1] + sort_score[n//2]) / 2
-    else:
-        median = sort_score[n//2]
-
-    # คำนวณ std
-    variance = sum((x - mean) ** 2 for x in score_list) / n
-    std = variance ** 0.5
-
-    # คำนวณเปอร์เซ็น
-    if my_score.quiz.full_mark > 0:
-        percent = round((my_score.score / my_score.quiz.full_mark) * 100, 2)
-    else:
-        percent = 0
-
-    # ranking
-    ranking = sum(1 for s in score_list if s > my_score.score) + 1
-
-    return {
-        "my_score": my_score.score,
-        "full_mark": my_score.quiz.full_mark,
-        "percent": percent,
-        "mean": round(mean, 2),
-        "median": round(median, 2),
-        "std": round(std, 2),
-        "highest": highest,
-        "lowest": lowest,
-        "total_students": len(score_list),
-        "ranking": ranking
-    }
+    except Exception as e:
+        db.rollback()
+        raise HTTPException(status_code=400,detail=f"error: {str(e)}")
