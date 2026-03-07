@@ -228,8 +228,10 @@ onMounted(() => {
   savedEmails.value = storedEmails;
 
   const rememberedEmail = localStorage.getItem("remembered_email");
-  if (rememberedEmail) {
+  const rememberedPassword = localStorage.getItem("remembered_password");
+  if (rememberedEmail && rememberedPassword) {
     email.value = rememberedEmail;
+    password.value = rememberedPassword;
     rememberMe.value = true;
   }
 });
@@ -284,8 +286,10 @@ const handleLogin = async () => {
 
     if (rememberMe.value) {
       localStorage.setItem("remembered_email", email.value);
+      localStorage.setItem("remembered_password", password.value);
     } else {
       localStorage.removeItem("remembered_email");
+      localStorage.removeItem("remembered_password");
     }
 
     localStorage.setItem("csrf_token", data.csrf_token);

@@ -93,27 +93,39 @@
             class="text-sm text-text-muted-light dark:text-text-muted-dark"
           >
             <button
-            class="group inline-flex items-center gap-3 font-bold text-[#111811] dark:text-white hover:text-primary transition-colors"
-            type="button"
-            @click="router.push(`/student/dashboard`)"
-          >
-            <div
-              class="flex size-9 items-center justify-center rounded-full bg-surface-light dark:bg-surface-dark border border-border-light dark:border-border-dark shadow-sm group-hover:border-primary group-hover:text-primary transition-colors"
+              class="group inline-flex items-center gap-3 font-bold text-[#111811] dark:text-white hover:text-primary transition-colors"
+              type="button"
+              @click="router.push(`/student/dashboard`)"
             >
-              <span class="material-symbols-outlined text-[20px]">
-                arrow_back
-              </span>
-            </div>
-            <span>Return</span>
-          </button>
-            <div v-if="course_name || quiz_name" class="flex flex-wrap gap-2 mt-4">
-              <a class="hover:text-primary font-medium" href="#" @click.prevent="router.push('/student/dashboard')">Courses</a>
+              <div
+                class="flex size-9 items-center justify-center rounded-full bg-surface-light dark:bg-surface-dark border border-border-light dark:border-border-dark shadow-sm group-hover:border-primary group-hover:text-primary transition-colors"
+              >
+                <span class="material-symbols-outlined text-[20px]">
+                  arrow_back
+                </span>
+              </div>
+              <span>Return</span>
+            </button>
+            <div
+              v-if="course_name || quiz_name"
+              class="flex flex-wrap gap-2 mt-4"
+            >
+              <a
+                class="hover:text-primary font-medium"
+                href="#"
+                @click.prevent="router.push('/student/dashboard')"
+                >Courses</a
+              >
               <template v-if="course_name">
                 <span class="font-medium">/</span>
-                <span class="text-[#111811] dark:text-white font-medium">{{ course_name }}</span>
+                <span class="text-[#111811] dark:text-white font-medium">{{
+                  course_name
+                }}</span>
               </template>
               <span class="font-medium">/</span>
-              <span class="text-[#111811] dark:text-white font-medium">{{ quiz_name }}</span>
+              <span class="text-[#111811] dark:text-white font-medium">{{
+                quiz_name
+              }}</span>
             </div>
           </nav>
           <div
@@ -339,7 +351,13 @@ const userProfile = ref(null);
 const scoreData = ref(null);
 const loading = ref(false);
 const errorMessage = ref("");
-const quiz_name = computed(() => String(route.query.quiz_name));
+
+const quiz_name = computed(() => {
+  const q = route.query.quiz_name;
+  if (q && typeof q === "string" && q.trim()) return q;
+  return `Quiz ${quizId.value}`;
+});
+const course_name = computed(() => route.query.course_name || "");
 
 const isOpen = ref(false);
 
