@@ -11,13 +11,13 @@
       >
         <div class="flex items-center gap-2">
           <div class="flex items-center gap-3">
-            <div
+            <button
               class="bg-primary rounded-lg p-1.5 flex items-center justify-center text-white"
             >
               <span class="material-symbols-outlined text-white text-xl">
                 school
               </span>
-            </div>
+            </button>
             <h2 class="text-lg font-bold leading-tight tracking-[-0.015em]">
               University Grade Portal
             </h2>
@@ -32,7 +32,7 @@
               <div class="hidden md:flex flex-col items-end mr-1">
                 <span
                   class="text-sm font-semibold text-gray-900 dark:text-white"
-                  >{{userProfile?.first_name}}</span
+                  >{{ userProfile?.first_name }}</span
                 >
               </div>
               <div class="relative">
@@ -73,10 +73,10 @@
                       class="mt-3 w-full flex items-center justify-center gap-2 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-600 text-sm font-medium px-3 py-2 rounded-lg transition"
                     >
                       <img
-                          src="https://developers.google.com/identity/images/g-logo.png"
-                          class="w-4 h-4"
+                        src="https://developers.google.com/identity/images/g-logo.png"
+                        class="w-4 h-4"
                       />
-                        Connect Google
+                      Connect Google
                     </button>
                     <div
                       v-else
@@ -103,7 +103,7 @@
       <div class="flex-1 overflow-y-auto p-8 lg:p-12">
         <div class="max-w-5xl mx-auto flex flex-col gap-8">
           <header
-            class="flex flex-col md:flex-row md:items-end justify-between gap-6"
+            class="animate-card flex flex-col md:flex-row md:items-end justify-between gap-6"
           >
             <div class="flex flex-col gap-2">
               <h2
@@ -132,7 +132,7 @@
               </label>
             </div>
           </header>
-          <section class="flex flex-col gap-4">
+          <section class="animate-card delay-1 flex flex-col gap-4">
             <div class="flex items-center justify-between mb-2">
               <h3
                 class="text-l text-primary dark:text-white flex items-center gap-2"
@@ -143,12 +143,15 @@
             <!-- Add courses -->
             <ul class="divide-y divide-border-light dark:divide-border-dark">
               <li
-                v-for="course in filteredCourses"
+                v-for="(course, index) in filteredCourses"
                 :key="course.course_id"
                 class="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors duration-150"
               >
                 <div
-                  class="group bg-white dark:bg-[#1a232e] p-4 rounded-xl shadow-sm border border-transparent hover:border-primary/40 hover:shadow-md transition-all duration-200 cursor-pointer"
+                  :class="[
+                    'group bg-white dark:bg-[#1a232e] p-4 rounded-xl shadow-sm border border-transparent hover:border-primary/40 hover:shadow-md transition-all duration-200 cursor-pointer animate-card',
+                    `delay-${(index % 5) + 1}`,
+                  ]"
                   @click="goToAssignment(course.course_id)"
                 >
                   <div class="flex items-center justify-between gap-4">
@@ -305,7 +308,7 @@ const goToAssignment = (course_id) => {
 };
 </script>
 
-<style>
+<style scoped>
 .fade-enter-active,
 .fade-leave-active {
   transition: opacity 0.2s ease;
@@ -313,5 +316,39 @@ const goToAssignment = (course_id) => {
 .fade-enter-from,
 .fade-leave-to {
   opacity: 0;
+}
+
+@keyframes cardEnter {
+  0% {
+    opacity: 0;
+    transform: translateY(20px) scale(0.97);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.animate-card {
+  animation: cardEnter 0.55s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.delay-1 {
+  animation-delay: 0.08s;
+}
+
+.delay-2 {
+  animation-delay: 0.16s;
+}
+
+.delay-3 {
+  animation-delay: 0.24s;
+}
+
+.delay-4 {
+  animation-delay: 0.2s;
+}
+.delay-5 {
+  animation-delay: 0.25s;
 }
 </style>

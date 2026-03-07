@@ -207,10 +207,10 @@ onMounted(() => {
   savedEmails.value = storedEmails;
 
   const rememberedEmail = localStorage.getItem("remembered_email");
-  const rememberedPassword = localStorage.getItem("remembered_password");
-  if (rememberedEmail && rememberedPassword) {
+
+
+  if (rememberedEmail){
     email.value = rememberedEmail;
-    password.value = rememberedPassword;
     rememberMe.value = true;
   }
 });
@@ -298,7 +298,7 @@ name: "Login";
 }
 
 .animate-card {
-  animation: cardEnter 0.5s ease-out;
+  animation: cardEnter 0.5s ease-out forwards;
 }
 
 .btn-animate {

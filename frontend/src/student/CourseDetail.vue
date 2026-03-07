@@ -11,13 +11,14 @@
       >
         <div class="flex items-center gap-2">
           <div class="flex items-center gap-3">
-            <div
+            <button
               class="bg-primary rounded-lg p-1.5 flex items-center justify-center text-white"
+              @click="router.go(-1)"
             >
               <span class="material-symbols-outlined text-white text-xl">
                 school
               </span>
-            </div>
+            </button>
             <h2 class="text-lg font-bold leading-tight tracking-[-0.015em]">
               University Grade Portal
             </h2>
@@ -27,7 +28,7 @@
           <div class="flex items-center gap-3">
             <button
               @click="toggleDropdown"
-              class="flex items-center space-x-3 hover:bg-gray-100 dark:hover:bg-gray-700 px-3 py-2 rounded-lg transition"
+              class="btn-animate flex items-center space-x-3 hover:bg-gray-100 dark:hover:bg-gray-700 px-3 py-2 rounded-lg transition"
             >
               <div class="hidden md:flex flex-col items-end mr-1">
                 <span
@@ -73,7 +74,7 @@
             </transition>
             <button
               @click="handleLogout"
-              class="flex items-center justify-center size-10 rounded-full hover:bg-red-50 dark:hover:bg-red-900/20 text-[#637888] dark:text-[#a0b8cf] hover:text-red-600 dark:hover:text-red-400 transition-colors"
+              class="btn-animate flex items-center justify-center size-10 rounded-full hover:bg-red-50 dark:hover:bg-red-900/20 text-[#637888] dark:text-[#a0b8cf] hover:text-red-600 dark:hover:text-red-400 transition-colors"
               title="Log Out"
             >
               <span class="material-symbols-outlined text-[20px]">logout</span>
@@ -92,7 +93,7 @@
             <button
               class="group inline-flex items-center gap-3 font-bold text-[#111811] dark:text-white hover:text-primary transition-colors"
               type="button"
-              @click="router.push(`/student/dashboard`)"
+              @click="router.back()"
             >
               <div
                 class="flex size-9 items-center justify-center rounded-full bg-surface-light dark:bg-surface-dark border border-border-light dark:border-border-dark shadow-sm group-hover:border-primary group-hover:text-primary transition-colors"
@@ -107,7 +108,7 @@
 
           <section class="@container">
             <div
-              class="flex flex-col md:flex-row gap-6 bg-surface-light dark:bg-surface-dark rounded-xl shadow-sm border border-border-light dark:border-border-dark overflow-hidden"
+              class="animate-card delay-1 flex flex-col md:flex-row gap-6 bg-surface-light dark:bg-surface-dark rounded-xl shadow-sm border border-border-light dark:border-border-dark overflow-hidden"
             >
               <div class="flex-1 p-6 md:p-8 flex flex-col justify-center gap-4">
                 <h1
@@ -129,15 +130,17 @@
             </div>
           </section>
           <section class="flex flex-col gap-4">
-            <div class="flex items-center justify-between">
+            <div class="animate-card delay-2 flex items-center justify-between">
               <div class="flex items-center gap-2">
-                <span class="material-symbols-outlined text-primary"
-                  >assignment</span
-                >
+                <span class="material-symbols-outlined text-primary">
+                  assignment
+                </span>
+
                 <h3 class="text-lg font-bold text-[#111811] dark:text-white">
                   Assessments
                 </h3>
               </div>
+
               <div class="text-sm dark:text-primary">
                 Weighted Average:
                 <span class="font-bold text-primary dark:text-primary">
@@ -146,7 +149,7 @@
               </div>
             </div>
             <div
-              class="bg-surface-light dark:bg-surface-dark border border-border-light dark:border-border-dark rounded-xl overflow-hidden shadow-sm"
+              class="animate-card delay-2 bg-surface-light dark:bg-surface-dark border border-border-light dark:border-border-dark rounded-xl overflow-hidden shadow-sm"
             >
               <div class="overflow-x-auto">
                 <table class="w-full text-left border-collapse">
@@ -172,7 +175,7 @@
                     <tr
                       v-for="item in assessments"
                       :key="item.quiz_id"
-                      class="hover:bg-[#fcfdfc] dark:hover:bg-[#1f2832] transition-colors group cursor-pointer"
+                      class="hover:bg-[#fcfdfc] dark:hover:bg-[#1f2832] transition-all duration-200 hover:scale-[1.01] group cursor-pointer"
                       @click="
                         router.push({
                           path: `/student/score/${item.quiz_id}`,
@@ -258,7 +261,6 @@ const toggleDropdown = () => {
 
 const fetchCourseDetail = async (courseId) => {
   try {
-
     const response = await fetch(`${BASE_URL}/student/course/${courseId}`, {
       method: "GET",
       credentials: "include",
@@ -322,25 +324,87 @@ const handleLogout = async () => {
 };
 </script>
 
-<style>
+<style scoped>
 .fade-enter-active,
 .fade-leave-active {
-  transition: opacity 0.2s ease;
+  transition: opacity 0.25s ease;
 }
+
 .fade-enter-from,
 .fade-leave-to {
   opacity: 0;
 }
 
 .btn-animate {
-  transition: all 0.2s ease;
+  transition:
+    transform 0.25s cubic-bezier(0.16, 1, 0.3, 1),
+    box-shadow 0.25s cubic-bezier(0.16, 1, 0.3, 1),
+    background-color 0.2s ease,
+    color 0.2s ease;
+  transform: translate3d(0, 0, 0);
+  will-change: transform;
 }
 
 .btn-animate:hover {
-  transform: scale(1.05);
+  transform: translateY(-2px) scale(1.02);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
 }
 
 .btn-animate:active {
-  transform: scale(0.95);
+  transform: translateY(1px) scale(0.97);
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.12);
+}
+
+@keyframes cardEnter {
+  0% {
+    opacity: 0;
+    transform: translateY(24px) scale(0.97);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.animate-card {
+  animation: cardEnter 0.55s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.delay-1 {
+  animation-delay: 0.08s;
+}
+
+.delay-2 {
+  animation-delay: 0.16s;
+}
+
+.delay-3 {
+  animation-delay: 0.24s;
+}
+
+.link-animate {
+  position: relative;
+  transition:
+    color 0.25s ease,
+    transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.link-animate:hover {
+  transform: translateY(-1px);
+}
+
+.link-animate::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -3px;
+  width: 0%;
+  height: 2px;
+  background: currentColor;
+  transition: width 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.link-animate:hover::after {
+  width: 100%;
 }
 </style>
