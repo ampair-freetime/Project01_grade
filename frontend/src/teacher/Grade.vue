@@ -10,7 +10,10 @@
         ref="dropdownRef"
       >
         <div class="flex items-center gap-2">
-          <div class="flex items-center gap-3">
+          <div
+            class="flex items-center gap-3"
+            @click="goToCourse"
+          >
             <div
               class="bg-primary rounded-lg p-1.5 flex items-center justify-center text-white"
             >
@@ -154,18 +157,13 @@
                 />
               </label>
               <button
-                class="inline-flex items-center px-4 py-2 bg-slate-900 dark:bg-slate-700 border border-transparent rounded-lg text-sm font-medium text-white hover:bg-slate-800 dark:hover:bg-slate-600 shadow-sm transition-colors"
+                @click="publishScores"
+                class="inline-flex items-center px-4 py-2 bg-sky-500 dark:bg-sky-600 border border-transparent rounded-lg text-sm font-medium text-white hover:opacity-90 shadow-sm transition-colors"
               >
                 <span class="material-symbols-outlined text-lg mr-2"
                   >publish</span
                 >
                 Publish Scores
-              </button>
-              <button
-                class="inline-flex items-center px-4 py-2 bg-sky-500 dark:bg-sky-600 border border-transparent rounded-lg text-sm font-medium text-white hover:opacity-90 shadow-sm transition-colors"
-              >
-                <span class="material-symbols-outlined text-lg mr-2">save</span>
-                Save Changes
               </button>
             </div>
           </div>
@@ -388,6 +386,17 @@
                 <span class="font-bold text-gray-900 dark:text-white"></span>
               </div>
               <div class="flex items-center space-x-1">
+                <!--first-->
+                <button
+                  @click="goToFirstPage"
+                  :disabled="currentPage === 1"
+                  class="p-2 border rounded-md disabled:opacity-40"
+                >
+                  <span class="material-symbols-outlined text-sm">
+                    first_page
+                  </span>
+                </button>
+
                 <!-- previous -->
                 <button
                   @click="prevPage"
@@ -399,7 +408,6 @@
                   </span>
                 </button>
 
-                <!-- page numbers -->
                 <!-- page numbers -->
                 <button
                   v-for="page in pages"
@@ -425,6 +433,17 @@
                 >
                   <span class="material-symbols-outlined text-sm">
                     chevron_right
+                  </span>
+                </button>
+
+                <!-- last -->
+                <button
+                  @click="goToLastPage"
+                  :disabled="currentPage === totalPages"
+                  class="p-2 border rounded-md disabled:opacity-40"
+                >
+                  <span class="material-symbols-outlined text-sm">
+                    last_page
                   </span>
                 </button>
               </div>
@@ -455,6 +474,7 @@ const sortKey = ref("");
 const sortOption = ref("id_lowhigh");
 const sortOpen = ref(false);
 const statusFilter = ref("all");
+// const isPublished = ref(false);
 
 const currentPage = ref(1);
 const itemsPerPage = 5;
@@ -626,6 +646,37 @@ const deleteScore = async (student) => {
   }
 };
 
+const publishScores = async () => {
+  if (!quizID.value) return;
+
+  if (!confirm("Publish scores to students?")) return;
+
+  try {
+    const response = await fetch(
+      `${BASE_URL}/teacher/publish/${quizID.value}`,
+      {
+        method: "POST",
+        credentials: "include",
+        headers: {
+          "X-CSRF-Token": csrfToken,
+        },
+      },
+    );
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      alert(data.detail || "Publish failed");
+      return;
+    }
+
+    alert("Scores published successfully");
+  } catch (error) {
+    console.error("Publish error:", error);
+    alert("Publish failed");
+  }
+};
+
 // ########################## method ####################################################################################################################################
 
 const sortPeople = () => {
@@ -710,6 +761,10 @@ const pages = computed(() => {
   return result;
 });
 
+const goToCourse = () => {
+  router.push(`/teacher/courses`);
+};
+
 const goToPage = (page) => {
   currentPage.value = page;
 };
@@ -724,6 +779,14 @@ const prevPage = () => {
   if (currentPage.value > 1) {
     currentPage.value--;
   }
+};
+
+const goToFirstPage = () => {
+  currentPage.value = 1;
+};
+
+const goToLastPage = () => {
+  currentPage.value = totalPages.value;
 };
 
 onMounted(() => {

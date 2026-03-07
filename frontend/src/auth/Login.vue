@@ -61,10 +61,18 @@
                 </div>
                 <input
                   v-model="email"
+                  list="email-suggestions"
                   class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-[#0f172a] dark:text-white placeholder:text-[#64748b]/60 focus:outline-0 focus:ring-4 focus:ring-primary/10 border border-border-color dark:border-[#1e293b] bg-white dark:bg-[#0c1821] h-12 pl-11 pr-4 text-base font-normal leading-normal transition-all hover:border-primary/50 focus:border-primary"
                   placeholder="example@cmu.ac.th"
                   type="email"
                 />
+                <datalist id="email-suggestions">
+                  <option
+                    v-for="savedEmail in savedEmails"
+                    :key="savedEmail"
+                    :value="savedEmail"
+                  />
+                </datalist>
               </div>
             </div>
             <div class="flex flex-col gap-1.5">
@@ -188,13 +196,27 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { ref, onMounted } from "vue";
 import { useRouter } from "vue-router";
 
 const email = ref("");
 const password = ref("");
-
 const router = useRouter();
+const savedEmails = ref([]);
+
+
+onMounted(() => {
+  const params = new URLSearchParams(window.location.search);
+  const error = params.get("error");
+
+  if (error === "google_not_connected") {
+    alert("Please login with email and connect your Google account first.");
+    window.history.replaceState({}, document.title, "/login");
+  }
+
+  const storedEmails = JSON.parse(localStorage.getItem("login_emails") || "[]");
+  savedEmails.value = storedEmails;
+});
 
 const showPassword = ref(false);
 
@@ -222,12 +244,21 @@ const handleLogin = async () => {
       }),
     });
     if (!response.ok) {
-      alert("not complete");
+      // alert("not complete");
       const errorData = await response.json();
       throw new Error(errorData.detail || "error for login");
     }
 
     const data = await response.json();
+
+    let storedEmails = JSON.parse(localStorage.getItem("login_emails") || "[]");
+
+    if (!storedEmails.includes(email.value)) {
+      storedEmails.push(email.value);
+      localStorage.setItem("login_emails", JSON.stringify(storedEmails));
+      savedEmails.value = storedEmails;
+    }
+
     localStorage.setItem("csrf_token", data.csrf_token);
     localStorage.setItem("role", data.role);
 
@@ -242,8 +273,17 @@ const handleLogin = async () => {
 };
 
 const loginWithGoogle = () => {
+  const csrf = localStorage.getItem("csrf_token");
+
+  if (csrf) {
+    alert("Please login with email and connect your Google account first.");
+    return;
+  }
+
   window.location.href = "http://localhost:56733/login_with_google";
 };
+
+
 
 name: "Login";
 </script>

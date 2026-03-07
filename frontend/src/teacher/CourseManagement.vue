@@ -60,7 +60,8 @@
                     <p
                       class="font-semibold text-gray-900 dark:text-white break-all"
                     >
-                      {{ userProfile?.first_name }} {{ userProfile?.middle_name }}
+                      {{ userProfile?.first_name }}
+                      {{ userProfile?.middle_name }}
                       {{ userProfile?.last_name }}
                     </p>
                     <p class="text-sm text-gray-500 break-all">
@@ -74,13 +75,13 @@
                       <img
                         src="https://developers.google.com/identity/images/g-logo.png"
                         class="w-4 h-4"
-                        />
-                        Connect Google
-                      </button>
+                      />
+                      Connect Google
+                    </button>
 
                     <div
-                        v-else
-                        class="mt-3 text-green-600 dark:text-green-400 text-sm font-semibold flex items-center gap-2"
+                      v-else
+                      class="mt-3 text-green-600 dark:text-green-400 text-sm font-semibold flex items-center gap-2"
                     >
                       Google Connected Successfully 🎉
                     </div>
@@ -277,6 +278,16 @@
                 <span class="font-bold text-gray-900 dark:text-white"></span>
               </div>
               <div class="flex items-center space-x-1">
+                <!-- first -->
+                <button
+                  @click="goToFirstPage"
+                  :disabled="currentPage === 1"
+                  class="p-2 border rounded-md disabled:opacity-40"
+                >
+                  <span class="material-symbols-outlined text-sm">
+                    first_page
+                  </span>
+                </button>
                 <!-- previous -->
                 <button
                   @click="prevPage"
@@ -288,7 +299,6 @@
                   </span>
                 </button>
 
-                <!-- page numbers -->
                 <!-- page numbers -->
                 <button
                   v-for="page in pages"
@@ -314,6 +324,17 @@
                 >
                   <span class="material-symbols-outlined text-sm">
                     chevron_right
+                  </span>
+                </button>
+
+                <!-- last -->
+                <button
+                  @click="goToLastPage"
+                  :disabled="currentPage === totalPages"
+                  class="p-2 border rounded-md disabled:opacity-40"
+                >
+                  <span class="material-symbols-outlined text-sm">
+                    last_page
                   </span>
                 </button>
               </div>
@@ -743,6 +764,14 @@ const prevPage = () => {
   if (currentPage.value > 1) {
     currentPage.value--;
   }
+};
+
+const goToFirstPage = () => {
+  currentPage.value = 1;
+};
+
+const goToLastPage = () => {
+  currentPage.value = totalPages.value;
 };
 
 onMounted(() => {

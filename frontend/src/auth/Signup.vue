@@ -44,9 +44,7 @@
               Create Account
             </h1>
           </div>
-          <form
-            class="px-6 sm:px-8 pb-10 flex flex-col gap-5"
-          >
+          <form class="px-6 sm:px-8 pb-10 flex flex-col gap-5">
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
               <div class="flex flex-col gap-1.5">
                 <label
@@ -130,10 +128,7 @@
                 />
               </div>
             </div>
-            <div
-              v-if="email.includes('_') && email.endsWith('@cmu.ac.th')"
-              class="modal"
-            >
+            <div v-if="isStudentEmail">
               <div class="flex flex-col gap-1.5">
                 <label
                   class="text-[#0f172a] dark:text-gray-200 text-sm font-semibold leading-normal ml-1"
@@ -183,6 +178,38 @@
                   </span>
                 </button>
               </div>
+              <div class="flex flex-col gap-1.5">
+                <label
+                  class="text-text-main dark:text-gray-200 text-sm font-semibold leading-normal ml-1"
+                >
+                  Confirm Password
+                </label>
+
+                <div class="relative flex items-center group">
+                  <div
+                    class="absolute left-4 text-[#64748b] group-focus-within:text-primary transition-colors pointer-events-none flex items-center justify-center"
+                  >
+                    <span class="material-symbols-outlined">lock</span>
+                  </div>
+
+                  <input
+                    v-model="confirmPassword"
+                    class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-text-main dark:text-white placeholder:text-[#64748b]/60 focus:outline-0 focus:ring-4 focus:ring-primary/10 border border-border-color dark:border-[#0c4a6e] bg-white dark:bg-[#0c4a6e] h-12 pl-11 pr-4 text-base font-normal leading-normal transition-all hover:border-primary/50 focus:border-primary"
+                    placeholder="Confirm your password"
+                    :type="showConfirmPassword ? 'text' : 'password'"
+                  />
+                  <button
+                    aria-label="Toggle password visibility"
+                    @click="toggleConfirmPassword"
+                    type="button"
+                    class="absolute right-3 p-1.5 rounded-md flex items-center justify-center text-[#64748b] hover:bg-background-light dark:hover:bg-[#0c4a6e] hover:text-text-main dark:hover:text-white transition-colors cursor-pointer"
+                  >
+                    <span class="material-symbols-outlined text-[20px]">
+                      {{ showConfirmPassword ? "visibility_off" : "visibility" }}
+                    </span>
+                  </button>
+                </div>
+              </div>
             </div>
             <div class="flex flex-col gap-4 mt-2">
               <form @submit.prevent="handleSignup">
@@ -200,7 +227,6 @@
                   <span class="relative z-10">Sign Up</span>
                 </button>
               </form>
-              
             </div>
             <div class="text-center mt-2">
               <p class="text-sm text-[#64748b]">
@@ -221,9 +247,8 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { ref, computed } from "vue";
 import { useRouter } from "vue-router";
-
 
 defineOptions({
   name: "SignIn",
@@ -239,34 +264,71 @@ const email = ref("");
 const studentID = ref(null);
 const password = ref("");
 const showPassword = ref(false);
+const confirmPassword = ref("");
+const showConfirmPassword = ref(false);
 
-const isModalOpen = ref(false);
-
+let email_first = "";
 
 const togglePassword = () => {
   showPassword.value = !showPassword.value;
 };
 
+const toggleConfirmPassword = () => {
+  showConfirmPassword.value = !showConfirmPassword.value;
+};
+
+const isStudentEmail = computed(() => {
+  if (!email.value.endsWith("@cmu.ac.th")) return false;
+
+  const prefix = email.value.split("@")[0];
+  const parts = prefix.split("_");
+
+  return parts.length === 2 && parts[0].length > 0 && parts[1].length > 0;
+});
+
 const handleSignup = async () => {
   try {
-
-    if (!firstName.value ||!lastName.value ||!email.value || !password.value) {
+    if (
+      !firstName.value ||
+      !lastName.value ||
+      !email.value ||
+      !password.value
+    ) {
       alert("ใส่ให้ครบจ้า");
       return;
     }
+    //  เช็คว่า email ต้อง ลงท้ายด้วย @cmu.ac.th
+    if (email.value.endsWith("@cmu.ac.th")) {
+      email_first = email.value.split("@cmu.ac.th");
+    }
 
     // ถ้าเป็น student email มี_
-    if (email.value.includes("_") && email.value.endsWith("@cmu.ac.th")) {
+    if (!email_first[0]) {
+      alert("Not CMU mail");
+      return;
+    }
+    if (email_first[0].includes("_") && email.value.endsWith("@cmu.ac.th")) {
       if (!studentID.value) {
         alert("ใส่ Student ID ด้วยจ้า");
         return;
       }
     }
-
-    // ถ้าเป็น teacher email (มี .)
-    if (email.value.includes(".") && email.value.endsWith("@cmu.ac.th")) {
-      studentID.value = null;
+    //เป็น teacher แน่นอน
+    if (!studentID.value) {
+      if (
+        !email_first[0].includes(".") ||
+        email_first[0].endsWith(".") ||
+        email_first[0].startsWith(".")
+      ) {
+        alert("CMU mail not correct pattern");
+        return;
+      }
     }
+     
+    if (password.value !== confirmPassword.value) {
+      alert("Passwords do not match");
+      return;
+    }   
 
     const response = await fetch("http://localhost:56733/register", {
       method: "POST",
@@ -283,7 +345,7 @@ const handleSignup = async () => {
       }),
     });
     if (!response.ok) {
-      alert("not complete");
+      // alert("not complete");
       const errorData = await response.json();
       throw new Error(errorData.detail || "SignUp failed");
     }
@@ -295,7 +357,7 @@ const handleSignup = async () => {
 };
 </script>
 
-<style scoped>
+<style>
 @keyframes cardEnter {
   0% {
     opacity: 0;
@@ -331,7 +393,9 @@ const handleSignup = async () => {
 
 .link-animate {
   position: relative;
-  transition: color 0.2s ease, transform 0.15s ease;
+  transition:
+    color 0.2s ease,
+    transform 0.15s ease;
 }
 
 .link-animate:hover {
