@@ -321,7 +321,7 @@ const goToAssignment = (course_id) => {
 @keyframes cardEnter {
   0% {
     opacity: 0;
-    transform: translateY(20px) scale(0.97);
+    transform: translateY(20px) scale(0.97) ;
   }
   100% {
     opacity: 1;
@@ -330,7 +330,7 @@ const goToAssignment = (course_id) => {
 }
 
 .animate-card {
-  animation: cardEnter 0.55s cubic-bezier(0.16, 1, 0.3, 1);
+  animation: cardEnter 0.55s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
 .delay-1 {
