@@ -10,10 +10,12 @@
         ref="dropdownRef"
       >
         <div class="flex items-center gap-2">
+
           <div
             class="flex items-center gap-3"
           >
             <button
+    
               class="bg-primary rounded-lg p-1.5 flex items-center justify-center text-white"
               @click="router.go(-2)"
             >
@@ -137,11 +139,11 @@
               </span>
             </div> -->
           </nav>
-          <div class="flex items-center justify-between flex-wrap gap-4">
+          <div class="animate-card delay-1 flex items-center justify-between flex-wrap gap-4">
             <h1 class="text-4xl font-bold text-gray-900 dark:text-white">
               {{ assignment_title || "Assignment" }}
             </h1>
-            <div class="flex items-center gap-3">
+            <div class="animate-card delay-2 flex items-center gap-3">
               <label
                 class="inline-flex items-center px-4 py-2 bg-white dark:bg-slate-800 border border-gray-300 dark:border-slate-600 rounded-lg text-sm font-medium text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-slate-700 shadow-sm transition-colors"
               >
@@ -169,7 +171,7 @@
           </div>
 
           <div
-            class="px-4 py-6 bg-surface-light dark:bg-surface-dark rounded-xl border border-border-light dark:border-border-dark flex flex-col md:flex-row items-center justify-between gap-4 shadow-sm"
+            class="animate-card delay-3 px-4 py-6 bg-surface-light dark:bg-surface-dark rounded-xl border border-border-light dark:border-border-dark flex flex-col md:flex-row items-center justify-between gap-4 shadow-sm"
           >
             <div class="relative w-full md:w-96 min-w-0">
               <span
@@ -243,10 +245,8 @@
                   </button>
                 </div>
               </div>
-              <div
-                class="w-px h-6 bg-gray-200 dark:bg-gray-700 hidden md:block"
-              ></div>
-              <div class="flex items-center gap-2 text-sm whitespace-nowrap">
+             
+              <div class="animate-card delay-4 flex items-center gap-2 text-sm whitespace-nowrap">
                 <span
                   class="uppercase text-xs font-bold tracking-wider text-gray-400 dark:text-gray-300"
                   >Sort By:</span
@@ -266,7 +266,7 @@
             </div>
           </div>
           <div
-            class="bg-surface-light dark:bg-surface-dark rounded-xl border border-border-light dark:border-border-dark shadow-sm overflow-hidden"
+            class="animate-card delay-4 bg-surface-light dark:bg-surface-dark rounded-xl border border-border-light dark:border-border-dark shadow-sm overflow-hidden"
           >
             <div class="overflow-x-auto">
               <table class="w-full table-fixed text-left">
@@ -309,14 +309,25 @@
                   >
                     <td class="p-4 pl-6">
                       <div class="flex items-center gap-3">
-                        <div
-                          class="w-10 h-10 rounded-full bg-sky-100 dark:bg-sky-900 text-sky-700 dark:text-sky-200 flex items-center justify-center font-bold text-sm flex-shrink-0"
-                        >
-                          {{ student.student_name?.charAt(0) || "KUY" }}
+                        <div class="relative flex-shrink-0">
+                          <img
+                            v-if="student.avatar_url"
+                            :src="student.avatar_url"
+                            alt="Student profile"
+                            class="w-12 h-12 rounded-full object-cover border border-gray-200 dark:border-slate-600"
+                          />
+                          <div
+                            v-else
+                            :src="student.avatar_url"
+                            class="w-12 h-12 rounded-full flex items-center justify-center font-bold text-sm"
+                            :class="getAvatarColor(student)"
+                          >
+                            {{ getInitials(student) }}
+                          </div>
                         </div>
                         <div>
                           <div
-                            class="font-semibold text-gray-900 dark:text-white"
+                            class="font-semibold text-sm text-gray-900 dark:text-white"
                           >
                             {{ student.stu_fname }} {{ student.stu_mname }}
                             {{ student.stu_lname }}
@@ -470,7 +481,6 @@ const dropdownRef = ref(null);
 
 const students = ref([]);
 const searchTerm = ref("");
-const sortKey = ref("");
 const sortOption = ref("id_lowhigh");
 const sortOpen = ref(false);
 const statusFilter = ref("all");
@@ -482,7 +492,7 @@ const itemsPerPage = 5;
 const quizID = computed(() => Number(route.params.quiz_id));
 const courseId = computed(() => Number(route.query.course_id));
 const courseTitle = computed(() =>
-  route.query.course_title ? String(route.query.course_title) : "",
+  route.query.course_title ? String(route.query.course_title) : ""
 );
 
 const randomAvatar = ref("");
@@ -491,10 +501,10 @@ const assignment_title = ref("");
 const csrfToken = localStorage.getItem("csrf_token");
 
 const readCount = computed(
-  () => students.value.filter((s) => s.status === "Read").length,
+  () => students.value.filter((s) => s.status === "Read").length
 );
 const unreadCount = computed(
-  () => students.value.filter((s) => s.status === "Unread").length,
+  () => students.value.filter((s) => s.status === "Unread").length
 );
 const BASE_URL = "http://localhost:56733";
 
@@ -523,6 +533,7 @@ const fetchTeacherGrade = async (quiz_id) => {
       stu_fname: s.stu_fname,
       stu_mname: s.stu_mname,
       stu_lname: s.stu_lname,
+      avatar_url: s.avatar_url,
       score: s.score,
       section: s.section,
       status: s.unread_flag ? "Unread" : "Read",
@@ -550,6 +561,40 @@ const fetchUserProfile = async () => {
   } catch (error) {
     console.error("Fetch profile error:", error);
   }
+};
+
+
+const avatarColorClasses = [
+  "bg-sky-100 text-sky-700 dark:bg-sky-900 dark:text-sky-200",
+  "bg-emerald-100 text-emerald-700 dark:bg-emerald-900 dark:text-emerald-200",
+  "bg-violet-100 text-violet-700 dark:bg-violet-900 dark:text-violet-200",
+  "bg-amber-100 text-amber-700 dark:bg-amber-900 dark:text-amber-200",
+  "bg-rose-100 text-rose-700 dark:bg-rose-900 dark:text-rose-200",
+];
+
+const getInitials = (student) => {
+  const parts = [
+    student.stu_fname,
+    student.stu_mname,
+    student.stu_lname,
+  ]
+    .filter(Boolean)
+    .join(" ")
+    .trim()
+    .split(/\s+/);
+
+  if (!parts.length) return "?";
+  if (parts.length === 1) return parts[0].charAt(0).toUpperCase();
+  return (parts[0].charAt(0) + parts[parts.length - 1].charAt(0)).toUpperCase();
+};
+
+const getAvatarColor = (student) => {
+  const idStr = String(student.student_id || "");
+  let hash = 0;
+  for (let i = 0; i < idStr.length; i++) {
+    hash = (hash * 31 + idStr.charCodeAt(i)) >>> 0;
+  }
+  return avatarColorClasses[hash % avatarColorClasses.length];
 };
 // ########################################### pop-up ###################################################################################################################
 
@@ -601,7 +646,7 @@ const handleFileUpload = async (event) => {
           "X-CSRF-Token": csrfToken,
         },
         body: formdata,
-      },
+      }
     );
 
     if (!response.ok) {
@@ -630,7 +675,7 @@ const deleteScore = async (student) => {
         headers: {
           "X-CSRF-Token": csrfToken,
         },
-      },
+      }
     );
 
     if (!response.ok) {
@@ -660,7 +705,7 @@ const publishScores = async () => {
         headers: {
           "X-CSRF-Token": csrfToken,
         },
-      },
+      }
     );
 
     const data = await response.json();
@@ -683,13 +728,13 @@ const sortPeople = () => {
   switch (sortOption.value) {
     case "id_lowhigh":
       students.value.sort(
-        (a, b) => Number(a.student_id) - Number(b.student_id),
+        (a, b) => Number(a.student_id) - Number(b.student_id)
       );
       break;
 
     case "name_atoz":
       students.value.sort((a, b) =>
-        a.student_name.localeCompare(b.student_name),
+        a.student_name.localeCompare(b.student_name)
       );
       break;
 

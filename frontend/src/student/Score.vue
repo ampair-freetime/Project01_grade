@@ -309,6 +309,12 @@
                 High: {{ scoreData?.highest ?? 0 }}
               </div>
               <div
+                class="absolute top-9 text-[10px] font-semibold text-text-muted-light dark:text-text-muted-dark transform -translate-x-1/2"
+                :style="{ left: `${lowestLeft}%` }"
+              >
+                Low: {{ scoreData?.lowest ?? 0 }}
+              </div>
+              <div
                 class="absolute top-0 w-full h-3 bg-gray-100 dark:bg-blue-900/50 rounded-full mt-2"
               ></div>
               <div
@@ -318,6 +324,10 @@
               <div
                 class="absolute top-0 w-0.5 h-7 bg-gray-400 dark:bg-blue-500 transform -translate-x-1/2"
                 :style="{ left: `${highestLeft}%` }"
+              ></div>
+              <div
+                class="absolute top-0 w-0.5 h-7 bg-gray-400 dark:bg-blue-500 transform -translate-x-1/2"
+                :style="{ left: `${lowestLeft}%` }"
               ></div>
               <div
                 class="absolute -top-7 transform -translate-x-1/2 flex flex-col items-center group cursor-pointer"
@@ -401,6 +411,7 @@ const toLeftPercent = (value) => {
 
 const meanLeft = computed(() => toLeftPercent(scoreData.value?.mean));
 const highestLeft = computed(() => toLeftPercent(scoreData.value?.highest));
+const lowestLeft = computed(() => toLeftPercent(scoreData.value?.lowest));
 const myLeft = computed(() => toLeftPercent(scoreData.value?.my_score));
 
 const toggleDropdown = () => {

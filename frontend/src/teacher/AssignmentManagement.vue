@@ -127,7 +127,7 @@
             <h1
               class="text-3xl font-bold text-gray-900 dark:text-white break-words"
             >
-              {{ courseTitle || "Assignments" }}
+              {{ courseTitle }}
             </h1>
             <div
               class="flex flex-col sm:flex-row gap-4 w-full md:w-auto"
@@ -223,7 +223,7 @@
             <div
               v-for="(assignment, index) in filteredAssignment"
               :key="assignment.assign_id"
-              class="list-item card-hover bg-white dark:bg-surface-dark border border-border-light dark:border-border-dark rounded-xl px-6 py-5 shadow-sm"
+              class="card-hover bg-white dark:bg-surface-dark border border-border-light dark:border-border-dark rounded-xl px-6 py-5 shadow-sm"
               :style="{ animationDelay: `${index * 0.07}s` }"
             >
               <div class="flex items-center justify-between">
