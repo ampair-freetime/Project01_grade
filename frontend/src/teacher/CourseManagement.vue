@@ -11,13 +11,13 @@
       >
         <div class="flex items-center gap-2">
           <div class="flex items-center gap-3">
-            <div
+            <button
               class="bg-primary rounded-lg p-1.5 flex items-center justify-center text-white"
             >
               <span class="material-symbols-outlined text-white text-xl">
                 school
               </span>
-            </div>
+            </button>
             <h2 class="text-lg font-bold leading-tight tracking-[-0.015em]">
               University Grade Portal
             </h2>
@@ -105,7 +105,7 @@
     </header>
     <main class="flex-1 flex-row flex-col h-full overflow-hidden relative">
       <div class="flex-1 overflow-y-auto p-8 lg:p-12">
-        <div class="animate-card delay-1 max-w-5xl mx-auto flex flex-col gap-8">
+        <div class="max-w-5xl mx-auto flex flex-col gap-8">
           <h1
             class="text-3xl font-bold leading-7 text-gray-900 dark:text-white sm:text-3xl sm:truncate"
           >
@@ -113,7 +113,7 @@
           </h1>
 
           <div
-            class="animate-card delay-2 bg-surface-light dark:bg-surface-dark rounded-xl shadow-sm border border-border-light dark:border-border-dark p-4 mb-6 flex flex-col sm:flex-row justify-between items-center gap-4"
+            class="animate-card delay-1 bg-surface-light dark:bg-surface-dark rounded-xl shadow-sm border border-border-light dark:border-border-dark p-4 mb-6 flex flex-col sm:flex-row justify-between items-center gap-4"
           >
             <div class="relative w-full sm:max-w-md">
               <div
@@ -125,7 +125,7 @@
               </div>
               <input
                 v-model="searchTerm"
-                class="block w-full pl-10 pr-3 py-2 border-none bg-gray-50 dark:bg-gray-800 rounded-lg text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary sm:text-sm"
+                class="block w-full pl-10 pr-3 py-2 border-none bg-gray-50 dark:bg-gray-800 rounded-lg text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary sm:text-sm transition-all duration-200"
                 id="search"
                 name="search"
                 placeholder="Search Course Code or Name..."
@@ -135,7 +135,7 @@
             <div class="flex w-full sm:w-auto items-center gap-4">
               <button
                 @click="createCourse"
-                class="inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-lg shadow-sm text-white bg-primary hover:bg-primary-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary transition-colors whitespace-nowrap"
+                class="btn-animate delay-2 inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-lg shadow-sm text-white bg-primary hover:bg-primary-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary transition-colors whitespace-nowrap"
               >
                 <span class="material-symbols-outlined text-white text-lg mr-2"
                   >add</span
@@ -145,11 +145,11 @@
             </div>
             <div
               v-if="startCreate"
-              class="modal-backdrop fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+              class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 modal-enter-active"
               @click.self="cancleCreate"
             >
-              <div 
-                class="modal-box bg-white dark:bg-gray-800 w-[600px] rounded-xl shadow-xl p-6 relative"
+              <div
+                class="animate-card delay-3 bg-white dark:bg-gray-800 w-[600px] rounded-xl shadow-xl p-6 relative"
               >
                 <button
                   @click="cancleCreate"
@@ -180,7 +180,7 @@
             </div>
           </div>
           <div
-            class="animate-card delay-3 bg-surface-light dark:bg-surface-dark shadow-sm rounded-xl border border-border-light dark:border-border-dark overflow-hidden"
+            class="animate-card delay-2 bg-surface-light dark:bg-surface-dark shadow-sm rounded-xl border border-border-light dark:border-border-dark overflow-hidden"
           >
             <div
               class="px-8 py-4 border-b border-border-light dark:border-border-dark flex justify-between items-center bg-gray-50/50 dark:bg-gray-800/30"
@@ -204,8 +204,8 @@
               <li
                 v-for="(course, index) in paginatedCourses"
                 :key="course.course_id"
-                class="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-all duration-300 animate-card"
-                :style="{ animationDelay: `${index * 0.08}s` }"
+                class="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors duration-150 animate-card"
+                :class="`delay-${(index % 5) + 1}`"
               >
                 <div
                   class="px-6 py-5 flex items-center justify-between cursor-pointer"
@@ -246,8 +246,17 @@
 
                     <div class="flex items-end min-w-[50px]">
                       <button
+                        @click.stop="archiveCourse(course.course_id)"
+                        class="btn-animate delay-2 p-2 text-gray-400 hover:text-yellow-600 hover:bg-yellow-50 dark:hover:bg-yellow-900/30 rounded-full transition-colors duration-200 group"
+                        title="Archive Course"
+                      >
+                        <span class="material-symbols-outlined text-xl"
+                          >archive</span
+                        >
+                      </button>
+                      <button
                         @click.stop="deleteCourse(course.course_id)"
-                        class="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-900/30 rounded-full transition-colors duration-200 group"
+                        class="btn-animate delay-2 p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-900/30 rounded-full transition-colors duration-200 group"
                         title="Delete Course"
                       >
                         <span class="material-symbols-outlined text-xl"
@@ -255,15 +264,7 @@
                         >
                       </button>
 
-                      <button
-                        @click.stop="archiveCourse(course.course_id)"
-                        class="p-2 text-gray-400 hover:text-yellow-600 hover:bg-yellow-50 dark:hover:bg-yellow-900/30 rounded-full transition-colors duration-200 group"
-                        title="Archive Course"
-                      >
-                        <span class="material-symbols-outlined text-xl"
-                          >archive</span
-                        >
-                      </button>
+                      
                     </div>
                   </div>
                 </div>
@@ -283,7 +284,7 @@
                 <button
                   @click="goToFirstPage"
                   :disabled="currentPage === 1"
-                  class="p-2 border rounded-md disabled:opacity-40"
+                  class="btn-animate delay-2 p-2 border rounded-md disabled:opacity-40"
                 >
                   <span class="material-symbols-outlined text-sm">
                     first_page
@@ -293,7 +294,7 @@
                 <button
                   @click="prevPage"
                   :disabled="currentPage === 1"
-                  class="p-2 border rounded-md disabled:opacity-40"
+                  class="btn-animate delay-2 p-2 border rounded-md disabled:opacity-40"
                 >
                   <span class="material-symbols-outlined text-sm">
                     chevron_left
@@ -321,7 +322,7 @@
                 <button
                   @click="nextPage"
                   :disabled="currentPage === totalPages"
-                  class="p-2 border rounded-md disabled:opacity-40"
+                  class="btn-animate delay-2 p-2 border rounded-md disabled:opacity-40"
                 >
                   <span class="material-symbols-outlined text-sm">
                     chevron_right
@@ -332,7 +333,7 @@
                 <button
                   @click="goToLastPage"
                   :disabled="currentPage === totalPages"
-                  class="p-2 border rounded-md disabled:opacity-40"
+                  class="btn-animate delay-2 p-2 border rounded-md disabled:opacity-40"
                 >
                   <span class="material-symbols-outlined text-sm">
                     last_page
@@ -360,7 +361,7 @@
       @click.self="closeArchive"
     >
       <div
-        class="modal-box bg-white dark:bg-gray-800 w-96 rounded-2xl shadow-xl p-6 relative"
+        class="bg-white dark:bg-gray-800 w-96 rounded-2xl shadow-xl p-6 relative"
       >
         <button
           @click="closeArchive"
@@ -397,7 +398,7 @@
                 <div class="flex items-end min-w-[50px]">
                   <button
                     @click="restoreCourse(course.course_id)"
-                    class="p-2 text-gray-400 hover:text-yellow-600 hover:bg-yellow-50 dark:hover:bg-yellow-900/30 rounded-full transition-colors duration-200 group"
+                    class="btn-animate delay-2 p-2 text-gray-400 hover:text-yellow-600 hover:bg-yellow-50 dark:hover:bg-yellow-900/30 rounded-full transition-colors duration-200 group"
                     title="Restore Course"
                   >
                     <span
@@ -407,7 +408,7 @@
                   </button>
                   <button
                     @click="deleteArchivedCourse(course.course_id)"
-                    class="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-900/30 rounded-full transition-colors duration-200 group"
+                    class="btn-animate delay-2 p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-900/30 rounded-full transition-colors duration-200 group"
                     title="Delete Course"
                   >
                     <span
@@ -807,21 +808,10 @@ onBeforeUnmount(() => {
   opacity: 0;
 }
 
-
-.fade-enter-active,
-.fade-leave-active {
-  transition: opacity 0.2s ease;
-}
-
-.fade-enter-from,
-.fade-leave-to {
-  opacity: 0;
-}
-
 @keyframes cardEnter {
   0% {
     opacity: 0;
-    transform: translateY(20px) scale(0.97);
+    transform: translateY(25px) scale(0.97);
   }
   100% {
     opacity: 1;
@@ -831,7 +821,9 @@ onBeforeUnmount(() => {
 
 .animate-card {
   opacity: 0;
-  animation: cardEnter 0.55s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  transform: translateY(25px) scale(0.97);
+  animation: cardEnter 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  will-change: transform, opacity;
 }
 
 .delay-1 {
@@ -854,14 +846,30 @@ onBeforeUnmount(() => {
   animation-delay: 0.25s;
 }
 
-@keyframes cardEnter {
+.btn-animate {
+  transition: all 0.18s ease;
+}
+
+.btn-animate:hover {
+  transform: translateY(-2px);
+}
+
+.btn-animate:active {
+  transform: scale(0.95);
+}
+
+.modal-enter-active {
+  animation: modalIn 0.25s ease;
+}
+
+@keyframes modalIn {
   0% {
     opacity: 0;
-    transform: translateY(20px) scale(0.97);
+    transform: scale(0.9) translateY(15px);
   }
   100% {
     opacity: 1;
-    transform: translateY(0) scale(1);
+    transform: scale(1) translateY(0);
   }
 }
 </style>
