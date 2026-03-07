@@ -28,8 +28,8 @@ const routes = [
   
   // Student
   { path: '/student/dashboard', component: Dashboard },
-  { path: '/student/course/:id', component: CourseDetail },
-  { path: '/student/score', component: Score },
+  { path: '/student/course/:course_id', component: CourseDetail },
+  { path: '/student/score/:quiz_id', component: Score },
 
   // Teacher
   { path: '/teacher/courses', component: CourseManagement },

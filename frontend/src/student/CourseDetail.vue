@@ -39,7 +39,7 @@
                 <img
                   alt="User profile picture"
                   class="h-10 w-10 rounded-full object-cover border-2 border-primary"
-                  src="https://lh3.googleusercontent.com/aida-public/AB6AXuAfs56wd3ZKem_c5viO2sbQi6QqagsAHOE_1vjyHa7ZI8VHLknmGt20_hlaSVETqWYOsJL90qkBypXOjJp3RLSZRVCCQdcfaZh5kBgmGKpB2H1ljdV46tJTVLrSN0GurDyMvTs3Rbs4iUT-JQEizgeI8EIRbyNIvgzgmld5oKsHWGOuXctpZU9YajqdkAw1xoCp7REQvLbXOz8A9iuN2iz7maCHA50bOTOwjKS5ivvz9hojTaRSN6jd9o2cDN90A2qviBCKcL1ugg"
+                  :src="userProfile?.avatar_url"
                 />
               </div>
             </button>
@@ -85,28 +85,26 @@
     <main class="flex-1 flex flex-col h-full overflow-hidden relative">
       <div class="flex-1 overflow-y-auto p-8 lg:p-12">
         <div class="max-w-5xl mx-auto flex flex-col gap-8">
-          <div class="flex flex-col gap-4">
-            <a
-              class="group flex w-fit items-center gap-3 text-sm font-bold text-[#111811] dark:text-white hover:text-primary transition-colors"
-              href="#"
+          <nav
+            aria-label="Breadcrumb"
+            class="text-sm text-text-muted-light dark:text-text-muted-dark"
+          >
+            <button
+              class="group inline-flex items-center gap-3 font-bold text-[#111811] dark:text-white hover:text-primary transition-colors"
+              type="button"
+              @click="router.push(`/student/dashboard`)"
             >
               <div
                 class="flex size-9 items-center justify-center rounded-full bg-surface-light dark:bg-surface-dark border border-border-light dark:border-border-dark shadow-sm group-hover:border-primary group-hover:text-primary transition-colors"
               >
-                <span class="material-symbols-outlined text-[20px]"
-                  >arrow_back</span
-                >
+                <span class="material-symbols-outlined text-[20px]">
+                  arrow_back
+                </span>
               </div>
               <span>Return</span>
-            </a>
-            <!-- <div class="flex flex-wrap gap-2 text-sm">
-              <a class="hover:text-primary font-medium" href="#"> Courses </a>
-              <span class="font-medium"> / </span>
-              <span class="text-[#111811] dark:text-white font-medium">{{
-                course?.course_name
-              }}</span>
-            </div> -->
-          </div>
+            </button>
+          </nav>
+
           <section class="@container">
             <div
               class="flex flex-col md:flex-row gap-6 bg-surface-light dark:bg-surface-dark rounded-xl shadow-sm border border-border-light dark:border-border-dark overflow-hidden"
@@ -175,7 +173,15 @@
                       v-for="item in assessments"
                       :key="item.quiz_id"
                       class="hover:bg-[#fcfdfc] dark:hover:bg-[#1f2832] transition-colors group cursor-pointer"
-                      @click="router.push(`/student/score/${item.quiz_id}`)"
+                      @click="
+                        router.push({
+                          path: `/student/score/${item.quiz_id}`,
+                          query: {
+                            quiz_name: item.quiz_name,
+                            course_name: course?.course_name,
+                          },
+                        })
+                      "
                     >
                       <td class="p-4">
                         <div class="font-bold text-[#111811] dark:text-white">
@@ -250,9 +256,10 @@ const toggleDropdown = () => {
   isOpen.value = !isOpen.value;
 };
 
-const fetchCourseDetail = async () => {
+const fetchCourseDetail = async (courseId) => {
   try {
-    const response = await fetch(`http://localhost:56733/student/course/${courseId}`, {
+
+    const response = await fetch(`${BASE_URL}/student/course/${courseId}`, {
       method: "GET",
       credentials: "include",
     });
@@ -266,6 +273,12 @@ const fetchCourseDetail = async () => {
     }
 
     const data = await response.json();
+    //  backend: {
+    //     "course_id": course.course_id,
+    //     "course_name": course.course_name,
+    //     "weighted_average": weighted_average,
+    //     "assessments": assessment
+    // }
 
     course.value = data;
     assessments.value = data.assessments;
@@ -283,7 +296,8 @@ const handleClickOutside = (event) => {
 
 onMounted(() => {
   document.addEventListener("click", handleClickOutside);
-  fetchCourseDetail();
+  fetchCourseDetail(courseId);
+  fetchUserProfile();
 });
 
 onBeforeUnmount(() => {
@@ -316,5 +330,17 @@ const handleLogout = async () => {
 .fade-enter-from,
 .fade-leave-to {
   opacity: 0;
+}
+
+.btn-animate {
+  transition: all 0.2s ease;
+}
+
+.btn-animate:hover {
+  transform: scale(1.05);
+}
+
+.btn-animate:active {
+  transform: scale(0.95);
 }
 </style>

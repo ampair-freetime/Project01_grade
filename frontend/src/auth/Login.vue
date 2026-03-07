@@ -26,6 +26,14 @@
       </div>
     </header>
 
+    <!-- LOADING OVERLAY -->
+    <div
+      v-if="loading"
+      class="fixed inset-0 flex flex-col items-center justify-center bg-white z-[999]"
+    >
+      <Vue3Lottie :animationData="animationData" :height="140" :width="140" />
+      <p class="text-gray-600 text-lg mt-2 font-medium">Signing in...</p>
+    </div>
     <!-- main -->
     <main
       class="flex-1 flex flex-col items-center justify-center p-4 sm:p-6 w-full"
@@ -66,13 +74,13 @@
                   placeholder="example@cmu.ac.th"
                   type="email"
                 />
-                <datalist id="email-suggestions">
+                <!-- <datalist id="email-suggestions">
                   <option
                     v-for="savedEmail in savedEmails"
                     :key="savedEmail"
                     :value="savedEmail"
                   />
-                </datalist>
+                </datalist> -->
               </div>
             </div>
             <div class="flex flex-col gap-1.5">
@@ -137,7 +145,8 @@
                   class="material-symbols-outlined relative z-10 group-hover:rotate-12 transition-transform duration-300"
                   >login</span
                 >
-                <span class="relative z-10">Login</span>
+                <span v-if="!loading" class="relative z-10">Login</span>
+                <span v-if="loading" class="relative z-10">Loading...</span>
               </button>
               <div class="relative flex items-center py-2">
                 <div
@@ -198,12 +207,13 @@
 <script setup>
 import { ref, onMounted } from "vue";
 import { useRouter } from "vue-router";
+import { Vue3Lottie } from "vue3-lottie"
+import animationData from "@/assets/animations/education-loading.json"
 
 const email = ref("");
 const password = ref("");
 const router = useRouter();
 const savedEmails = ref([]);
-
 
 onMounted(() => {
   const params = new URLSearchParams(window.location.search);
@@ -216,22 +226,33 @@ onMounted(() => {
 
   const storedEmails = JSON.parse(localStorage.getItem("login_emails") || "[]");
   savedEmails.value = storedEmails;
+
+  const rememberedEmail = localStorage.getItem("remembered_email");
+  if (rememberedEmail) {
+    email.value = rememberedEmail;
+    rememberMe.value = true;
+  }
 });
 
 const showPassword = ref(false);
 
 const rememberMe = ref(false);
 
+const loading = ref(false);
+
 const togglePassword = () => {
   showPassword.value = !showPassword.value;
 };
 
 const handleLogin = async () => {
+  if (!email.value || !password.value) {
+    alert("Please enter email and password.");
+    return;
+  }
+
+  loading.value = true;
+
   try {
-    if (!email.value || !password.value) {
-      alert("ใส่ให้ครบจ้า");
-      return;
-    }
     const response = await fetch("http://localhost:56733/login", {
       method: "POST",
       headers: {
@@ -243,10 +264,12 @@ const handleLogin = async () => {
         password: password.value,
       }),
     });
+
     if (!response.ok) {
-      // alert("not complete");
+      loading.value = false;
       const errorData = await response.json();
-      throw new Error(errorData.detail || "error for login");
+      alert(errorData.detail || "Email or password incorrect");
+      return;
     }
 
     const data = await response.json();
@@ -259,16 +282,25 @@ const handleLogin = async () => {
       savedEmails.value = storedEmails;
     }
 
+    if (rememberMe.value) {
+      localStorage.setItem("remembered_email", email.value);
+    } else {
+      localStorage.removeItem("remembered_email");
+    }
+
     localStorage.setItem("csrf_token", data.csrf_token);
     localStorage.setItem("role", data.role);
 
-    if (data.role === "student") {
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+
+    if (data.role && data.role.toLowerCase() === "student") {
       router.push("/student/dashboard");
     } else {
       router.push("/teacher/courses");
     }
   } catch (error) {
-    alert(error.message);
+    loading.value = false;
+    alert("Login failed");
   }
 };
 
@@ -282,8 +314,6 @@ const loginWithGoogle = () => {
 
   window.location.href = "http://localhost:56733/login_with_google";
 };
-
-
 
 name: "Login";
 </script>
@@ -324,7 +354,9 @@ name: "Login";
 
 .link-animate {
   position: relative;
-  transition: color 0.2s ease, transform 0.15s ease;
+  transition:
+    color 0.2s ease,
+    transform 0.15s ease;
 }
 
 .link-animate:hover {

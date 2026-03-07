@@ -91,11 +91,11 @@
         <div class="max-w-5xl mx-auto flex flex-col gap-8">
           <nav
             aria-label="Breadcrumb"
-            class="flex flex-col gap-4 mb-6 text-sm text-text-muted-light dark:text-text-muted-dark"
+            class="flex flex-col gap-4 text-sm text-text-muted-light dark:text-text-muted-dark"
           >
             <!-- Return -->
             <button
-              class="group inline-flex items-center gap-3 font-bold text-[#111811] dark:text-white hover:text-primary transition-colors"
+              class="group inline-flex items-center mb-1 gap-3 font-bold text-[#111811] dark:text-white hover:text-primary transition-colors"
               type="button"
               @click="router.push(`/teacher/assignments/${courseId}`)"
             >
@@ -137,8 +137,8 @@
               </span>
             </div> -->
           </nav>
-          <div class="flex items-center justify-between mb-4 flex-wrap gap-4">
-            <h1 class="text-3xl font-bold text-gray-900 dark:text-white">
+          <div class="flex items-center justify-between flex-wrap gap-4">
+            <h1 class="text-4xl font-bold text-gray-900 dark:text-white">
               {{ assignment_title || "Assignment" }}
             </h1>
             <div class="flex items-center gap-3">
@@ -500,7 +500,7 @@ const BASE_URL = "http://localhost:56733";
 
 // ########################################### fetch ###################################################################################################################
 
-const fetchStudentScore = async (quiz_id) => {
+const fetchTeacherGrade = async (quiz_id) => {
   try {
     const response = await fetch(`${BASE_URL}/teacher/stu_score/${quiz_id}`, {
       method: "GET",
@@ -612,7 +612,7 @@ const handleFileUpload = async (event) => {
 
     alert("CSV uploaded successfully");
     location.reload();
-    await fetchStudentScore(quizID.value);
+    await fetchTeacherGrade(quizID.value);
   } catch (err) {
     console.error(err);
     alert("Upload failed");
@@ -638,7 +638,7 @@ const deleteScore = async (student) => {
       return;
     }
     if (quizID.value) {
-      await fetchStudentScore(quizID.value);
+      await fetchTeacherGrade(quizID.value);
     }
   } catch (error) {
     console.error("Delete score failed:", error);
@@ -795,7 +795,7 @@ onMounted(() => {
   randomAvatar.value = `https://robohash.org/${seed}.png`;
   fetchUserProfile();
   if (quizID.value) {
-    fetchStudentScore(quizID.value);
+    fetchTeacherGrade(quizID.value);
   }
 });
 
