@@ -53,7 +53,7 @@ def seed_data():
     assignment_1 = Quiz(
         quiz_name="Assignment 1",
         full_mark=30,
-        course_id=course_cs101.course_id
+        course_code=course_cs101.course_code
     )
     db.add(assignment_1)
     db.commit()
