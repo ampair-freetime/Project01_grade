@@ -1,5 +1,5 @@
 # fastapi/app/models/student.py
-from sqlalchemy import Column, Integer, VARCHAR, ForeignKey, DateTime
+from sqlalchemy import Column, Integer, VARCHAR, ForeignKey, DateTime, text
 from sqlalchemy.orm import relationship
 from sqlalchemy_serializer import SerializerMixin
 from datetime import datetime

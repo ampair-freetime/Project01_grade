@@ -83,7 +83,7 @@ async def teacher_assingment(course_code: int,current_user: AuthUser = Depends(g
     }
 
 @router.get("/stu_score/{quiz_id}")
-async def teacher_score(quiz_id: int,db:Session=Depends(get_db),current_user: AuthUser = Depends(get_current_user)):
+async def teacher_score(quiz_id: str,db:Session=Depends(get_db),current_user: AuthUser = Depends(get_current_user)):
     teacher = is_teacher(db,current_user)
     #กรองเอา data score ที่เราเคยนำเข้าไว้มาก
     assignment = db.query(Quiz).join(Course).filter(Quiz.quiz_id == quiz_id,Course.teacher_id == teacher.teacher_id).first()
@@ -125,7 +125,7 @@ async def list_archived_courses(db: Session = Depends(get_db), current_user: Aut
     return {
         "teacher_name": f"{teacher.first_name} {teacher.last_name}",
         "courses": [
-            {"course_code": c.course_code, "course_name": c.course_name}
+            {"course_code": c.course_code, "course_name": c.course_name, "course_id":c.course_id}
             for c in courses
         ],
     }
@@ -185,7 +185,7 @@ async def create_assignments(assign: T_Assignment,db: Session= Depends(get_db),c
 ####################################################################################################################################
 #  upload CSV แสดงว่าต้องมีหน้า quiz name อะไรอย่างนี้แล้ว
 @router.post("/upload/{course_code}/{quiz_id}")
-async def upload_csv(quiz_id: int,course_code: int,file: UploadFile = File(...),db: Session = Depends(get_db),current_user: AuthUser = Depends(get_current_user)):
+async def upload_csv(quiz_id: str,course_code: int,file: UploadFile = File(...),db: Session = Depends(get_db),current_user: AuthUser = Depends(get_current_user)):
     try:
         teacher = is_teacher(db, current_user)
         # ถ้ามีการ upload อีกครั้ง ก็ให้ยัง ไม่publish ต้องกดอีกครั้งถึงจะ publish
@@ -221,7 +221,7 @@ async def upload_csv(quiz_id: int,course_code: int,file: UploadFile = File(...),
         #ให้สร้างไอดี ใหม่ก่อนถ้ายังไมมี
         for row in csv_reader:
             stu_email = str(row["student_email"])
-            stu_id = int(row["student_id"])
+            stu_id = str(row["student_id"])
             score_v = float(row["score"])
             section = str(row["section"])
             #ไม่มี ไอดีให้สร้างใหม่
@@ -280,7 +280,7 @@ async def delete_courses(course_code:int,db: Session = Depends(get_db),current_u
 
 # ? หรือควรสร้าง delete อันเดียว แยก course กับ assign ?
 @router.post("/delete_assign/{assign_id}")
-async def delete_assignments(assign_id:int,db: Session = Depends(get_db),current_user: AuthUser = Depends(get_current_user)):
+async def delete_assignments(assign_id:str,db: Session = Depends(get_db),current_user: AuthUser = Depends(get_current_user)):
     #ลบ assignment
     try:
         teacher = is_teacher(db,current_user)
@@ -295,7 +295,7 @@ async def delete_assignments(assign_id:int,db: Session = Depends(get_db),current
         raise HTTPException(status_code=400,detail=f"error: {str(e)}") 
 
 @router.post("/delete_score/{assign_id}/{score_id}")
-async def delete_assignments(score_id:int,assign_id:int,db: Session = Depends(get_db),current_user: AuthUser = Depends(get_current_user)):
+async def delete_assignments(score_id:str,assign_id:str,db: Session = Depends(get_db),current_user: AuthUser = Depends(get_current_user)):
     #ลบ assignment
     try:
         teacher = is_teacher(db,current_user)
@@ -343,7 +343,7 @@ async def restore_course(course_code: int, db: Session = Depends(get_db), curren
         raise HTTPException(status_code=400,detail=f"error: {str(e)}") 
 
 @router.post("/publish/{assign_id}")
-async def publish(assign_id:int,db: Session = Depends(get_db),current_user: AuthUser = Depends(get_current_user)):
+async def publish(assign_id:str,db: Session = Depends(get_db),current_user: AuthUser = Depends(get_current_user)):
     try:
         teacher = is_teacher(db,current_user)
         assignment = db.query(Quiz).join(Course).filter(Quiz.quiz_id == assign_id,Course.teacher_id==teacher.teacher_id).first()

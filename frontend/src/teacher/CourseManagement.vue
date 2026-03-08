@@ -187,7 +187,7 @@
                     <div
                       class="text-xs text-gray-500 dark:text-gray-400 tracking-wide"
                     >
-                      Course ID: {{ course.course_code }}
+                      Course ID: {{ course.course_id }}
                     </div>
                   </div>
 
@@ -200,7 +200,7 @@
                           class="material-symbols-outlined text-text-muted-light dark:text-text-muted-dark mr-1 text-lg"
                           >people</span
                         >
-                        {{ course.course_stu_number ?? 0 }}
+                        {{ course.number_student ?? 0 }}
                       </div>
 
                       <div
@@ -355,7 +355,7 @@
                 <div
                   class="text-xs text-text-muted-light dark:text-text-muted-dark"
                 >
-                  Course ID: {{ course.course_code }}
+                  Course ID: {{ course.course_id }}
                 </div>
               </div>
               <div class="flex items-center gap-6">
@@ -421,7 +421,7 @@
         <div class="mb-4">
           <label class="block py-1">Course Code</label>
           <input
-            v-model="courseCode"
+            v-model="courseID"
             type="text"
             class="w-full border border-gray-300 dark:border-gray-800 rounded-md dark:bg-gray-700 px-3 py-2 focus:outline-none focus:ring-green-200"
             placeholder="e.g., 204212"
@@ -450,7 +450,7 @@ const teacherName = ref("");
 const courses = ref([]);
 const searchTerm = ref("");
 const courseName = ref("");
-const courseCode = ref("");
+// const courseCode = ref("");
 const startCreate = ref(false);
 const dropdownRef = ref(null);
 const isOpen = ref(false);
@@ -458,9 +458,10 @@ const showArchiveModal = ref(false);
 const archivedCourses = ref([]);
 const userProfile = ref(null);
 const csrf_token = localStorage.getItem("csrf_token");
-const randomAvatar = ref("");
+// const randomAvatar = ref("");
 const currentPage = ref(1);
 const itemsPerPage = 5;
+const courseID = ref("")
 
 const BASE_URL = "http://localhost:56733";
 const connectGoogle = () => {
@@ -630,11 +631,13 @@ const submit = async () => {
       },
       body: JSON.stringify({
         course_name: courseName.value,
+        course_id: courseID.value
       }),
     });
 
     if (response.ok) {
       courseName.value = "";
+      courseID.value = "";
       startCreate.value = false;
       await fetchDashboard();
     }

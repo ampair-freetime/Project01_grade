@@ -65,7 +65,7 @@ async def get_current_user(request: Request, db: Session = Depends(get_db)):
             logger.error("Invalid token: subject missing")
             raise HTTPException(
                 status_code=401, detail="Invalid token: subject missing")
-        user = db.query(AuthUser).filter(AuthUser.auth_user_id == int(user_id)).first()
+        user = db.query(AuthUser).filter(AuthUser.auth_user_id == user_id).first()
         if user is None:
             logger.error(f"User not found for id: {user_id}")
             raise HTTPException(status_code=401, detail="User not found")
@@ -146,7 +146,7 @@ async def google_auth(
                 payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
                 user_id = payload.get("sub")
                 user = db.query(AuthUser).filter(
-                    AuthUser.auth_user_id == int(user_id)
+                    AuthUser.auth_user_id == user_id
                 ).first()
             except JWTError:
                 user = None
@@ -264,52 +264,56 @@ async def register(signin_data: UserSignin, db: Session = Depends(get_db)):
     #check email is teacher or student
     #example email stu_dent@cmu.ac.th นักเรียนต้องมี ขีดเท่านั้น tea.cher@cmu.ac.th teacher จะเป็นจุดก่อนเสมอ
     #student
-    if signin_data.student_id:
-        user = db.query(AuthUser).filter(AuthUser.email == signin_data.email).first()
-        if not user:
-            raise HTTPException(status_code=401, detail="Yor are not invited")
-        #this user not rewrite 2 ขั้น ใช้ password เป็น none และ student_id เทียบกัน
-        avatar = f"https://ui-avatars.com/api/?name={signin_data.first_name}&size=128&background=random"
-        if user.student.student_id != signin_data.student_id:
-            raise HTTPException(status_code=401, detail="ID not match please enter new ID")
-        if user.student and user.password is None:
-            user.student.first_name = signin_data.first_name
-            user.student.last_name = signin_data.last_name
-            user.student.middle_name = signin_data.middle_name
-            user.password = password_hash.hash(signin_data.password)
-            user.student.avatar_url = avatar
-            db.commit()
-            return {"message": "Account successful"}
+    try:
+        if signin_data.student_id:
+            user = db.query(AuthUser).filter(AuthUser.email == signin_data.email).first()
+            if not user:
+                raise HTTPException(status_code=401, detail="Yor are not invited")
+            #this user not rewrite 2 ขั้น ใช้ password เป็น none และ student_id เทียบกัน
+            avatar = f"https://ui-avatars.com/api/?name={signin_data.first_name}&size=128&background=random"
+            if user.student.student_id != signin_data.student_id:
+                raise HTTPException(status_code=401, detail="ID not match please enter new ID")
+            if user.student and user.password is None:
+                user.student.first_name = signin_data.first_name
+                user.student.last_name = signin_data.last_name
+                user.student.middle_name = signin_data.middle_name
+                user.password = password_hash.hash(signin_data.password)
+                user.student.avatar_url = avatar
+                db.commit()
+                return {"message": "Account successful"}
+            else:
+                raise HTTPException(status_code=401, detail="This student user already used")
         else:
-            raise HTTPException(status_code=401, detail="This student user already used")
-    else:
-        #teacher
-        user = db.query(AuthUser).filter(AuthUser.email == signin_data.email).first()
-        if user:
-            raise HTTPException(status_code=401, detail="Email teacher already used")
-            #ต้องไม่มี ใน databse
-        new_auth = AuthUser(
-            email=signin_data.email,
-            password=password_hash.hash(signin_data.password)
-        )
-        db.add(new_auth)
-        db.commit()
-        db.refresh(new_auth)
+            #teacher
+            user = db.query(AuthUser).filter(AuthUser.email == signin_data.email).first()
+            if user:
+                raise HTTPException(status_code=401, detail="Email teacher already used")
+                #ต้องไม่มี ใน databse
+            new_auth = AuthUser(
+                email=signin_data.email,
+                password=password_hash.hash(signin_data.password)
+            )
+            db.add(new_auth)
+            db.commit()
+            db.refresh(new_auth)
 
-        avatar = f"https://ui-avatars.com/api/?name={signin_data.first_name}&size=128&background=random"
-        new_profile = Teacher(
-            first_name=signin_data.first_name,
-            last_name= signin_data.last_name,
-            middle_name= signin_data.middle_name,
-            auth_user_id=new_auth.auth_user_id,
-            avatar_url=avatar,
-        )
-        db.add(new_profile)
-        db.commit()
-    #if request.email แยก เป็น 
-    #ใช้สมัครสำหรับ นักเรียนใหม่ เพื่อเข้าสู่ระบบ เช็ค database แล้วเปลี่ยนเอา หรือ สร้าง database ใหม่
-    #ถ้ามีเวลาให้เอาอันนี้ออก แล้ว ใช้ การ ส่งรหัสผ่าน email (advance)
-    return {"message": "Sign up completed"}
+            avatar = f"https://ui-avatars.com/api/?name={signin_data.first_name}&size=128&background=random"
+            new_profile = Teacher(
+                first_name=signin_data.first_name,
+                last_name= signin_data.last_name,
+                middle_name= signin_data.middle_name,
+                auth_user_id=new_auth.auth_user_id,
+                avatar_url=avatar,
+            )
+            db.add(new_profile)
+            db.commit()
+        #if request.email แยก เป็น 
+        #ใช้สมัครสำหรับ นักเรียนใหม่ เพื่อเข้าสู่ระบบ เช็ค database แล้วเปลี่ยนเอา หรือ สร้าง database ใหม่
+        #ถ้ามีเวลาให้เอาอันนี้ออก แล้ว ใช้ การ ส่งรหัสผ่าน email (advance)
+        return {"message": "Sign up completed"}
+    except Exception as e:
+        db.rollback()
+        raise HTTPException(status_code=400,detail=f"Upload failed: {str(e)}")
 
 @router.get("/logout")
 async def logout(response: Response):

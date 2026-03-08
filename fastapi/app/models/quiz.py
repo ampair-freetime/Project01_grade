@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, Float, ForeignKey, VARCHAR, Boolean, DateTime
+from sqlalchemy import Column, Integer, Float, ForeignKey, VARCHAR, Boolean, DateTime ,text
 from sqlalchemy.orm import relationship
 from sqlalchemy_serializer import SerializerMixin
 from app.db import Base
@@ -8,7 +8,7 @@ class Quiz(Base, SerializerMixin):
     __tablename__ = "quizzes"
     serialize_rules = ("-scores.quiz",)
 
-    quiz_id = Column(VARCHAR, primary_key=True, index=True)
+    quiz_id = Column(VARCHAR, primary_key=True, index=True,server_default=text("gen_random_uuid()"))
     # เข้าถึงรายวิชา
     course_code = Column(Integer, ForeignKey("courses.course_code"))
     # ชื่อควิซ

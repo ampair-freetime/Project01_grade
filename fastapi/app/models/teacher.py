@@ -1,5 +1,5 @@
 # fastapi/app/models/teacher.py
-from sqlalchemy import Column, Integer, VARCHAR, ForeignKey
+from sqlalchemy import Column, Integer, VARCHAR, ForeignKey,text
 from sqlalchemy.orm import relationship
 from app.db import Base
 from sqlalchemy_serializer import SerializerMixin
@@ -9,7 +9,7 @@ from datetime import datetime
 class Teacher(Base, SerializerMixin) :
     __tablename__ = "teachers"
 
-    teacher_id = Column(VARCHAR, primary_key=True, index=True)
+    teacher_id = Column(VARCHAR, primary_key=True, index=True,server_default=text("gen_random_uuid()"))
     # name
     first_name = Column(VARCHAR(255))
     middle_name = Column(VARCHAR(255))

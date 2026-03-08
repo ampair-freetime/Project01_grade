@@ -12,7 +12,6 @@ class Course(Base, SerializerMixin):
     course_name = Column(VARCHAR(255))
     course_id = Column(VARCHAR)
     teacher_id = Column(VARCHAR, ForeignKey("teachers.teacher_id"), nullable=False)
-    number_student = Column(Integer, default=0)
 
     created_at = Column(DateTime, default=datetime.utcnow)
     is_deleted = Column(Boolean, default=False)
