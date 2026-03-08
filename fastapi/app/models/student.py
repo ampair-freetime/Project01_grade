@@ -9,7 +9,7 @@ class Student(Base, SerializerMixin):
     __tablename__ = "students"
 
     # รหัสนักศึกษา
-    student_id = Column(VARCHAR, primary_key=True, index=True, server_default=text("gen_random_uuid()"))
+    student_id = Column(VARCHAR, primary_key=True, index=True)
     # name
     first_name = Column(VARCHAR(255))
     middle_name = Column(VARCHAR(255))
