@@ -30,7 +30,7 @@ def seed_data():
     db.commit()
     db.refresh(student_auth)
 
-    student_profile = Student(student_id=650510001, first_name="Nong Som", last_name="Roy", auth_user_id=student_auth.auth_user_id)
+    student_profile = Student(student_id="650510001", first_name="Nong Som", last_name="Roy", auth_user_id=student_auth.auth_user_id)
     db.add(student_profile)
     db.commit()
     db.refresh(student_profile)
@@ -40,7 +40,7 @@ def seed_data():
     db.commit()
     db.refresh(student_auth2)
 
-    student_profile2 = Student(student_id=650510555, first_name="Nu dee", last_name="kimnum", auth_user_id=student_auth2.auth_user_id)
+    student_profile2 = Student(student_id="650510555", first_name="Nu dee", last_name="kimnum", auth_user_id=student_auth2.auth_user_id)
     db.add(student_profile2)
     db.commit()
     db.refresh(student_profile2)

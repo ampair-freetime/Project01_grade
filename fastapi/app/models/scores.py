@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, Float, ForeignKey, Boolean, DateTime, VARCHAR
+from sqlalchemy import Column, Integer, Float, ForeignKey, Boolean, DateTime, VARCHAR,text
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
 from sqlalchemy_serializer import SerializerMixin
@@ -11,7 +11,7 @@ class Score(Base, SerializerMixin):
         UniqueConstraint("student_id", "quiz_id", name="unique_student_quiz"),
     )
 
-    score_id = Column(VARCHAR, primary_key=True, index=True)
+    score_id = Column(VARCHAR, primary_key=True, index=True,server_default=text("gen_random_uuid()"))
     # คะแนนของนักเรียน
     score = Column(Float, default=0.0)
     # เปิดดูแล้วหรือยัง
