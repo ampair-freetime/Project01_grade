@@ -26,5 +26,5 @@ class UserSignin(BaseModel):
     last_name: str
     middle_name: Optional[str]
     email: EmailStr
-    student_id: Optional[int]
+    student_id: Optional[str]
     password: str

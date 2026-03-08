@@ -356,7 +356,7 @@ import { useRouter, useRoute } from "vue-router";
 const router = useRouter();
 const route = useRoute();
 
-const quizId = computed(() => Number(route.params.quiz_id));
+const quizId = computed(() => String(route.params.quiz_id));
 
 const userProfile = ref(null);
 const scoreData = ref(null);
@@ -501,7 +501,7 @@ const handleClickOutside = (event) => {
 onMounted(() => {
   document.addEventListener("click", handleClickOutside);
   fetchUserProfile();
-  if (Number.isFinite(quizId.value) && quizId.value > 0) {
+  if (quizId.value && String(quizId.value).trim() !== "") {
     fetchStudentScore(quizId.value);
   } else {
     errorMessage.value = "Invalid quiz id.";

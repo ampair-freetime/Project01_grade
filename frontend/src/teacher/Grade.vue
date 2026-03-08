@@ -735,7 +735,7 @@ const sortPeople = () => {
   switch (sortOption.value) {
     case "id_lowhigh":
       students.value.sort(
-        (a, b) => Number(a.student_id) - Number(b.student_id)
+        students.value.sort((a, b) => String(a.student_id).localeCompare(String(b.student_id)))
       );
       break;
 
