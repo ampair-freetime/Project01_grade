@@ -205,7 +205,7 @@ async def upload_csv(quiz_id: str,course_code: int,file: UploadFile = File(...),
         content = await file.read()
         decoded = content.decode("utf-8-sig")
         # แปลงเป็นตาราง
-        csv_reader = list(csv.DictReader(io.StringIO(decoded)))
+        csv_reader = list(csv.DictReader(io.StringIO(decoded), delimiter=','))
 
         emails_stu = [row["student_email"] for row in csv_reader]
         id_stu = [row["student_id"] for row in csv_reader]
@@ -224,6 +224,16 @@ async def upload_csv(quiz_id: str,course_code: int,file: UploadFile = File(...),
             stu_id = str(row["student_id"])
             score_v = float(row["score"])
             section = str(row["section"])
+            name = str(row["name"]).strip()
+            name = name.split()
+
+            middle_name = None
+            last_name = None
+            if len(name) > 2:
+                middle_name = name[1]
+                last_name = name[2]
+            else:
+                last_name = name[1]
             #ไม่มี ไอดีให้สร้างใหม่
             t_stu = stu_index.get(stu_id)
             if not t_stu:
@@ -233,7 +243,11 @@ async def upload_csv(quiz_id: str,course_code: int,file: UploadFile = File(...),
 
                 new_stu = Student(
                     student_id=stu_id,
-                    auth_user_id=new_user.auth_user_id)
+                    auth_user_id=new_user.auth_user_id,
+                    first_name=name[0],
+                    middle_name=middle_name,
+                    last_name=last_name
+                    )
                 db.add(new_stu)
                 stu_index[stu_id] = new_stu
             else:
@@ -278,7 +292,6 @@ async def delete_courses(course_code:int,db: Session = Depends(get_db),current_u
         db.rollback()
         raise HTTPException(status_code=400,detail=f"error: {str(e)}") 
 
-# ? หรือควรสร้าง delete อันเดียว แยก course กับ assign ?
 @router.post("/delete_assign/{assign_id}")
 async def delete_assignments(assign_id:str,db: Session = Depends(get_db),current_user: AuthUser = Depends(get_current_user)):
     #ลบ assignment
