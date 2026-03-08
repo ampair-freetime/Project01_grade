@@ -354,7 +354,7 @@
                 <div
                   class="text-xs text-text-muted-light dark:text-text-muted-dark"
                 >
-                  Course ID: {{ course.course_code }}
+                  Course ID: {{ course.course_id }}
                 </div>
               </div>
               <div class="flex items-center gap-6">
@@ -420,7 +420,7 @@
         <div class="mb-4">
           <label class="block py-1">Course ID</label>
           <input
-            v-model="courseCode"
+            v-model="courseID"
             type="text"
             class="w-full border border-gray-300 dark:border-gray-800 rounded-md dark:bg-gray-700 px-3 py-2 focus:outline-none focus:ring-green-200"
             placeholder="e.g., 204212"
@@ -449,7 +449,6 @@ const teacherName = ref("");
 const courses = ref([]);
 const searchTerm = ref("");
 const courseName = ref("");
-const courseID = ref("");
 const startCreate = ref(false);
 const dropdownRef = ref(null);
 const isOpen = ref(false);
@@ -460,6 +459,7 @@ const csrf_token = localStorage.getItem("csrf_token");
 
 const currentPage = ref(1);
 const itemsPerPage = 5;
+const courseID = ref("")
 
 const BASE_URL = "http://localhost:56733";
 const connectGoogle = () => {
@@ -630,8 +630,7 @@ const submit = async () => {
       },
       body: JSON.stringify({
         course_name: courseName.value,
-        // ส่งค่าไปเป็น course_id ตาม schema ของ backend
-        course_id: courseID.value,
+        course_id: courseID.value
       }),
     });
 
