@@ -42,7 +42,6 @@
                   alt="User profile picture"
                   class="h-10 w-10 rounded-full object-cover border-2 border-primary"
                   :src="userProfile?.avatar_url"
-                  
                 />
               </div>
             </button>
@@ -57,7 +56,7 @@
                     class="h-12 w-12 rounded-full object-cover"
                     :src="userProfile?.avatar_url"
                   />
-                  
+
                   <div>
                     <p
                       class="font-semibold text-gray-900 dark:text-white break-all"
@@ -145,41 +144,6 @@
                 Create Course
               </button>
             </div>
-            <div
-              v-if="startCreate"
-              class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 modal-enter-active"
-              @click.self="cancleCreate"
-            >
-              <div
-                class="animate-card delay-3 bg-white dark:bg-gray-800 w-[600px] rounded-xl shadow-xl p-6 relative"
-              >
-                <button
-                  @click="cancleCreate"
-                  class="absolute top-3 right-3 text-2xl text-gray-500 hover:text-red-500"
-                >
-                  ✕
-                </button>
-
-                <h2 class="text-2xl font-semibold mb-4">Create New Course</h2>
-                <div class="mb-4">
-                  <label class="block py-1">Course Name</label>
-                  <input
-                    v-model="courseName"
-                    type="text"
-                    class="w-full border border-gray-300 dark:border-gray-800 rounded-md dark:bg-gray-700 px-3 py-2 focus:outline-none focus:ring-green-200"
-                    placeholder="e.g., Intro to Computer Science"
-                  />
-                </div>
-                <div class="flex justify-end gap-3">
-                  <button
-                    @click="submit"
-                    class="px-6 py-3 rounded-md bg-primary hover:bg-primary-dark text-white text-base"
-                  >
-                    Create Course
-                  </button>
-                </div>
-              </div>
-            </div>
           </div>
           <div
             class="animate-card delay-2 bg-surface-light dark:bg-surface-dark shadow-sm rounded-xl border border-border-light dark:border-border-dark overflow-hidden"
@@ -265,8 +229,6 @@
                           >delete</span
                         >
                       </button>
-
-                      
                     </div>
                   </div>
                 </div>
@@ -429,6 +391,50 @@
         >
           No archived courses.
         </p>
+      </div>
+    </div>
+    <div
+      v-if="startCreate"
+      class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 modal-enter-active"
+      @click.self="cancleCreate"
+    >
+      <div
+        class="animate-card delay-3 bg-white dark:bg-gray-800 w-[600px] rounded-xl shadow-xl p-6 relative"
+      >
+        <button
+          @click="cancleCreate"
+          class="absolute top-3 right-3 text-2xl text-gray-500 hover:text-red-500"
+        >
+          ✕
+        </button>
+
+        <h2 class="text-2xl font-semibold mb-4">Create New Course</h2>
+        <div class="mb-4">
+          <label class="block py-1">Course Name</label>
+          <input
+            v-model="courseName"
+            type="text"
+            class="w-full border border-gray-300 dark:border-gray-800 rounded-md dark:bg-gray-700 px-3 py-2 focus:outline-none focus:ring-green-200"
+            placeholder="e.g., Intro to Computer Science"
+          />
+        </div>
+        <div class="mb-4">
+          <label class="block py-1">Course Code</label>
+          <input
+            v-model="courseName"
+            type="text"
+            class="w-full border border-gray-300 dark:border-gray-800 rounded-md dark:bg-gray-700 px-3 py-2 focus:outline-none focus:ring-green-200"
+            placeholder="e.g., 204212"
+          />
+        </div>
+        <div class="flex justify-end gap-3">
+          <button
+            @click="submit"
+            class="px-6 py-3 rounded-md bg-primary hover:bg-primary-dark text-white text-base"
+          >
+            Create Course
+          </button>
+        </div>
       </div>
     </div>
   </div>
