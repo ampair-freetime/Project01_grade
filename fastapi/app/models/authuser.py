@@ -6,7 +6,7 @@ class AuthUser(Base):
     __tablename__ = "auth_users"
 
     # ลำดับ id
-    auth_user_id = Column(Integer, primary_key=True, index=True)
+    auth_user_id = Column(VARCHAR, primary_key=True, index=True)
     email = Column(VARCHAR(100), unique=True, nullable=False)
     password = Column(VARCHAR(255))
 

@@ -144,7 +144,7 @@
             <ul class="divide-y divide-border-light dark:divide-border-dark">
               <li
                 v-for="(course, index) in filteredCourses"
-                :key="course.course_id"
+                :key="course.course_code"
                 class="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors duration-150"
               >
                 <div
@@ -152,7 +152,7 @@
                     'group bg-white dark:bg-[#1a232e] p-4 rounded-xl shadow-sm border border-transparent hover:border-primary/40 hover:shadow-md transition-all duration-200 cursor-pointer animate-card',
                     `delay-${(index % 5) + 1}`,
                   ]"
-                  @click="goToAssignment(course.course_id)"
+                  @click="goToAssignment(course.course_code)"
                 >
                   <div class="flex items-center justify-between gap-4">
                     <div class="flex items-center gap-5 overflow-hidden">
@@ -160,7 +160,7 @@
                         <!-- <div class="flex items-center gap-2 mb-0.5">
                           <span
                             class="font-mono text-xs font-bold text-[#637888] dark:text-[#a0b8cf] bg-[#f0f4f8] dark:bg-[#253038] px-1.5 py-0.5 rounded"
-                            >{{ course.course_id }}</span
+                            >{{ course.course_code }}</span
                           >
                         </div> -->
                         <h4
@@ -299,12 +299,12 @@ const filteredCourses = computed(() => {
   return courses.value.filter(
     (c) =>
       c.course_name.toLowerCase().includes(searchTerm.value.toLowerCase()) ||
-      String(c.course_id).includes(searchTerm.value),
+      String(c.course_code).includes(searchTerm.value),
   );
 });
 
-const goToAssignment = (course_id) => {
-  router.push(`/student/course/${course_id}`);
+const goToAssignment = (course_code) => {
+  router.push(`/student/course/${course_code}`);
 };
 </script>
 

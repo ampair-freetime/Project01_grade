@@ -11,7 +11,7 @@ class Score(Base, SerializerMixin):
         UniqueConstraint("student_id", "quiz_id", name="unique_student_quiz"),
     )
 
-    score_id = Column(Integer, primary_key=True, index=True)
+    score_id = Column(VARCHAR, primary_key=True, index=True)
     # คะแนนของนักเรียน
     score = Column(Float, default=0.0)
     # เปิดดูแล้วหรือยัง
@@ -21,10 +21,10 @@ class Score(Base, SerializerMixin):
     is_deleted = Column(Boolean,default=False)
 
     # เชื่อมต่อกับ quiz
-    quiz_id = Column(Integer, ForeignKey("quizzes.quiz_id"))
+    quiz_id = Column(VARCHAR, ForeignKey("quizzes.quiz_id"))
     quiz = relationship("Quiz", back_populates="scores")
 
-    student_id = Column(Integer, ForeignKey("students.student_id"))
+    student_id = Column(VARCHAR, ForeignKey("students.student_id"))
     student = relationship("Student", back_populates="scores")
 
     # create/update

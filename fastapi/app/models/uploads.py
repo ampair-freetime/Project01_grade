@@ -9,17 +9,15 @@ from datetime import datetime
 class Upload(Base):
     __tablename__ = "uploads"
 
-    upload_id = Column(Integer, primary_key=True, index=True)
+    upload_id = Column(VARCHAR, primary_key=True, index=True)
     #file infomation
     file_name = Column(VARCHAR(255), nullable=False)
     uploaded_at = Column(DateTime(timezone=True), server_default=func.now())
     # update/create/delete
     created_at = Column(DateTime, default=datetime.utcnow)
-    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
-    is_deleted = Column(Boolean, default=False)
 
     #connection with teacher and courses
-    teacher_id = Column(Integer, ForeignKey("teachers.teacher_id"))
+    teacher_id = Column(VARCHAR, ForeignKey("teachers.teacher_id"))
     teacher = relationship("Teacher",back_populates="uploads")
-    course_id = Column(Integer, ForeignKey("courses.course_id"))
+    course_code = Column(Integer, ForeignKey("courses.course_code"))
     course = relationship("Course", back_populates="uploads")

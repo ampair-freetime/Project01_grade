@@ -227,7 +227,7 @@ const course = ref(null);
 const assessments = ref([]);
 const weightedAverage = ref(0);
 
-const courseId = route.params.course_id;
+const courseId = route.params.course_code;
 
 const isOpen = ref(false);
 
@@ -274,7 +274,7 @@ const fetchCourseDetail = async (courseId) => {
 
     const data = await response.json();
     //  backend: {
-    //     "course_id": course.course_id,
+    //     "course_code": course.course_code,
     //     "course_name": course.course_name,
     //     "weighted_average": weighted_average,
     //     "assessments": assessment

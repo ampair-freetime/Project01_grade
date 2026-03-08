@@ -6,8 +6,8 @@ from app.db import Base
 class AuthProvider(Base):
     __tablename__ = "auth_providers"
 
-    provider_id = Column(Integer, primary_key=True, index=True)
-    auth_user_id = Column(Integer, ForeignKey("auth_users.auth_user_id"))
+    provider_id = Column(VARCHAR, primary_key=True, index=True)
+    auth_user_id = Column(VARCHAR, ForeignKey("auth_users.auth_user_id"))
 
     # login provider เช่น google / password
     provider = Column(VARCHAR(50))
