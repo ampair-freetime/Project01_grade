@@ -183,11 +183,10 @@
                     >
                       {{ course.course_name }}
                     </div>
-
                     <div
                       class="text-xs text-gray-500 dark:text-gray-400 tracking-wide"
                     >
-                      Course ID: {{ course.course_id }}
+                      Course Code: {{ course.course_code }}
                     </div>
                   </div>
 
@@ -421,7 +420,7 @@
         <div class="mb-4">
           <label class="block py-1">Course Code</label>
           <input
-            v-model="courseName"
+            v-model="courseCode"
             type="text"
             class="w-full border border-gray-300 dark:border-gray-800 rounded-md dark:bg-gray-700 px-3 py-2 focus:outline-none focus:ring-green-200"
             placeholder="e.g., 204212"
@@ -450,6 +449,7 @@ const teacherName = ref("");
 const courses = ref([]);
 const searchTerm = ref("");
 const courseName = ref("");
+const courseCode = ref("");
 const startCreate = ref(false);
 const dropdownRef = ref(null);
 const isOpen = ref(false);
@@ -457,7 +457,7 @@ const showArchiveModal = ref(false);
 const archivedCourses = ref([]);
 const userProfile = ref(null);
 const csrf_token = localStorage.getItem("csrf_token");
-const randomAvatar = ref("");
+
 const currentPage = ref(1);
 const itemsPerPage = 5;
 
@@ -617,7 +617,7 @@ const filteredCourses = computed(() => {
 
 // สร้างcourseใหม่
 const submit = async () => {
-  if (!courseName.value) return;
+  if (!courseName.value && !courseCode.value) return;
 
   try {
     const response = await fetch(`${BASE_URL}/teacher/create_course`, {
@@ -629,11 +629,13 @@ const submit = async () => {
       },
       body: JSON.stringify({
         course_name: courseName.value,
+        course_code: courseCode.value,
       }),
     });
 
     if (response.ok) {
       courseName.value = "";
+      courseCode.value = "";
       startCreate.value = false;
       await fetchDashboard();
     }
