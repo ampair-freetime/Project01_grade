@@ -243,7 +243,7 @@
                 <div
                   class="text-xs font-semibold text-text-muted-light dark:text-text-muted-dark uppercase tracking-wide mb-1"
                 >
-                  Std Dev
+                  S.D.
                 </div>
                 <div class="text-2xl font-bold text-gray-900 dark:text-white">
                   {{ scoreData?.std ?? "-" }}
