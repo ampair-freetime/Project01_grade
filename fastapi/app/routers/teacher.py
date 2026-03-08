@@ -36,7 +36,8 @@ async def teacher_dashboard(db: Session = Depends(get_db),current_user: AuthUser
             {
                 "course_id": c.course_id,
                 "course_name": c.course_name,
-                "course_stu_number":c.number_student
+                "course_stu_number":c.number_student,
+                "course_code": c.course_code
             }
             for c in courses
         ]
@@ -129,7 +130,8 @@ async def create_course(course: Teacher_Course,db: Session = Depends(get_db),cur
 
         new_course = Course(
             course_name=course.course_name,
-            teacher_id=teacher.teacher_id
+            teacher_id=teacher.teacher_id,
+            course_code=course.course_code
         )
 
         db.add(new_course)

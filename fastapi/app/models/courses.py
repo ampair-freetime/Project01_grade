@@ -10,6 +10,7 @@ class Course(Base, SerializerMixin):
     course_id = Column(Integer, primary_key=True, index=True)
 
     course_name = Column(VARCHAR(255))
+    course_code = Column(Integer)
     teacher_id = Column(Integer, ForeignKey("teachers.teacher_id"), nullable=False)
     number_student = Column(Integer, default=0)
 
