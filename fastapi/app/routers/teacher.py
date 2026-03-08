@@ -27,37 +27,46 @@ async def teacher_dashboard(db: Session = Depends(get_db),current_user: AuthUser
     teacher = is_teacher(db, current_user)
     # วิชาทั้งหมดที่ครูคนนั้นสร้างไว้
     courses = db.query(Course).filter(Course.teacher_id == teacher.teacher_id,Course.is_deleted == False,Course.is_archive == False).all()
+    courses_dash = []
+    
+    for c in courses:
+        student_score = 0
+        students = {score.student_id for quiz in c.quizzes for score in quiz.scores}
+        if students:
+            student_score = len(students)
+
+        get_section = db.query(Score).join(Quiz, Quiz.quiz_id == Score.quiz_id).filter(Quiz.course_code == c.course_code).first()
+        if get_section:
+            section = get_section.section
+        else:
+            section= None
+        courses_dash.append({
+            "course_code": c.course_code,
+            "course_name": c.course_name,
+            "course_id": c.course_id,
+            "number_student": student_score,
+            "section":section
+        })
     # response ชื่อครูกับรายวิชาที่สอน
     # if not courses:
     #     raise HTTPException(status_code=404,detail="courses not found")
     return {
         "teacher_name": f"{teacher.first_name} {teacher.last_name}",
-        "courses": [
-            {
-                # internal numeric code (PK) – used by other APIs
-                "course_code": c.course_code,
-                # human‑readable id shown in UI (e.g. 204212)
-                "course_id": c.course_id,
-                "course_name": c.course_name,
-                # some older rows might not have this attribute set
-                "course_stu_number": getattr(c, "number_student", 0),
-            }
-            for c in courses
-        ],
+        "courses": courses_dash
     }
 
-@router.get("/assignment/{course_id}")
-async def teacher_assingment(course_id: int,current_user: AuthUser = Depends(get_current_user), db: Session= Depends(get_db)):
+@router.get("/assignment/{course_code}")
+async def teacher_assingment(course_code: int,current_user: AuthUser = Depends(get_current_user), db: Session= Depends(get_db)):
     # teacher check
     teacher = is_teacher(db, current_user)
     #ดึง course
     # #check ว่าถ้า เจอ course แล้ว ใช่ของ teacher นี้ไหม
-    course = db.query(Course).filter(Course.course_id == course_id,Course.teacher_id == teacher.teacher_id).first()
+    course = db.query(Course).filter(Course.course_code == course_code,Course.teacher_id == teacher.teacher_id).first()
     if not course:
         raise HTTPException(status_code=404,detail="assignment not found")
 
     assignment = []
-    all_assignment = db.query(Quiz).filter(Quiz.course_id==course_id,Quiz.is_deleted== False).all()
+    all_assignment = db.query(Quiz).filter(Quiz.course_code==course_code,Quiz.is_deleted== False).all()
     for q in all_assignment:
         #check is deleted???
         assignment.append({
@@ -67,7 +76,7 @@ async def teacher_assingment(course_id: int,current_user: AuthUser = Depends(get
         })
     return {
         "course":{
-            "course_id": course.course_id,
+            "course_code": course.course_code,
             "course_name": course.course_name
         },
         "assignment":assignment
@@ -82,9 +91,9 @@ async def teacher_score(quiz_id: str,db:Session=Depends(get_db),current_user: Au
         raise HTTPException(status_code=404,detail="score not found")
 
     student_score = []
-    all_score = db.query(Score).filter(Score.quiz_id==quiz_id,Score.is_deleted==False).all()
+    all_score = db.query(Score).filter(Score.quiz_id == quiz_id, Score.is_deleted == False).all()
     for s in all_score:
-        # ข้อมูลนักศึกษาสำหรับแสดงชื่อในหน้า Grade
+        # ข้อมูลนักศึกษาสำหรับแสดงชื่อ/รูปโปรไฟล์ในหน้า Grade
         stu = s.student
         student_score.append({
                 "score_id": s.score_id,
@@ -133,8 +142,8 @@ async def create_course(course: Teacher_Course,db: Session = Depends(get_db),cur
 
         new_course = Course(
             course_name=course.course_name,
-            course_id=course.course_id,
             teacher_id=teacher.teacher_id,
+            course_id=course.course_id
         )
 
         db.add(new_course)
@@ -143,8 +152,7 @@ async def create_course(course: Teacher_Course,db: Session = Depends(get_db),cur
 
         return {
             "message": "Course created successfully",
-            "course_id": new_course.course_id,
-            "course_code": new_course.course_code,
+            "course_code": new_course.course_code
         }
     except Exception as e:
         db.rollback()
@@ -158,7 +166,7 @@ async def create_assignments(assign: T_Assignment,db: Session= Depends(get_db),c
         new_assignment = Quiz(
             quiz_name=assign.quiz_name,
             full_mark=assign.full_mark,
-            course_id=assign.course_id
+            course_code=assign.course_code
         )
 
         db.add(new_assignment)
@@ -188,7 +196,7 @@ async def upload_csv(quiz_id: str,course_code: int,file: UploadFile = File(...),
         new_upload = Upload(
             file_name=file_name,
             teacher_id = teacher.teacher_id,
-            course_id=course_id
+            course_code=course_code
         )
         db.add(new_upload)
         db.commit()
@@ -199,7 +207,6 @@ async def upload_csv(quiz_id: str,course_code: int,file: UploadFile = File(...),
         # แปลงเป็นตาราง
         csv_reader = list(csv.DictReader(io.StringIO(decoded)))
 
-        number_student = 0
         emails_stu = [row["student_email"] for row in csv_reader]
         id_stu = [row["student_id"] for row in csv_reader]
         #หา user student ที่มี email ในนี้แล้ว แสดงว่าเราแค่เพิ่มหรือแก้ไขคะแนน
@@ -217,7 +224,6 @@ async def upload_csv(quiz_id: str,course_code: int,file: UploadFile = File(...),
             stu_id = str(row["student_id"])
             score_v = float(row["score"])
             section = str(row["section"])
-            number_student += 1
             #ไม่มี ไอดีให้สร้างใหม่
             t_stu = stu_index.get(stu_id)
             if not t_stu:
@@ -249,13 +255,6 @@ async def upload_csv(quiz_id: str,course_code: int,file: UploadFile = File(...),
                         student_id=stu_id
                     ) #
                 db.add(new_score)
-
-
-        #อัปเดตจำนวนคนใน course
-        course = db.query(Course).filter(Course.course_id==course_id,Course.teacher_id==teacher.teacher_id).first()
-        if not course:
-            raise HTTPException(status_code=404,detail="course not found")
-        course.number_student = number_student
         db.commit()
 
 
@@ -264,12 +263,12 @@ async def upload_csv(quiz_id: str,course_code: int,file: UploadFile = File(...),
         db.rollback()
         raise HTTPException(status_code=400,detail=f"Upload failed: {str(e)}")
 ############################################################################ deleted #####################################################################
-@router.post("/delete_course/{course_id}")
-async def delete_courses(course_id:int,db: Session = Depends(get_db),current_user: AuthUser = Depends(get_current_user)):
+@router.post("/delete_course/{course_code}")
+async def delete_courses(course_code:int,db: Session = Depends(get_db),current_user: AuthUser = Depends(get_current_user)):
     # ลบ courses แบบ soft deleted'
     try:
         teacher = is_teacher(db,current_user)
-        course = db.query(Course).filter(Course.course_id == course_id,Course.teacher_id == teacher.teacher_id).first()
+        course = db.query(Course).filter(Course.course_code == course_code,Course.teacher_id == teacher.teacher_id).first()
         if not course:
             raise HTTPException(status=404,detail="course not found")
         course.is_deleted = True
@@ -314,11 +313,11 @@ async def delete_assignments(score_id:str,assign_id:str,db: Session = Depends(ge
         raise HTTPException(status_code=400,detail=f"error: {str(e)}") 
 ###########################################################################################################################################################
 
-@router.post("/archive/{course_id}")
-async def archive(course_id:int, db:Session = Depends(get_db), current_user: AuthUser=Depends(get_current_user)):
+@router.post("/archive/{course_code}")
+async def archive(course_code:int, db:Session = Depends(get_db), current_user: AuthUser=Depends(get_current_user)):
     try:
         teacher = is_teacher(db,current_user)
-        course = db.query(Course).filter(Course.course_id == course_id,Course.teacher_id == teacher.teacher_id).first()
+        course = db.query(Course).filter(Course.course_code == course_code,Course.teacher_id == teacher.teacher_id).first()
         #จัดเก็บ course
         if not course:
             raise HTTPException(status=404,detail="Course not found")
@@ -329,11 +328,11 @@ async def archive(course_id:int, db:Session = Depends(get_db), current_user: Aut
         db.rollback()
         raise HTTPException(status_code=400,detail=f"error: {str(e)}") 
 
-@router.post("/restore_to_dash/{course_id}")
-async def restore_course(course_id: int, db: Session = Depends(get_db), current_user: AuthUser = Depends(get_current_user)):
+@router.post("/restore_to_dash/{course_code}")
+async def restore_course(course_code: int, db: Session = Depends(get_db), current_user: AuthUser = Depends(get_current_user)):
     try:
         teacher = is_teacher(db, current_user)
-        course = db.query(Course).filter(Course.course_id == course_id,Course.teacher_id == teacher.teacher_id,).first()
+        course = db.query(Course).filter(Course.course_code == course_code,Course.teacher_id == teacher.teacher_id,).first()
         if not course:
             raise HTTPException(status_code=404, detail="Course not found")
         course.is_archive = False

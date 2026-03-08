@@ -183,6 +183,7 @@
                     >
                       {{ course.course_name }}
                     </div>
+
                     <div
                       class="text-xs text-gray-500 dark:text-gray-400 tracking-wide"
                     >
@@ -418,7 +419,7 @@
           />
         </div>
         <div class="mb-4">
-          <label class="block py-1">Course ID</label>
+          <label class="block py-1">Course Code</label>
           <input
             v-model="courseID"
             type="text"
@@ -456,7 +457,7 @@ const showArchiveModal = ref(false);
 const archivedCourses = ref([]);
 const userProfile = ref(null);
 const csrf_token = localStorage.getItem("csrf_token");
-
+const randomAvatar = ref("");
 const currentPage = ref(1);
 const itemsPerPage = 5;
 const courseID = ref("")
@@ -617,8 +618,7 @@ const filteredCourses = computed(() => {
 
 // สร้างcourseใหม่
 const submit = async () => {
-  // ต้องกรอกทั้งชื่อวิชาและ Course ID
-  if (!courseName.value || !courseID.value) return;
+  if (!courseName.value) return;
 
   try {
     const response = await fetch(`${BASE_URL}/teacher/create_course`, {
