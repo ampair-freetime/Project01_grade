@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, VARCHAR, ForeignKey
+from sqlalchemy import Column, Integer, VARCHAR, ForeignKey, text
 from sqlalchemy.orm import relationship
 from app.db import Base
 
@@ -6,7 +6,7 @@ from app.db import Base
 class AuthProvider(Base):
     __tablename__ = "auth_providers"
 
-    provider_id = Column(VARCHAR, primary_key=True, index=True)
+    provider_id = Column(VARCHAR, primary_key=True, index=True,server_default=text("gen_random_uuid()"))
     auth_user_id = Column(VARCHAR, ForeignKey("auth_users.auth_user_id"))
 
     # login provider เช่น google / password

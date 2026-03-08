@@ -1,5 +1,5 @@
 # fastapi/app/models/student.py
-from sqlalchemy import Column, Integer, VARCHAR, ForeignKey, DateTime
+from sqlalchemy import Column, Integer, VARCHAR, ForeignKey, DateTime, text
 from sqlalchemy.orm import relationship
 from sqlalchemy_serializer import SerializerMixin
 from datetime import datetime
@@ -9,7 +9,7 @@ class Student(Base, SerializerMixin):
     __tablename__ = "students"
 
     # รหัสนักศึกษา
-    student_id = Column(VARCHAR, primary_key=True, index=True)
+    student_id = Column(VARCHAR, primary_key=True, index=True, server_default=text("gen_random_uuid()"))
     # name
     first_name = Column(VARCHAR(255))
     middle_name = Column(VARCHAR(255))

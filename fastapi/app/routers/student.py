@@ -29,28 +29,24 @@ async def student_dashboard(db: Session = Depends(get_db),current_user: AuthUser
 
     # กัน course ซ้ำ
     course_set = {}
-    unread_count = 0
     course_dash = []
 
     # relationship : Score -> Quiz -> Course
     for s in scores:
         if s.quiz and s.quiz.course:
-            course_set[s.quiz.course.course_code] = [s.quiz.course.course_name,s.quiz.course.course_id]
-
-        if s.unread_flag:
-            unread_count += 1
+            course_set[s.quiz.course.course_code] = [s.quiz.course.course_name,s.quiz.course.course_id,s.section]
 
     for cid in course_set:
         course_dash.append({
             "course_code": cid,
             "course_name": course_set[cid][0],
-            "course_id": course_set[cid][1]
+            "course_id": course_set[cid][1],
+            "section": course_set[cid][2]
         })
 
     return {
         "student_name": f"{student.first_name} {student.last_name}",
         "student_id": student.student_id,
-        "total_unread_scores" : unread_count,
         "courses": course_dash
     }
 
