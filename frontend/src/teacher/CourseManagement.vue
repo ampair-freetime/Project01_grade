@@ -418,7 +418,7 @@
           />
         </div>
         <div class="mb-4">
-          <label class="block py-1">Course Code</label>
+          <label class="block py-1">Course ID</label>
           <input
             v-model="courseCode"
             type="text"
@@ -449,7 +449,7 @@ const teacherName = ref("");
 const courses = ref([]);
 const searchTerm = ref("");
 const courseName = ref("");
-const courseCode = ref("");
+const courseID = ref("");
 const startCreate = ref(false);
 const dropdownRef = ref(null);
 const isOpen = ref(false);
@@ -617,7 +617,8 @@ const filteredCourses = computed(() => {
 
 // สร้างcourseใหม่
 const submit = async () => {
-  if (!courseName.value && !courseCode.value) return;
+  // ต้องกรอกทั้งชื่อวิชาและ Course ID
+  if (!courseName.value || !courseID.value) return;
 
   try {
     const response = await fetch(`${BASE_URL}/teacher/create_course`, {
@@ -629,13 +630,14 @@ const submit = async () => {
       },
       body: JSON.stringify({
         course_name: courseName.value,
-        course_code: courseCode.value,
+        // ส่งค่าไปเป็น course_id ตาม schema ของ backend
+        course_id: courseID.value,
       }),
     });
 
     if (response.ok) {
       courseName.value = "";
-      courseCode.value = "";
+      courseID.value = "";
       startCreate.value = false;
       await fetchDashboard();
     }
