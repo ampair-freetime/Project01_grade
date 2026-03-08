@@ -421,7 +421,7 @@
         <div class="mb-4">
           <label class="block py-1">Course Code</label>
           <input
-            v-model="courseName"
+            v-model="courseCode"
             type="text"
             class="w-full border border-gray-300 dark:border-gray-800 rounded-md dark:bg-gray-700 px-3 py-2 focus:outline-none focus:ring-green-200"
             placeholder="e.g., 204212"
@@ -450,6 +450,7 @@ const teacherName = ref("");
 const courses = ref([]);
 const searchTerm = ref("");
 const courseName = ref("");
+const courseCode = ref("");
 const startCreate = ref(false);
 const dropdownRef = ref(null);
 const isOpen = ref(false);
