@@ -65,7 +65,7 @@ async def get_current_user(request: Request, db: Session = Depends(get_db)):
             logger.error("Invalid token: subject missing")
             raise HTTPException(
                 status_code=401, detail="Invalid token: subject missing")
-        user = db.query(AuthUser).filter(AuthUser.auth_user_id == int(user_id)).first()
+        user = db.query(AuthUser).filter(AuthUser.auth_user_id == user_id).first()
         if user is None:
             logger.error(f"User not found for id: {user_id}")
             raise HTTPException(status_code=401, detail="User not found")
@@ -146,7 +146,7 @@ async def google_auth(
                 payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
                 user_id = payload.get("sub")
                 user = db.query(AuthUser).filter(
-                    AuthUser.auth_user_id == int(user_id)
+                    AuthUser.auth_user_id == user_id
                 ).first()
             except JWTError:
                 user = None
