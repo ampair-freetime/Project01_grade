@@ -179,8 +179,7 @@
                 </button>
               </div>
               <p class="mt-1 text-xs text-[#64748b] dark:text-gray-300 ml-1">
-                Password ต้องมีตัวอักษรพิมพ์ใหญ่ (A-Z) อย่างน้อย 1 ตัว
-                และตัวเลขอย่างน้อย 1 ตัว
+                The password must contain uppercase letter and number
               </p>
               <div class="flex flex-col gap-1.5">
                 <label
@@ -306,7 +305,7 @@ const handleSignup = async () => {
 
     if (!/[A-Z]/.test(password.value) || !/\d/.test(password.value)) {
       alert(
-        "Password ต้องมีตัวอักษรพิมพ์ใหญ่ (A-Z) อย่างน้อย 1 ตัว และตัวเลขอย่างน้อย 1 ตัว"
+        "The password must contain uppercase letter and number"
       );
       return;
     }
