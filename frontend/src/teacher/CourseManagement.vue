@@ -187,7 +187,7 @@
                     <div
                       class="text-xs text-gray-500 dark:text-gray-400 tracking-wide"
                     >
-                      Course ID: {{ course.course_code }}
+                      Course ID: {{ course.course_id }}
                     </div>
                   </div>
 
@@ -200,7 +200,7 @@
                           class="material-symbols-outlined text-text-muted-light dark:text-text-muted-dark mr-1 text-lg"
                           >people</span
                         >
-                        {{ course.course_stu_number ?? 0 }}
+                        {{ course.number_student ?? 0 }}
                       </div>
 
                       <div
