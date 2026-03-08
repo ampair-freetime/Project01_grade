@@ -3,6 +3,7 @@ from typing import Optional
 
 class Teacher_Course(BaseModel):
     course_name: str
+    course_code: int
     #sec: str
 
 class T_Assignment(BaseModel):
