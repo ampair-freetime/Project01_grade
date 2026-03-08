@@ -116,11 +116,7 @@ async def list_archived_courses(db: Session = Depends(get_db), current_user: Aut
     return {
         "teacher_name": f"{teacher.first_name} {teacher.last_name}",
         "courses": [
-            {
-                "course_code": c.course_code,
-                "course_id": c.course_id,
-                "course_name": c.course_name,
-            }
+            {"course_code": c.course_code, "course_name": c.course_name, "course_id":c.course_id}
             for c in courses
         ],
     }

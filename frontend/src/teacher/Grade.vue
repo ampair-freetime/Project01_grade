@@ -489,7 +489,7 @@ const statusFilter = ref("all");
 const currentPage = ref(1);
 const itemsPerPage = 5;
 
-const quizID = computed(() => Number(route.params.quiz_id));
+const quizID = computed(() => String(route.params.quiz_id));
 const courseId = computed(() => Number(route.query.course_code));
 const courseTitle = computed(() =>
   route.query.course_title ? String(route.query.course_title) : ""
@@ -628,9 +628,16 @@ const handleClickOutside = (event) => {
 
 const handleFileUpload = async (event) => {
   const file = event.target.files[0];
+
+  console.log("File:", file);
+  console.log("courseId:", courseId.value);
+  console.log("quizID:", quizID.value);
+
   if (!file || !courseId.value || !quizID.value) {
+    alert("Missing required data!");
     return;
   }
+  console.log("Starting upload...");
 
   const formdata = new FormData();
   formdata.append("file", file);
