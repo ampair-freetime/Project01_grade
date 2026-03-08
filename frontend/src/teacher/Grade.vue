@@ -490,7 +490,7 @@ const currentPage = ref(1);
 const itemsPerPage = 5;
 
 const quizID = computed(() => Number(route.params.quiz_id));
-const courseId = computed(() => Number(route.query.course_id));
+const courseId = computed(() => Number(route.query.course_code));
 const courseTitle = computed(() =>
   route.query.course_title ? String(route.query.course_title) : ""
 );
