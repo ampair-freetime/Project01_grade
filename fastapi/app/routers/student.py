@@ -122,7 +122,7 @@ async def student_course_detail(course_code: int,db: Session = Depends(get_db),c
 
 # ดูคะแนน + สถิติ 
 @router.get("/score/{quiz_id}")
-async def student_score_detail(quiz_id: int,db: Session = Depends(get_db),current_user: AuthUser = Depends(get_current_user)):
+async def student_score_detail(quiz_id: str,db: Session = Depends(get_db),current_user: AuthUser = Depends(get_current_user)):
 
     # เช็คว่าเป็นนักเรียนจริงไหม
     try:
