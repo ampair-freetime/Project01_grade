@@ -248,7 +248,7 @@
                 <div
                   class="text-xs font-semibold text-text-muted-light dark:text-text-muted-dark uppercase tracking-wide mb-1"
                 >
-                  Std Dev
+                  S.D.
                 </div>
                 <div class="text-2xl font-bold text-gray-900 dark:text-white">
                   {{ scoreData?.std ?? "-" }}
@@ -306,7 +306,7 @@
               <div
                 class="absolute left-0 -top-6 text-xs font-medium text-text-muted-light dark:text-text-muted-dark"
               >
-                {{ scoreData?.lowest ?? 0 }} (Min)
+                0 (Min)
               </div>
               <div
                 class="absolute right-0 -top-6 text-xs font-medium text-text-muted-light dark:text-text-muted-dark"
@@ -373,7 +373,7 @@ import { useRouter, useRoute } from "vue-router";
 const router = useRouter();
 const route = useRoute();
 
-const quizId = computed(() => Number(route.params.quiz_id));
+const quizId = computed(() => String(route.params.quiz_id));
 
 const userProfile = ref(null);
 const scoreData = ref(null);
@@ -387,7 +387,6 @@ const quiz_name = computed(() => {
   if (q && typeof q === "string" && q.trim()) return q;
   return `Quiz ${quizId.value}`;
 });
-const course_name = computed(() => route.query.course_name || "");
 
 const isOpen = ref(false);
 
@@ -518,7 +517,7 @@ const handleClickOutside = (event) => {
 onMounted(() => {
   document.addEventListener("click", handleClickOutside);
   fetchUserProfile();
-  if (Number.isFinite(quizId.value) && quizId.value > 0) {
+  if (quizId.value && String(quizId.value).trim() !== "") {
     fetchStudentScore(quizId.value);
   } else {
     errorMessage.value = "Invalid quiz id.";
@@ -608,4 +607,3 @@ const handleLogout = async () => {
   animation-delay: 0.25s;
 }
 </style>
-

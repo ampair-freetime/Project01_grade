@@ -2,7 +2,7 @@ from pydantic import BaseModel, EmailStr
 from typing import Optional
 
 class UserResponse(BaseModel):
-    id: int
+    id: str
     email: EmailStr
     first_name: str
     middle_name: Optional[str] = None
@@ -26,5 +26,5 @@ class UserSignin(BaseModel):
     last_name: str
     middle_name: Optional[str]
     email: EmailStr
-    student_id: Optional[int]
+    student_id: Optional[str]
     password: str

@@ -10,12 +10,8 @@
         ref="dropdownRef"
       >
         <div class="flex items-center gap-2">
-
-          <div
-            class="flex items-center gap-3"
-          >
+          <div class="flex items-center gap-3">
             <button
-    
               class="bg-primary rounded-lg p-1.5 flex items-center justify-center text-white"
               @click="router.go(-2)"
             >
@@ -47,7 +43,7 @@
                   alt="User profile picture"
                   class="h-10 w-10 rounded-full object-cover border-2 border-primary"
                   :src="userProfile?.avatar_url"
-                  />
+                />
               </div>
             </button>
 
@@ -139,7 +135,9 @@
               </span>
             </div> -->
           </nav>
-          <div class="animate-card delay-1 flex items-center justify-between flex-wrap gap-4">
+          <div
+            class="animate-card delay-1 flex items-center justify-between flex-wrap gap-4"
+          >
             <h1 class="text-4xl font-bold text-gray-900 dark:text-white">
               {{ assignment_title || "Assignment" }}
             </h1>
@@ -245,8 +243,10 @@
                   </button>
                 </div>
               </div>
-             
-              <div class="animate-card delay-4 flex items-center gap-2 text-sm whitespace-nowrap">
+
+              <div
+                class="animate-card delay-4 flex items-center gap-2 text-sm whitespace-nowrap"
+              >
                 <span
                   class="uppercase text-xs font-bold tracking-wider text-gray-400 dark:text-gray-300"
                   >Sort By:</span
@@ -259,8 +259,6 @@
                   <option value="id_lowhigh">ID</option>
 
                   <option value="name_atoz">Name</option>
-
-                  <option value="section_lowhigh">section</option>
                 </select>
               </div>
             </div>
@@ -489,8 +487,8 @@ const statusFilter = ref("all");
 const currentPage = ref(1);
 const itemsPerPage = 5;
 
-const quizID = computed(() => Number(route.params.quiz_id));
-const courseId = computed(() => Number(route.query.course_id));
+const quizID = computed(() => String(route.params.quiz_id));
+const courseId = computed(() => Number(route.query.course_code));
 const courseTitle = computed(() =>
   route.query.course_title ? String(route.query.course_title) : ""
 );
@@ -563,7 +561,6 @@ const fetchUserProfile = async () => {
   }
 };
 
-
 const avatarColorClasses = [
   "bg-sky-100 text-sky-700 dark:bg-sky-900 dark:text-sky-200",
   "bg-emerald-100 text-emerald-700 dark:bg-emerald-900 dark:text-emerald-200",
@@ -573,11 +570,7 @@ const avatarColorClasses = [
 ];
 
 const getInitials = (student) => {
-  const parts = [
-    student.stu_fname,
-    student.stu_mname,
-    student.stu_lname,
-  ]
+  const parts = [student.stu_fname, student.stu_mname, student.stu_lname]
     .filter(Boolean)
     .join(" ")
     .trim()
@@ -628,9 +621,16 @@ const handleClickOutside = (event) => {
 
 const handleFileUpload = async (event) => {
   const file = event.target.files[0];
+
+  console.log("File:", file);
+  console.log("courseId:", courseId.value);
+  console.log("quizID:", quizID.value);
+
   if (!file || !courseId.value || !quizID.value) {
+    alert("Missing required data!");
     return;
   }
+  console.log("Starting upload...");
 
   const formdata = new FormData();
   formdata.append("file", file);
@@ -727,19 +727,31 @@ const publishScores = async () => {
 const sortPeople = () => {
   switch (sortOption.value) {
     case "id_lowhigh":
-      students.value.sort(
-        (a, b) => Number(a.student_id) - Number(b.student_id)
+      students.value.sort((a, b) =>
+        String(a.student_id).localeCompare(String(b.student_id))
       );
       break;
 
     case "name_atoz":
-      students.value.sort((a, b) =>
-        a.student_name.localeCompare(b.student_name)
-      );
-      break;
+      students.value.sort((a, b) => {
+        const hasNameA = a.stu_fname ? 1 : 0;
+        const hasNameB = b.stu_fname ? 1 : 0;
+        if (hasNameB !== hasNameA) {
+          return hasNameB - hasNameA;
+        } // มีชื่อขึ้นก่อน
 
-    case "section_lowhigh":
-      students.value.sort((a, b) => a.section.localeCompare(b.section));
+        const fnameCompare = (a.stu_fname || "").localeCompare( b.stu_fname || "");
+        if (fnameCompare !== 0) {
+          return fnameCompare;
+        }
+
+        const mnameCompare = (a.stu_mname || "").localeCompare( b.stu_mname || "");
+        if (mnameCompare !== 0) {
+          return mnameCompare;
+        }
+
+        return (a.stu_lname || "").localeCompare(b.stu_lname || "");
+      });
       break;
   }
 };
@@ -922,4 +934,3 @@ onBeforeUnmount(() => {
   }
 }
 </style>
-

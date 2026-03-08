@@ -43,7 +43,7 @@
                   alt="User profile picture"
                   class="h-10 w-10 rounded-full object-cover border-2 border-primary"
                   :src="userProfile?.avatar_url"
-                  />
+                />
               </div>
             </button>
 
@@ -129,6 +129,7 @@
             >
               {{ courseTitle }}
             </h1>
+            
             <div
               class="flex flex-col sm:flex-row gap-4 w-full md:w-auto"
               style="animation-delay: 0.15s"
@@ -363,7 +364,7 @@ const showArchiveModal = ref(false);
 const startCreate = ref(false);
 const isOpen = ref(false);
 const dropdownRef = ref(null);
-const courseID = computed(() => Number(route.params.course_id));
+const courseID = computed(() => Number(route.params.course_code));
 const assignmentTitle = ref("");
 const score = ref("");
 const searchTerm = ref("");
@@ -378,14 +379,14 @@ const BASE_URL = "http://localhost:56733";
 
 // ################################ fetch ###########################################################################################################################
 
-const fetchAssignment = async (course_id) => {
+const fetchAssignment = async (course_code) => {
   try {
     const response = await fetch(
-      `${BASE_URL}/teacher/assignment/${course_id}`,
+      `${BASE_URL}/teacher/assignment/${course_code}`,
       {
         method: "GET",
         credentials: "include",
-      },
+      }
     );
 
     if (!response.ok) {
@@ -397,7 +398,7 @@ const fetchAssignment = async (course_id) => {
     const data = await response.json();
     // backend:
     // {
-    //   course: { course_id, course_name },
+    //   course: { course_code, course_name },
     //   assignment: [{ assign_id, assign_name, full_mark }, ...]
     // }
 
@@ -492,7 +493,7 @@ const submit = async () => {
       body: JSON.stringify({
         quiz_name: assignmentTitle.value.trim(),
         full_mark: Number(score.value),
-        course_id: courseID.value,
+        course_code: courseID.value,
       }),
     });
 
@@ -528,7 +529,7 @@ const deleteAssign = async (assign_id) => {
           "X-CSRF-Token": csrf_token,
         },
         credentials: "include",
-      },
+      }
     );
 
     if (!response.ok) {
@@ -547,7 +548,7 @@ const archiveAssignment = async (assignment) => {
   try {
     archivedAssignments.value.push(assignment);
     assignments.value = assignments.value.filter(
-      (a) => a.assign_id !== assignment.assign_id,
+      (a) => a.assign_id !== assignment.assign_id
     );
   } catch (err) {
     console.error("Archive failed", err);
@@ -558,7 +559,7 @@ const archiveAssignment = async (assignment) => {
 //คาดว่าจะลบ
 const restoreArchivedAssignment = (assignment) => {
   archivedAssignments.value = archivedAssignments.value.filter(
-    (a) => a.assign_id !== assignment.assign_id,
+    (a) => a.assign_id !== assignment.assign_id
   );
   assignments.value.push(assignment);
 };
@@ -566,7 +567,7 @@ const restoreArchivedAssignment = (assignment) => {
 const deleteArchivedAssignment = async (assign_id) => {
   if (!confirm("Permanently delete this assignment?")) return;
   archivedAssignments.value = archivedAssignments.value.filter(
-    (a) => a.assign_id !== assign_id,
+    (a) => a.assign_id !== assign_id
   );
 };
 
@@ -575,7 +576,7 @@ const goToGrade = (quiz_id) => {
   router.push({
     path: `/teacher/grade/${quiz_id}`,
     query: {
-      course_id: courseID.value,
+      course_code: courseID.value,
       course_title: courseTitle.value,
     },
   });
@@ -625,7 +626,6 @@ onBeforeUnmount(() => {
 .fade-leave-to {
   opacity: 0;
 }
-
 
 @keyframes cardEnter {
   0% {
@@ -691,5 +691,4 @@ onBeforeUnmount(() => {
     transform: scale(1) translateY(0);
   }
 }
-
 </style>

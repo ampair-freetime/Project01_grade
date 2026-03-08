@@ -42,7 +42,6 @@
                   alt="User profile picture"
                   class="h-10 w-10 rounded-full object-cover border-2 border-primary"
                   :src="userProfile?.avatar_url"
-                  
                 />
               </div>
             </button>
@@ -57,7 +56,7 @@
                     class="h-12 w-12 rounded-full object-cover"
                     :src="userProfile?.avatar_url"
                   />
-                  
+
                   <div>
                     <p
                       class="font-semibold text-gray-900 dark:text-white break-all"
@@ -145,41 +144,6 @@
                 Create Course
               </button>
             </div>
-            <div
-              v-if="startCreate"
-              class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 modal-enter-active"
-              @click.self="cancleCreate"
-            >
-              <div
-                class="animate-card delay-3 bg-white dark:bg-gray-800 w-[600px] rounded-xl shadow-xl p-6 relative"
-              >
-                <button
-                  @click="cancleCreate"
-                  class="absolute top-3 right-3 text-2xl text-gray-500 hover:text-red-500"
-                >
-                  ✕
-                </button>
-
-                <h2 class="text-2xl font-semibold mb-4">Create New Course</h2>
-                <div class="mb-4">
-                  <label class="block py-1">Course Name</label>
-                  <input
-                    v-model="courseName"
-                    type="text"
-                    class="w-full border border-gray-300 dark:border-gray-800 rounded-md dark:bg-gray-700 px-3 py-2 focus:outline-none focus:ring-green-200"
-                    placeholder="e.g., Intro to Computer Science"
-                  />
-                </div>
-                <div class="flex justify-end gap-3">
-                  <button
-                    @click="submit"
-                    class="px-6 py-3 rounded-md bg-primary hover:bg-primary-dark text-white text-base"
-                  >
-                    Create Course
-                  </button>
-                </div>
-              </div>
-            </div>
           </div>
           <div
             class="animate-card delay-2 bg-surface-light dark:bg-surface-dark shadow-sm rounded-xl border border-border-light dark:border-border-dark overflow-hidden"
@@ -205,17 +169,17 @@
             <ul class="divide-y divide-border-light dark:divide-border-dark">
               <li
                 v-for="(course, index) in paginatedCourses"
-                :key="course.course_id"
+                :key="course.course_code"
                 class="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors duration-150 animate-card"
                 :class="`delay-${(index % 5) + 1}`"
               >
                 <div
                   class="px-6 py-5 flex items-center justify-between cursor-pointer"
-                  @click="goToAssignment(course.course_id)"
+                  @click="goToAssignment(course.course_code)"
                 >
                   <div class="flex-1 min-w-0">
                     <div
-                      class="text-l font-bold dark:text-primary-light uppercase tracking-wide"
+                      class="text-xl mb-1 font-bold dark:text-primary-light uppercase tracking-wide"
                     >
                       {{ course.course_name }}
                     </div>
@@ -224,6 +188,11 @@
                       class="text-xs text-gray-500 dark:text-gray-400 tracking-wide"
                     >
                       Course ID: {{ course.course_id }}
+                    </div>
+                    <div
+                      class="text-xs text-gray-500 dark:text-gray-400 tracking-wide"
+                    >
+                      section: {{ course.section }}
                     </div>
                   </div>
 
@@ -236,7 +205,7 @@
                           class="material-symbols-outlined text-text-muted-light dark:text-text-muted-dark mr-1 text-lg"
                           >people</span
                         >
-                        {{ course.course_stu_number ?? 0 }}
+                        {{ course.number_student ?? 0 }}
                       </div>
 
                       <div
@@ -248,7 +217,7 @@
 
                     <div class="flex items-end min-w-[50px]">
                       <button
-                        @click.stop="archiveCourse(course.course_id)"
+                        @click.stop="archiveCourse(course.course_code)"
                         class="btn-animate delay-2 p-2 text-gray-400 hover:text-yellow-600 hover:bg-yellow-50 dark:hover:bg-yellow-900/30 rounded-full transition-colors duration-200 group"
                         title="Archive Course"
                       >
@@ -257,7 +226,7 @@
                         >
                       </button>
                       <button
-                        @click.stop="deleteCourse(course.course_id)"
+                        @click.stop="deleteCourse(course.course_code)"
                         class="btn-animate delay-2 p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-900/30 rounded-full transition-colors duration-200 group"
                         title="Delete Course"
                       >
@@ -265,8 +234,6 @@
                           >delete</span
                         >
                       </button>
-
-                      
                     </div>
                   </div>
                 </div>
@@ -377,7 +344,7 @@
         <ul v-if="archivedCourses.length" class="space-y-2">
           <li
             v-for="course in archivedCourses"
-            :key="course.course_id"
+            :key="course.course_code"
             class="rounded-xl hover:bg-gray-100 dark:hover:bg-gray-600/50 transition-colors duration-150"
           >
             <div class="px-4 py-2 flex items-center">
@@ -395,11 +362,12 @@
                 >
                   Course ID: {{ course.course_id }}
                 </div>
+                
               </div>
               <div class="flex items-center gap-6">
                 <div class="flex items-end min-w-[50px]">
                   <button
-                    @click="restoreCourse(course.course_id)"
+                    @click="restoreCourse(course.course_code)"
                     class="btn-animate delay-2 p-2 text-gray-400 hover:text-yellow-600 hover:bg-yellow-50 dark:hover:bg-yellow-900/30 rounded-full transition-colors duration-200 group"
                     title="Restore Course"
                   >
@@ -409,7 +377,7 @@
                     >
                   </button>
                   <button
-                    @click="deleteArchivedCourse(course.course_id)"
+                    @click="deleteArchivedCourse(course.course_code)"
                     class="btn-animate delay-2 p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-900/30 rounded-full transition-colors duration-200 group"
                     title="Delete Course"
                   >
@@ -429,6 +397,50 @@
         >
           No archived courses.
         </p>
+      </div>
+    </div>
+    <div
+      v-if="startCreate"
+      class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 modal-enter-active"
+      @click.self="cancleCreate"
+    >
+      <div
+        class="animate-card delay-3 bg-white dark:bg-gray-800 w-[600px] rounded-xl shadow-xl p-6 relative"
+      >
+        <button
+          @click="cancleCreate"
+          class="absolute top-3 right-3 text-2xl text-gray-500 hover:text-red-500"
+        >
+          ✕
+        </button>
+
+        <h2 class="text-2xl font-semibold mb-4">Create New Course</h2>
+        <div class="mb-4">
+          <label class="block py-1">Course Name</label>
+          <input
+            v-model="courseName"
+            type="text"
+            class="w-full border border-gray-300 dark:border-gray-800 rounded-md dark:bg-gray-700 px-3 py-2 focus:outline-none focus:ring-green-200"
+            placeholder="e.g., Intro to Computer Science"
+          />
+        </div>
+        <div class="mb-4">
+          <label class="block py-1">Course Code</label>
+          <input
+            v-model="courseID"
+            type="text"
+            class="w-full border border-gray-300 dark:border-gray-800 rounded-md dark:bg-gray-700 px-3 py-2 focus:outline-none focus:ring-green-200"
+            placeholder="e.g., 204212"
+          />
+        </div>
+        <div class="flex justify-end gap-3">
+          <button
+            @click="submit"
+            class="px-6 py-3 rounded-md bg-primary hover:bg-primary-dark text-white text-base"
+          >
+            Create Course
+          </button>
+        </div>
       </div>
     </div>
   </div>
@@ -454,6 +466,7 @@ const csrf_token = localStorage.getItem("csrf_token");
 const randomAvatar = ref("");
 const currentPage = ref(1);
 const itemsPerPage = 5;
+const courseID = ref("")
 
 const BASE_URL = "http://localhost:56733";
 const connectGoogle = () => {
@@ -548,10 +561,10 @@ const handleClickOutside = (event) => {
 // ######################## archive ###################################################################################################################################
 
 //กู้คืนcourse
-const restoreCourse = async (course_id) => {
+const restoreCourse = async (course_code) => {
   try {
     const response = await fetch(
-      `${BASE_URL}/teacher/restore_to_dash/${course_id}`,
+      `${BASE_URL}/teacher/restore_to_dash/${course_code}`,
       {
         headers: { "X-CSRF-Token": csrf_token },
         method: "POST",
@@ -563,7 +576,7 @@ const restoreCourse = async (course_id) => {
       alert(err.detail || "Restore failed");
     }
     archivedCourses.value = archivedCourses.value.filter(
-      (c) => c.course_id !== course_id,
+      (c) => c.course_code !== course_code,
     );
 
     await fetchDashboard();
@@ -573,11 +586,11 @@ const restoreCourse = async (course_id) => {
 };
 
 //ลบcourseที่อยู่ในกล่องarchive (ลบถาวร)
-const deleteArchivedCourse = async (course_id) => {
+const deleteArchivedCourse = async (course_code) => {
   if (!confirm("Delete this archived course?")) return;
   try {
     const response = await fetch(
-      `${BASE_URL}/teacher/delete_course/${course_id}`,
+      `${BASE_URL}/teacher/delete_course/${course_code}`,
       {
         headers: { "X-CSRF-Token": csrf_token },
         method: "POST",
@@ -589,7 +602,7 @@ const deleteArchivedCourse = async (course_id) => {
       alert(err.detail || "Delete failed");
     }
     archivedCourses.value = archivedCourses.value.filter(
-      (c) => c.course_id !== course_id,
+      (c) => c.course_code !== course_code,
     );
   } catch (error) {
     console.error("Delete error:", error);
@@ -605,7 +618,7 @@ const filteredCourses = computed(() => {
   return courses.value.filter(
     (c) =>
       c.course_name.toLowerCase().includes(searchTerm.value.toLowerCase()) ||
-      String(c.course_id).includes(searchTerm.value),
+      String(c.course_code).includes(searchTerm.value),
   );
 });
 
@@ -623,11 +636,13 @@ const submit = async () => {
       },
       body: JSON.stringify({
         course_name: courseName.value,
+        course_id: courseID.value
       }),
     });
 
     if (response.ok) {
       courseName.value = "";
+      courseID.value = "";
       startCreate.value = false;
       await fetchDashboard();
     }
@@ -637,14 +652,14 @@ const submit = async () => {
 };
 
 // จัดเก็บcourse
-const archiveCourse = async (course_id) => {
+const archiveCourse = async (course_code) => {
   if (!confirm("Archive this course?")) return;
 
-  const course = courses.value.find((c) => c.course_id === course_id);
+  const course = courses.value.find((c) => c.course_code === course_code);
   if (!course) return;
 
   try {
-    const response = await fetch(`${BASE_URL}/teacher/archive/${course_id}`, {
+    const response = await fetch(`${BASE_URL}/teacher/archive/${course_code}`, {
       headers: { "X-CSRF-Token": csrf_token },
       method: "POST",
       credentials: "include",
@@ -656,7 +671,7 @@ const archiveCourse = async (course_id) => {
       return;
     }
 
-    courses.value = courses.value.filter((c) => c.course_id !== course_id);
+    courses.value = courses.value.filter((c) => c.course_code !== course_code);
     archivedCourses.value.push(course);
     await fetchDashboard();
   } catch (error) {
@@ -681,7 +696,7 @@ const deleteCourse = async (id) => {
       return;
     }
 
-    courses.value = courses.value.filter((course) => course.course_id !== id);
+    courses.value = courses.value.filter((course) => course.course_code !== id);
   } catch (error) {
     console.error("Delete error:", error);
     alert("Something went wrong");
@@ -689,8 +704,8 @@ const deleteCourse = async (id) => {
 };
 
 //ไปที่หน้า Assignment
-const goToAssignment = (course_id) => {
-  router.push(`/teacher/assignments/${course_id}`);
+const goToAssignment = (course_code) => {
+  router.push(`/teacher/assignments/${course_code}`);
 };
 
 // ###########################################################################################################################################################
@@ -706,7 +721,8 @@ const handleLogout = async () => {
       throw new Error();
     }
 
-    localStorage.clear();
+    localStorage.removeItem("csrf_token");
+    localStorage.removeItem("role");
     router.push("/login");
   } catch (error) {
     console.error("Logout failed:", error);
