@@ -43,7 +43,7 @@
                   alt="User profile picture"
                   class="h-10 w-10 rounded-full object-cover border-2 border-primary"
                   :src="userProfile?.avatar_url"
-                  />
+                />
               </div>
             </button>
 
@@ -129,6 +129,7 @@
             >
               {{ courseTitle }}
             </h1>
+            
             <div
               class="flex flex-col sm:flex-row gap-4 w-full md:w-auto"
               style="animation-delay: 0.15s"
@@ -385,7 +386,7 @@ const fetchAssignment = async (course_code) => {
       {
         method: "GET",
         credentials: "include",
-      },
+      }
     );
 
     if (!response.ok) {
@@ -528,7 +529,7 @@ const deleteAssign = async (assign_id) => {
           "X-CSRF-Token": csrf_token,
         },
         credentials: "include",
-      },
+      }
     );
 
     if (!response.ok) {
@@ -547,7 +548,7 @@ const archiveAssignment = async (assignment) => {
   try {
     archivedAssignments.value.push(assignment);
     assignments.value = assignments.value.filter(
-      (a) => a.assign_id !== assignment.assign_id,
+      (a) => a.assign_id !== assignment.assign_id
     );
   } catch (err) {
     console.error("Archive failed", err);
@@ -558,7 +559,7 @@ const archiveAssignment = async (assignment) => {
 //คาดว่าจะลบ
 const restoreArchivedAssignment = (assignment) => {
   archivedAssignments.value = archivedAssignments.value.filter(
-    (a) => a.assign_id !== assignment.assign_id,
+    (a) => a.assign_id !== assignment.assign_id
   );
   assignments.value.push(assignment);
 };
@@ -566,7 +567,7 @@ const restoreArchivedAssignment = (assignment) => {
 const deleteArchivedAssignment = async (assign_id) => {
   if (!confirm("Permanently delete this assignment?")) return;
   archivedAssignments.value = archivedAssignments.value.filter(
-    (a) => a.assign_id !== assign_id,
+    (a) => a.assign_id !== assign_id
   );
 };
 
@@ -625,7 +626,6 @@ onBeforeUnmount(() => {
 .fade-leave-to {
   opacity: 0;
 }
-
 
 @keyframes cardEnter {
   0% {
@@ -691,5 +691,4 @@ onBeforeUnmount(() => {
     transform: scale(1) translateY(0);
   }
 }
-
 </style>

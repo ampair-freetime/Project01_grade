@@ -179,7 +179,7 @@
                 >
                   <div class="flex-1 min-w-0">
                     <div
-                      class="text-l font-bold dark:text-primary-light uppercase tracking-wide"
+                      class="text-xl mb-1 font-bold dark:text-primary-light uppercase tracking-wide"
                     >
                       {{ course.course_name }}
                     </div>
@@ -188,6 +188,11 @@
                       class="text-xs text-gray-500 dark:text-gray-400 tracking-wide"
                     >
                       Course ID: {{ course.course_id }}
+                    </div>
+                    <div
+                      class="text-xs text-gray-500 dark:text-gray-400 tracking-wide"
+                    >
+                      section: {{ course.section }}
                     </div>
                   </div>
 
@@ -357,6 +362,7 @@
                 >
                   Course ID: {{ course.course_id }}
                 </div>
+                
               </div>
               <div class="flex items-center gap-6">
                 <div class="flex items-end min-w-[50px]">
