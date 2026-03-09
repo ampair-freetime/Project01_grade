@@ -71,6 +71,23 @@
                     <p class="text-sm text-gray-500 break-all">
                       Email: {{ userProfile?.email }}
                     </p>
+                    <button
+                      v-if="!userProfile?.google_connected"
+                      @click="connectGoogle"
+                      class="mt-3 w-full flex items-center justify-center gap-2 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-600 text-sm font-medium px-3 py-2 rounded-lg transition"
+                    >
+                      <img
+                        src="https://developers.google.com/identity/images/g-logo.png"
+                        class="w-4 h-4"
+                      />
+                      Connect Google
+                    </button>
+                    <div
+                      v-else
+                      class="mt-3 text-green-600 dark:text-green-400 text-sm font-semibold flex items-center gap-2"
+                    >
+                      Google Connected Successfully 🎉
+                    </div>
                   </div>
                 </div>
               </div>
@@ -385,7 +402,9 @@ const dropdownRef = ref(null);
 
 const BASE_URL = "http://localhost:56733";
 
-
+const connectGoogle = () => {
+  window.location.href = `${BASE_URL}/login_with_google`;
+};
 
 const CIRCLE_CIRCUMFERENCE = 251.2;
 
@@ -514,6 +533,15 @@ onMounted(() => {
     fetchStudentScore(quizId.value);
   } else {
     errorMessage.value = "Invalid quiz id.";
+  }
+  const params = new URLSearchParams(window.location.search);
+  if (params.get("google") === "connect_success") {
+    if (!sessionStorage.getItem("google_connected")) {
+      sessionStorage.setItem("google_connected", "true");
+      alert("🎉 Google connected successfully!");
+      window.location.reload();
+    }
+    window.history.replaceState({}, document.title, window.location.pathname);
   }
 });
 
