@@ -121,7 +121,7 @@
               </div>
               <span>Return</span>
             </button>
-            <div class="flex flex-wrap items-center gap-2 mt-4">
+            <div class="animate-card delay-1 flex flex-wrap items-center gap-2 mt-4">
               <button
                 class="hover:text-primary font-medium"
                 type="button"
