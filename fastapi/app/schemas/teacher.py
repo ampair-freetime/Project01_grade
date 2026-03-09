@@ -6,7 +6,15 @@ class Teacher_Course(BaseModel):
     course_id: str
     #sec: str
 
-class T_Assignment(BaseModel):
+class Assignment(BaseModel):
     course_code:int
     quiz_name:str
     full_mark:int
+
+class CourseUpdate(BaseModel):
+    course_name: str
+    course_id: str
+
+class AssignmentUpdate(BaseModel):
+    quiz_name: str
+    full_mark: int

@@ -12,7 +12,6 @@ class Upload(Base):
     upload_id = Column(VARCHAR, primary_key=True, index=True,server_default=text("gen_random_uuid()"))
     #file infomation
     file_name = Column(VARCHAR(255), nullable=False)
-    uploaded_at = Column(DateTime(timezone=True), server_default=func.now())
     # update/create/delete
     created_at = Column(DateTime, default=datetime.utcnow)
 
