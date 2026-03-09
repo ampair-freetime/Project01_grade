@@ -61,7 +61,7 @@
                     <p
                       class="font-semibold text-gray-900 dark:text-white break-all"
                     >
-                      {{ userProfile?.first_name }} {{ userProfile?.middle }}
+                      {{ userProfile?.first_name }} {{ userProfile?.middle_name }}
                       {{ userProfile?.last_name }}
                     </p>
                     <p class="text-sm text-gray-500 break-all">
@@ -356,7 +356,7 @@
         <div class="flex justify-end gap-3">
           <button
             @click="submitEditAssign"
-            class="px-6 py-3 rounded-md bg-blue-600 hover:bg-blue-800 text-white text-base"
+            class="px-6 py-3 rounded-md bg-primary hover:bg-primary-dark text-white text-base"
           >
             Save Changes
           </button>
