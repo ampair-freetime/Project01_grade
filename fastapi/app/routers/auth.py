@@ -157,7 +157,10 @@ async def google_auth(
         ).first()
         if token and user:
             if provider and provider.auth_user_id != user.auth_user_id:
-                raise HTTPException(status_code=401, detail="Google account already used")
+                if user.student:
+                    return RedirectResponse(url="/student/dashboard?google=already_in_use")
+                else:
+                    return RedirectResponse(url="/teacher/courses?google=already_in_use")
         # login google แต่ยังไม่ได้ link account
         if not provider and not token:
             return RedirectResponse(
