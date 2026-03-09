@@ -237,7 +237,7 @@ const handleLogin = async () => {
   loading.value = true;
 
   try {
-    const response = await fetch("https://25cs212g12.vercel.app/login", {
+    const response = await fetch("https://25cs212g12.vercel.app/api/login", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -280,7 +280,7 @@ const loginWithGoogle = () => {
   localStorage.removeItem("csrf_token");
   localStorage.removeItem("role");
 
-  window.location.href = "https://25cs212g12.vercel.app/login_with_google";
+  window.location.href = "https://25cs212g12.vercel.app/api/login_with_google";
 };
 
 name: "Login";
