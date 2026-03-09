@@ -68,14 +68,19 @@ class JWTAndCSRFMiddleware(BaseHTTPMiddleware):
             logger.debug(f"JWT payload: {payload}")
         except JWTError as e:
             logger.error(f"JWT decoding failed in middleware: {e}")
-            raise HTTPException(
-                status_code=401, detail="Invalid or expired token")
+            return JSONResponse(
+                status_code=401, 
+                content={"detail": "Invalid or expired token"}
+            )
 
         client_csrf = request.headers.get("X-CSRF-Token")
         logger.debug(f"Client CSRF token: {client_csrf}")
         if not client_csrf or payload.get("csrf_token") != client_csrf:
             logger.error("CSRF token mismatch in middleware")
-            raise HTTPException(status_code=403, detail="CSRF token mismatch")
+            return JSONResponse(
+                status_code=403, 
+                content={"detail": "CSRF token mismatch"}
+            )
 
         response = await call_next(request)
         return response
