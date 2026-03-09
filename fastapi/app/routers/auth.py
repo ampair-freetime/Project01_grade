@@ -22,7 +22,7 @@ from httpx import AsyncClient
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)  # Set this logger to DEBUG
 
-router = APIRouter()
+router = APIRouter(prefix="/api")
 
 # JWT Configuration
 SECRET_KEY = settings.jwt_secret_key
