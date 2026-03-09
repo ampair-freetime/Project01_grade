@@ -104,6 +104,19 @@
               </div>
               <span>Return</span>
             </button>
+            <div class="flex flex-wrap items-center gap-2 mt-4">
+              <button
+                class="hover:text-primary font-medium"
+                type="button"
+                @click="router.back()"
+              >
+                Course Management
+              </button>
+              <span class="font-medium"> / </span>
+              <span class="text-[#111811] dark:text-white font-medium">
+                {{ course?.course_name }}
+              </span>
+            </div>
           </nav>
 
           <section class="@container">

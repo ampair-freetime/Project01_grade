@@ -108,10 +108,10 @@
             </button>
 
             <!-- Path -->
-            <!-- <div class="flex flex-wrap items-center gap-2">
+            <div class="flex flex-wrap items-center gap-2">
               <button
                 class="hover:text-primary font-medium"
-                @click="router.push(`/teacher/courses`)"
+                @click="router.go(-2)"
               >
                 Course Management
               </button>
@@ -120,7 +120,7 @@
 
               <button
                 class="hover:text-primary font-medium"
-                @click="router.push(`/teacher/assignments/${courseId}`)"
+                @click="router.go(-1)"
               >
                 {{
                   courseTitle ||
@@ -133,7 +133,7 @@
               <span class="text-[#111811] dark:text-white font-medium">
                 {{ assignment_title || "Assignment" }}
               </span>
-            </div> -->
+            </div>
           </nav>
           <div
             class="animate-card delay-1 flex items-center justify-between flex-wrap gap-4"

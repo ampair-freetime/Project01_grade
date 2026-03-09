@@ -107,27 +107,27 @@
               </div>
               <span>Return</span>
             </button>
-            <!-- <div
-              v-if="course_name || quiz_name"
-              class="flex flex-wrap gap-2 mt-4"
-            >
-              <a
+            <div class="flex flex-wrap items-center gap-2 mt-4">
+              <button
                 class="hover:text-primary font-medium"
-                href="#"
-                @click.prevent="router.push('/student/dashboard')"
-                >Courses</a
+                type="button"
+                @click="router.go(-2)"
               >
-              <template v-if="course_name">
-                <span class="font-medium">/</span>
-                <span class="text-[#111811] dark:text-white font-medium">{{
-                  course_name
-                }}</span>
-              </template>
-              <span class="font-medium">/</span>
-              <span class="text-[#111811] dark:text-white font-medium">{{
-                quiz_name
-              }}</span>
-            </div> -->
+                Course Management
+              </button>
+              <span class="font-medium"> / </span>
+              <button
+                class="hover:text-primary font-medium"
+                type="button"
+                @click="router.go(-1)"
+              >
+                {{ course?.course_name }}
+              </button>
+              <span class="font-medium"> / </span>
+              <span class="text-[#111811] dark:text-white font-medium">
+                {{ quiz_name }}
+              </span>
+            </div>
           </nav>
           <div
             class="animate-card delay-1 flex flex-col md:flex-row md:items-center justify-between gap-4"
@@ -371,11 +371,21 @@ const quiz_name = computed(() => {
   return `Quiz ${quizId.value}`;
 });
 
+const course = computed(() => {
+  const name = route.query.course_name
+  if (name && typeof name === "string") {
+    return { course_name: name }
+  }
+  return null
+})
+
 const isOpen = ref(false);
 
 const dropdownRef = ref(null);
 
 const BASE_URL = "http://localhost:56733";
+
+
 
 const CIRCLE_CIRCUMFERENCE = 251.2;
 
