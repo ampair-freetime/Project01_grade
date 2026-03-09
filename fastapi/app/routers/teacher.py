@@ -78,7 +78,8 @@ async def teacher_assingment(course_code: int,current_user: AuthUser = Depends(g
         assignment.append({
             "assign_id": q.quiz_id,
             "assign_name": q.quiz_name,
-            "full_mark": q.full_mark
+            "full_mark": q.full_mark,
+            "weight": q.weight
         })
     return {
         "course":{
@@ -168,11 +169,12 @@ async def create_course(course: Teacher_Course,db: Session = Depends(get_db),cur
 async def create_assignments(assign: Assignment,db: Session= Depends(get_db),current_user: AuthUser = Depends(get_current_user)):
     try:
         teacher = is_teacher(db,current_user)
-        # if ()
+
         new_assignment = Quiz(
             quiz_name=assign.quiz_name,
             full_mark=assign.full_mark,
-            course_code=assign.course_code
+            course_code=assign.course_code,
+            weight=assign.weight
         )
 
         db.add(new_assignment)
@@ -404,6 +406,7 @@ async def update_assignment(assign_id: str, assign_data: AssignmentUpdate, db: S
         
         assignment.quiz_name = assign_data.quiz_name
         assignment.full_mark = assign_data.full_mark
+        assignment.weight = assign_data.weight
         db.commit()
         return {"message": "Assignment updated successfully"}
     except Exception as e:
