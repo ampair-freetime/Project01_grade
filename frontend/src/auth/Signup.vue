@@ -179,7 +179,7 @@
                 </button>
               </div>
               <p class="mt-1 text-xs text-[#64748b] dark:text-gray-300 ml-1">
-                The password must contain uppercase letter and number
+                Password must contain lowercase letter, uppercase letter, number
               </p>
               <div class="flex flex-col gap-1.5">
                 <label

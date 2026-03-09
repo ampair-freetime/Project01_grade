@@ -180,8 +180,8 @@
                 :class="[
                   'inline-flex items-center px-4 py-2 border border-transparent rounded-lg text-sm font-medium text-white shadow-sm transition-colors',
                   isPublished
-                    ? 'bg-emerald-500 dark:bg-emerald-600 cursor-not-allowed opacity-80'
-                    : 'bg-sky-500 dark:bg-sky-600 hover:opacity-90',
+                    ? 'bg-black cursor-not-allowed opacity-80'
+                    : 'bg-sky-500 hover:opacity-90',
                 ]"
               >
                 <span class="material-symbols-outlined text-lg mr-2">
