@@ -23,7 +23,7 @@ logging.basicConfig(
 logger = logging.getLogger("app")
 
 # Detect if running on Vercel (Vercel sets VERCEL=1 automatically)
-api_prefix = "/api" if os.getenv("VERCEL") else ""
+api_prefix = ""
 logger.info(f"Running with api_prefix: '{api_prefix}' (VERCEL={os.getenv('VERCEL')})")
 
 fastapi_app = FastAPI(
