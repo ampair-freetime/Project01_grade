@@ -30,10 +30,14 @@ async def teacher_dashboard(db: Session = Depends(get_db),current_user: AuthUser
     courses_dash = []
     
     for c in courses:
-        student_score = 0
-        students = {score.student_id for quiz in c.quizzes for score in quiz.scores}
+        student_number = 0
+        students = set()
+        for quiz in c.quizzes:
+            for score in quiz.scores:
+                if score.is_deleted == False:
+                    students.add(score.student_id)
         if students:
-            student_score = len(students)
+            student_number = len(students)
 
         get_section = db.query(Score).join(Quiz, Quiz.quiz_id == Score.quiz_id).filter(Quiz.course_code == c.course_code).first()
         if get_section:
@@ -44,7 +48,7 @@ async def teacher_dashboard(db: Session = Depends(get_db),current_user: AuthUser
             "course_code": c.course_code,
             "course_name": c.course_name,
             "course_id": c.course_id,
-            "number_student": student_score,
+            "number_student": student_number,
             "section":section
         })
     # response ชื่อครูกับรายวิชาที่สอน
