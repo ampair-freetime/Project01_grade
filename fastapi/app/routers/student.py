@@ -25,7 +25,7 @@ async def student_dashboard(db: Session = Depends(get_db),current_user: AuthUser
     student = require_student(db, current_user)
 
     # ดึงคะแนนทั้งหมดของนักเรียน
-    scores = db.query(Score).filter(Score.student_id == student.student_id,Score.is_deleted == False).all()
+    scores = db.query(Score).filter(Score.student_id == student.student_id).all()
 
     # กัน course ซ้ำ
     course_set = {}
@@ -34,7 +34,8 @@ async def student_dashboard(db: Session = Depends(get_db),current_user: AuthUser
     # relationship : Score -> Quiz -> Course
     for s in scores:
         if s.quiz and s.quiz.course:
-            course_set[s.quiz.course.course_code] = [s.quiz.course.course_name,s.quiz.course.course_id,s.section]
+            if s.quiz.course.is_deleted == False:
+                course_set[s.quiz.course.course_code] = [s.quiz.course.course_name,s.quiz.course.course_id,s.section]
 
     for cid in course_set:
         course_dash.append({
@@ -65,7 +66,7 @@ async def student_course_detail(course_code: int,db: Session = Depends(get_db),c
         raise HTTPException(status_code=404,detail="Course not found")
     
     # ตรวจสอบว่านักเรียนมีคะแนนใน course นี้ไหม
-    has_access = db.query(Score).join(Quiz).filter(Quiz.course_code == course_code,Score.student_id == student.student_id,Score.is_deleted == False,Quiz.is_deleted==False).first()
+    has_access = db.query(Score).join(Quiz).filter(Quiz.course_code == course_code,Score.student_id == student.student_id).first()
 
     if not has_access:
         raise HTTPException(status_code=403,detail="Not enrolled in this course")
