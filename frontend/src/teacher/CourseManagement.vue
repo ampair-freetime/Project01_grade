@@ -343,12 +343,7 @@
             class="rounded-xl hover:bg-gray-100 dark:hover:bg-gray-600/50 transition-colors duration-150"
           >
             <div class="px-4 py-2 flex items-center">
-              <div
-                class="flex-shrink-0 h-10 w-10 rounded-xl bg-purple-200 dark:bg-purple-600/50 text-purple-600 dark:text-purple-400 flex items-center justify-center"
-              >
-                <span class="material-symbols-outlined">archive</span>
-              </div>
-              <div class="ml-4 grow items-center">
+              <div class="ml-4 grow">
                 <div class="text-sm font-bold text-gray-900 dark:text-white">
                   {{ course.course_name }}
                 </div>

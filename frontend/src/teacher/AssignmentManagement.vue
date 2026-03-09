@@ -202,7 +202,7 @@
                     <div class="flex justify-end gap-3">
                       <button
                         @click="submit"
-                        class="px-6 py-3 rounded-md bg-green-600 hover:bg-green-800 text-white text-base"
+                        class="px-6 py-3 rounded-md bg-primary hover:bg-primary-dark text-white text-base"
                       >
                         Create Assignment
                       </button>
