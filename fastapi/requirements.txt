@@ -1,17 +1,17 @@
 # FastAPI framework and ASGI server
-fastapi==0.115.11
-uvicorn==0.34.0
+fastapi
+uvicorn
 
 # ORM and Database tools
-SQLAlchemy==2.0.29
+SQLAlchemy
 sqlalchemy-serializer==1.4.22
 alembic==1.14.1
 psycopg2-binary==2.9.9
 
 # Data validation and settings management
-pydantic==2.10.6
+pydantic
 pydantic-settings==2.8.1
-python-dotenv==1.0.1
+python-dotenv
 email-validator
 
 # OAuth and JWT libraries
