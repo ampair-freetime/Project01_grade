@@ -4,7 +4,7 @@ from app.db import get_db
 from app.models import Teacher, Course, Quiz, Score, Student, Upload, AuthUser
 from app.models.authuser import AuthUser
 from app.routers.auth import get_current_user
-from app.schemas.teacher import Teacher_Course, T_Assignment
+from app.schemas.teacher import Teacher_Course, Assignment, CourseUpdate,AssignmentUpdate
 from datetime import datetime
 import csv
 import io
@@ -159,7 +159,7 @@ async def create_course(course: Teacher_Course,db: Session = Depends(get_db),cur
         raise HTTPException(status_code=400,detail=f"error: {str(e)}") 
 
 @router.post("/create_assign")
-async def create_assignments(assign: T_Assignment,db: Session= Depends(get_db),current_user: AuthUser = Depends(get_current_user)):
+async def create_assignments(assign: Assignment,db: Session= Depends(get_db),current_user: AuthUser = Depends(get_current_user)):
     try:
         teacher = is_teacher(db,current_user)
         # if ()
@@ -370,4 +370,36 @@ async def publish(assign_id:str,db: Session = Depends(get_db),current_user: Auth
         return {"message": "Publish successful"}
     except Exception as e:
         db.rollback()
-        raise HTTPException(status_code=400,detail=f"error: {str(e)}") 
+        raise HTTPException(status_code=400,detail=f"error: {str(e)}")
+
+@router.post("/update_course/{course_code}")
+async def update_course(course_code: int, course_data: CourseUpdate, db: Session = Depends(get_db), current_user: AuthUser = Depends(get_current_user)):
+    try:
+        teacher = is_teacher(db, current_user)
+        course = db.query(Course).filter(Course.course_code == course_code, Course.teacher_id == teacher.teacher_id).first()
+        if not course:
+            raise HTTPException(status_code=404, detail="Course not found")
+
+        course.course_name = course_data.course_name
+        course.course_id = course_data.course_id
+        db.commit()
+        return {"message": "Course updated successfully"}
+    except Exception as e:
+        db.rollback()
+        raise HTTPException(status_code=400, detail=f"error: {str(e)}")
+
+@router.post("/update_assign/{assign_id}")
+async def update_assignment(assign_id: str, assign_data: AssignmentUpdate, db: Session = Depends(get_db), current_user: AuthUser = Depends(get_current_user)):
+    try:
+        teacher = is_teacher(db, current_user)
+        assignment = db.query(Quiz).join(Course).filter(Quiz.quiz_id == assign_id, Course.teacher_id == teacher.teacher_id).first()
+        if not assignment:
+            raise HTTPException(status_code=404, detail="Assignment not found")
+        
+        assignment.quiz_name = assign_data.quiz_name
+        assignment.full_mark = assign_data.full_mark
+        db.commit()
+        return {"message": "Assignment updated successfully"}
+    except Exception as e:
+        db.rollback()
+        raise HTTPException(status_code=400, detail=f"error: {str(e)}")
