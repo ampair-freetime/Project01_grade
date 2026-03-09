@@ -250,8 +250,9 @@ async def login(login_data: UserLogin,response: Response, db: Session = Depends(
         key="jwt",
         value=jwt_token,
         httponly=True,
+        secure=True,
         secure=settings.jwt_cookie_secure,
-        samesite=settings.jwt_cookie_samesite
+        samesite="none"
     )
     return {
         "message": "Login successful",
