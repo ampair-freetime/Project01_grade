@@ -516,10 +516,10 @@ const fetchStudentScore = async (quiz_id) => {
         return;
       }
       if (response.status === 403 || response.status === 404) {
-        errorMessage.value = "Score not found for this quiz.";
+        errorMessage.value = "Score not found for this assignment.";
         return;
       }
-      errorMessage.value = `Failed to fetch score (HTTP ${response.status})`;
+      errorMessage.value = `Score not found for this assignment.`;
       return;
     }
 
