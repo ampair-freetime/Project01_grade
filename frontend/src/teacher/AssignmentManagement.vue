@@ -218,17 +218,14 @@
                       />
                     </div>
                     <div class="mb-4">
-                      <label class="block text-lg py-1">Weight (%)</label>
+                      <label class="block text-lg py-1">Weight</label>
                       <input
-                        v-model="weight"
+                        v-model="assign_weight"
                         type="number"
                         class="w-full border border-gray-300 dark:border-gray-800 rounded-md dark:bg-gray-700 px-3 py-2 focus:outline-none focus:ring-green-200"
-                        placeholder="e.g., 20"
-                        min="0"
-                        max="100"
+                        placeholder="e.g., 1.0"
                       />
                     </div>
-
                     <div class="flex justify-end gap-3">
                       <button
                         @click="submit"
@@ -348,6 +345,14 @@
             class="w-full border rounded-md px-3 py-2"
           />
         </div>
+        <div class="mb-4">
+          <label class="block text-lg py-1">Score</label>
+          <input
+            v-model="editAssignWeight"
+            type="number"
+            class="w-full border rounded-md px-3 py-2"
+          />
+        </div>
         <div class="flex justify-end gap-3">
           <button
             @click="submitEditAssign"
@@ -444,6 +449,7 @@ const dropdownRef = ref(null);
 const courseID = computed(() => Number(route.params.course_code));
 const assignmentTitle = ref("");
 const score = ref("");
+const assign_weight = ref("");
 const searchTerm = ref("");
 const userProfile = ref(null);
 const assignments = ref([]);
@@ -455,6 +461,7 @@ const showEditAssignModal = ref(false);
 const assignid = ref(null);
 const editAssignName = ref("");
 const editAssignScore = ref("");
+const editAssignWeight = ref("");
 
 const BASE_URL = "http://localhost:56733";
 
@@ -563,6 +570,9 @@ const submit = async () => {
       alert("Please enter full mark");
       return;
     }
+    if (!assign_weight.value) {
+      alert("Please enter weight");
+    }
 
     const response = await fetch(`${BASE_URL}/teacher/create_assign`, {
       method: "POST",
@@ -575,6 +585,7 @@ const submit = async () => {
         quiz_name: assignmentTitle.value.trim(),
         full_mark: Number(score.value),
         course_code: courseID.value,
+        weight: parseFloat(assign_weight.value),
       }),
     });
 
@@ -603,6 +614,7 @@ const openEditAssign = (assignment) => {
   editAssignName.value = assignment.assign_name || assignment.quiz_name;
   editAssignScore.value = assignment.full_mark;
   showEditAssignModal.value = true;
+  editAssignWeight.value = assignment.weight
 };
 
 const cancelEditAssign = () => {
@@ -623,6 +635,7 @@ const submitEditAssign = async () => {
         body: JSON.stringify({
           quiz_name: editAssignName.value,
           full_mark: Number(editAssignScore.value),
+          weight: parseFloat(editAssignWeight.value),
         }),
       }
     );
