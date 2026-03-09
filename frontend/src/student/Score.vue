@@ -584,7 +584,7 @@ onBeforeUnmount(() => {
 
 const handleLogout = async () => {
   try {
-    const response = await fetch("http://localhost:56733/logout", {
+    const response = await fetch(`${BASE_URL}/logout`, {
       method: "GET",
       credentials: "include",
     });

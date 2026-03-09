@@ -277,7 +277,7 @@ const fetchUserProfile = async () => {
 
 const handleLogout = async () => {
   try {
-    const response = await fetch("http://localhost:56733/logout", {
+    const response = await fetch(`${BASE_URL}/logout`, {
       method: "GET",
       credentials: "include",
     });
@@ -292,7 +292,7 @@ const handleLogout = async () => {
 };
 
 const connectGoogle = () => {
-  window.location.href = "http://localhost:56733/login_with_google";
+  window.location.href = `${BASE_URL}/login_with_google`;
 };
 
 // ################################################################# course ########################################

@@ -158,12 +158,12 @@ async def google_auth(
         # login google แต่ยังไม่ได้ link account
         if not provider and not token:
             return RedirectResponse(
-                url="http://localhost:8080/login?error=google_not_connected"
+                url="/login?error=google_not_connected"
             )
         # ถ้าเคย link แล้ว → login
         #  ไม่เคยเชื่อมต่อ และยังไม่ได้   login
         if user and not provider and not token:
-            return RedirectResponse(url = "http://localhost:8080/login?error=Please_login_and_connect_google")
+            return RedirectResponse(url = "/login?error=Please_login_and_connect_google")
 
         if provider:
             user = provider.auth_user
@@ -201,9 +201,9 @@ async def google_auth(
         )
         # ถ้ามี jwt แปลว่า user login อยู่ → connect google
         if user_role == "student":
-            dashboard = "http://localhost:8080/student/dashboard"
+            dashboard = "/student/dashboard"
         else:
-            dashboard = "http://localhost:8080/teacher/courses"
+            dashboard = "/teacher/courses"
         # connect google
         if token:
             frontend_url = dashboard + "?google=connect_success"
@@ -223,7 +223,7 @@ async def google_auth(
 
     except Exception as e:
         logger.error(f"Google auth error: {e}")
-        return RedirectResponse(url="http://localhost:8080/login")
+        return RedirectResponse(url="/login")
 
 @router.post("/login")
 async def login(login_data: UserLogin,response: Response, db: Session = Depends(get_db)):
