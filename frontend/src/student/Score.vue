@@ -71,6 +71,23 @@
                     <p class="text-sm text-gray-500 break-all">
                       Email: {{ userProfile?.email }}
                     </p>
+                    <button
+                      v-if="!userProfile?.google_connected"
+                      @click="connectGoogle"
+                      class="mt-3 w-full flex items-center justify-center gap-2 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-600 text-sm font-medium px-3 py-2 rounded-lg transition"
+                    >
+                      <img
+                        src="https://developers.google.com/identity/images/g-logo.png"
+                        class="w-4 h-4"
+                      />
+                      Connect Google
+                    </button>
+                    <div
+                      v-else
+                      class="mt-3 text-green-600 dark:text-green-400 text-sm font-semibold flex items-center gap-2"
+                    >
+                      Google Connected Successfully 🎉
+                    </div>
                   </div>
                 </div>
               </div>
@@ -107,27 +124,27 @@
               </div>
               <span>Return</span>
             </button>
-            <!-- <div
-              v-if="course_name || quiz_name"
-              class="flex flex-wrap gap-2 mt-4"
-            >
-              <a
+            <div class="flex flex-wrap items-center gap-2 mt-4">
+              <button
                 class="hover:text-primary font-medium"
-                href="#"
-                @click.prevent="router.push('/student/dashboard')"
-                >Courses</a
+                type="button"
+                @click="router.go(-2)"
               >
-              <template v-if="course_name">
-                <span class="font-medium">/</span>
-                <span class="text-[#111811] dark:text-white font-medium">{{
-                  course_name
-                }}</span>
-              </template>
-              <span class="font-medium">/</span>
-              <span class="text-[#111811] dark:text-white font-medium">{{
-                quiz_name
-              }}</span>
-            </div> -->
+                Course Management
+              </button>
+              <span class="font-medium"> / </span>
+              <button
+                class="hover:text-primary font-medium"
+                type="button"
+                @click="router.go(-1)"
+              >
+                {{ course?.course_name }}
+              </button>
+              <span class="font-medium"> / </span>
+              <span class="text-[#111811] dark:text-white font-medium">
+                {{ quiz_name }}
+              </span>
+            </div>
           </nav>
           <div
             class="animate-card delay-1 flex flex-col md:flex-row md:items-center justify-between gap-4"
@@ -388,11 +405,23 @@ const quiz_name = computed(() => {
   return `Quiz ${quizId.value}`;
 });
 
+const course = computed(() => {
+  const name = route.query.course_name
+  if (name && typeof name === "string") {
+    return { course_name: name }
+  }
+  return null
+})
+
 const isOpen = ref(false);
 
 const dropdownRef = ref(null);
 
 const BASE_URL = "http://localhost:56733";
+
+const connectGoogle = () => {
+  window.location.href = `${BASE_URL}/login_with_google`;
+};
 
 const CIRCLE_CIRCUMFERENCE = 251.2;
 
@@ -521,6 +550,15 @@ onMounted(() => {
     fetchStudentScore(quizId.value);
   } else {
     errorMessage.value = "Invalid quiz id.";
+  }
+  const params = new URLSearchParams(window.location.search);
+  if (params.get("google") === "connect_success") {
+    if (!sessionStorage.getItem("google_connected")) {
+      sessionStorage.setItem("google_connected", "true");
+      alert("🎉 Google connected successfully!");
+      window.location.reload();
+    }
+    window.history.replaceState({}, document.title, window.location.pathname);
   }
 });
 

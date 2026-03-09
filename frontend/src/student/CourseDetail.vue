@@ -68,6 +68,23 @@
                     <p class="text-sm text-gray-500 break-all">
                       Email: {{ userProfile?.email }}
                     </p>
+                    <button
+                      v-if="!userProfile?.google_connected"
+                      @click="connectGoogle"
+                      class="mt-3 w-full flex items-center justify-center gap-2 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-600 text-sm font-medium px-3 py-2 rounded-lg transition"
+                    >
+                      <img
+                        src="https://developers.google.com/identity/images/g-logo.png"
+                        class="w-4 h-4"
+                      />
+                      Connect Google
+                    </button>
+                    <div
+                      v-else
+                      class="mt-3 text-green-600 dark:text-green-400 text-sm font-semibold flex items-center gap-2"
+                    >
+                      Google Connected Successfully 🎉
+                    </div>
                   </div>
                 </div>
               </div>
@@ -104,6 +121,19 @@
               </div>
               <span>Return</span>
             </button>
+            <div class="flex flex-wrap items-center gap-2 mt-4">
+              <button
+                class="hover:text-primary font-medium"
+                type="button"
+                @click="router.back()"
+              >
+                Course Management
+              </button>
+              <span class="font-medium"> / </span>
+              <span class="text-[#111811] dark:text-white font-medium">
+                {{ course?.course_name }}
+              </span>
+            </div>
           </nav>
 
           <section class="@container">
@@ -189,16 +219,6 @@
                       <div class="font-bold text-[#111811] dark:text-white">
                         {{ item.quiz_name }}
                       </div>
-
-                      <!-- คะแนน -->
-                      <div
-                        v-if="item.my_score !== null"
-                        class="text-xs text-gray-500 mt-1"
-                      >
-                        Score: {{ item.my_score }} / {{ item.full_mark }} ({{
-                          item.percent
-                        }}%)
-                      </div>
                     </td>
 
                     <td class="p-4 text-center font-medium">
@@ -234,6 +254,10 @@ const isOpen = ref(false);
 const dropdownRef = ref(null);
 
 const BASE_URL = "http://localhost:56733";
+
+const connectGoogle = () => {
+  window.location.href = `${BASE_URL}/login_with_google`;
+};
 
 const fetchUserProfile = async () => {
   try {
@@ -298,6 +322,15 @@ onMounted(() => {
   document.addEventListener("click", handleClickOutside);
   fetchCourseDetail(courseId);
   fetchUserProfile();
+  const params = new URLSearchParams(window.location.search);
+  if (params.get("google") === "connect_success") {
+    if (!sessionStorage.getItem("google_connected")) {
+      sessionStorage.setItem("google_connected", "true");
+      alert("🎉 Google connected successfully!");
+      window.location.reload();
+    }
+    window.history.replaceState({}, document.title, window.location.pathname);
+  }
 });
 
 onBeforeUnmount(() => {

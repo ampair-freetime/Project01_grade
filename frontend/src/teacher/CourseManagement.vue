@@ -217,6 +217,15 @@
 
                     <div class="flex items-end min-w-[50px]">
                       <button
+                        @click.stop="openEditCourse(course)"
+                        class="btn-animate delay-2 p-2 text-gray-400 hover:text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/30 rounded-full transition-colors duration-200 group"
+                        title="Edit Course"
+                      >
+                        <span class="material-symbols-outlined text-xl"
+                          >edit</span
+                        >
+                      </button>
+                      <button
                         @click.stop="archiveCourse(course.course_code)"
                         class="btn-animate delay-2 p-2 text-gray-400 hover:text-yellow-600 hover:bg-yellow-50 dark:hover:bg-yellow-900/30 rounded-full transition-colors duration-200 group"
                         title="Archive Course"
@@ -348,12 +357,7 @@
             class="rounded-xl hover:bg-gray-100 dark:hover:bg-gray-600/50 transition-colors duration-150"
           >
             <div class="px-4 py-2 flex items-center">
-              <div
-                class="flex-shrink-0 h-10 w-10 rounded-xl bg-purple-200 dark:bg-purple-600/50 text-purple-600 dark:text-purple-400 flex items-center justify-center"
-              >
-                <span class="material-symbols-outlined">archive</span>
-              </div>
-              <div class="ml-4 grow items-center">
+              <div class="ml-4 grow">
                 <div class="text-sm font-bold text-gray-900 dark:text-white">
                   {{ course.course_name }}
                 </div>
@@ -362,7 +366,6 @@
                 >
                   Course ID: {{ course.course_id }}
                 </div>
-                
               </div>
               <div class="flex items-center gap-6">
                 <div class="flex items-end min-w-[50px]">
@@ -443,6 +446,47 @@
         </div>
       </div>
     </div>
+    <div
+      v-if="showEditModal"
+      class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+      @click.self="cancelEdit"
+    >
+      <div
+        class="bg-white dark:bg-gray-800 w-[600px] rounded-xl shadow-xl p-6 relative"
+      >
+        <button
+          @click="cancelEdit"
+          class="absolute top-3 right-3 text-2xl text-gray-500 hover:text-red-500"
+        >
+          ✕
+        </button>
+        <h2 class="text-2xl font-semibold mb-4">Edit Course</h2>
+        <div class="mb-4">
+          <label class="block py-1">Course Name</label>
+          <input
+            v-model="editCourseName"
+            type="text"
+            class="w-full border rounded-md px-3 py-2"
+          />
+        </div>
+        <div class="mb-4">
+          <label class="block py-1">Course Code</label>
+          <input
+            v-model="editCourseId"
+            type="text"
+            class="w-full border rounded-md px-3 py-2"
+          />
+        </div>
+        <div class="flex justify-end gap-3">
+          <button
+            @click="submitEditCourse"
+            class="px-6 py-3 rounded-md bg-blue-600 hover:bg-blue-800 text-white text-base"
+          >
+            Save Changes
+          </button>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -456,6 +500,7 @@ const teacherName = ref("");
 const courses = ref([]);
 const searchTerm = ref("");
 const courseName = ref("");
+// const courseCode = ref("");
 const startCreate = ref(false);
 const dropdownRef = ref(null);
 const isOpen = ref(false);
@@ -463,10 +508,14 @@ const showArchiveModal = ref(false);
 const archivedCourses = ref([]);
 const userProfile = ref(null);
 const csrf_token = localStorage.getItem("csrf_token");
-const randomAvatar = ref("");
+// const randomAvatar = ref("");
 const currentPage = ref(1);
 const itemsPerPage = 5;
-const courseID = ref("")
+const courseID = ref("");
+const showEditModal = ref(false);
+const coursecode = ref(null);
+const editCourseName = ref("");
+const editCourseId = ref("");
 
 const BASE_URL = "http://localhost:56733";
 const connectGoogle = () => {
@@ -636,7 +685,7 @@ const submit = async () => {
       },
       body: JSON.stringify({
         course_name: courseName.value,
-        course_id: courseID.value
+        course_id: courseID.value,
       }),
     });
 
@@ -650,7 +699,43 @@ const submit = async () => {
     console.error("Create course error:", error);
   }
 };
+const openEditCourse = (course) => {
+  coursecode.value = course.course_code;
+  editCourseName.value = course.course_name;
+  editCourseId.value = course.course_id;
+  showEditModal.value = true;
+};
 
+const cancelEdit = () => {
+  showEditModal.value = false;
+};
+
+const submitEditCourse = async () => {
+  try {
+    const response = await fetch(
+      `${BASE_URL}/teacher/update_course/${coursecode.value}`,
+      {
+        method: "POST",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+          "X-CSRF-Token": csrf_token,
+        },
+        body: JSON.stringify({
+          course_name: editCourseName.value,
+          course_id: editCourseId.value,
+        }),
+      },
+    );
+
+    if (response.ok) {
+      showEditModal.value = false;
+      await fetchDashboard();
+    }
+  } catch (error) {
+    console.error("Update course error:", error);
+  }
+};
 // จัดเก็บcourse
 const archiveCourse = async (course_code) => {
   if (!confirm("Archive this course?")) return;

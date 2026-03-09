@@ -1,0 +1,769 @@
+Mar 09 @18:58	ampair_freetime				Merge branch 'main' of https://github.com/25cs212/25cs212g12repo
+Mar 09 @18:57	ampair_freetime				fix count student_number
+8	4	fastapi/app/routers/teacher.py
+
+Mar 09 @18:55	Supakorn keawpoungmai				Revise team member information in README
+13	13	README.md
+
+Mar 09 @18:19	Supakorn keawpoungmai				Add project details and team members to README
+34	0	README.md
+
+Mar 09 @13:24	ampair_freetime				add edit course and assignment
+0	1	fastapi/app/models/uploads.py
+35	3	fastapi/app/routers/teacher.py
+10	2	fastapi/app/schemas/teacher.py
+99	7	frontend/src/teacher/AssignmentManagement.vue
+93	4	frontend/src/teacher/CourseManagement.vue
+
+Mar 08 @23:10	toraon-tonaor				Merge branch 'main' of github.com:25cs212/25cs212g12repo
+Mar 08 @23:09	toraon-tonaor				frontend: add section
+7	8	frontend/src/teacher/AssignmentManagement.vue
+7	1	frontend/src/teacher/CourseManagement.vue
+
+Mar 08 @22:19	ampair_freetime				Merge branch 'main' of https://github.com/25cs212/25cs212g12repo
+Mar 08 @22:19	ampair_freetime				fastapi: add name in csv import
+16	3	fastapi/app/routers/teacher.py
+
+Mar 08 @22:12	toraon-tonaor				Merge branch 'main' of github.com:25cs212/25cs212g12repo
+Mar 08 @22:11	toraon-tonaor				frontend: sort by name
+42	43	fastapi/app/routers/teacher.py
+1	1	fastapi/app/schemas/auth.py
+4	6	frontend/src/student/Score.vue
+5	5	frontend/src/teacher/CourseManagement.vue
+31	27	frontend/src/teacher/Grade.vue
+
+Mar 08 @21:00	ampair_freetime				fix invalid id in frontend
+1	1	fastapi/app/schemas/auth.py
+2	2	frontend/src/student/Score.vue
+1	1	frontend/src/teacher/Grade.vue
+
+Mar 08 @20:43	toraon-tonaor				Merge branch 'main' of github.com:25cs212/25cs212g12repo
+Mar 08 @20:40	ampair_freetime				fix import csv fail and course id showed
+1	1	fastapi/app/routers/teacher.py
+2	2	frontend/src/teacher/CourseManagement.vue
+8	1	frontend/src/teacher/Grade.vue
+
+Mar 08 @20:19	toraon-tonaor				Merge branch 'main' of github.com:25cs212/25cs212g12repo
+Mar 08 @20:18	toraon-tonaor				merge
+Mar 08 @20:15	ampair_freetime				create assignment
+1	1	fastapi/app/models/student.py
+1	1	fastapi/app/routers/student.py
+6	6	fastapi/app/routers/teacher.py
+
+Mar 08 @19:49	toraon-tonaor				merge
+49	44	fastapi/app/routers/teacher.py
+7	5	frontend/src/teacher/CourseManagement.vue
+
+Mar 08 @19:47	ampair_freetime				fix submit create course
+5	2	frontend/src/teacher/CourseManagement.vue
+
+Mar 08 @19:30	toraon-tonaor				Merge branch 'main' of github.com:25cs212/25cs212g12repo
+Mar 08 @19:29	ampair_freetime				change int -> str for id
+2	2	fastapi/app/routers/auth.py
+1	1	fastapi/app/schemas/auth.py
+1	1	fastapi/app/schemas/teacher.py
+
+Mar 08 @19:16	toraon-tonaor				Merge branch 'main' of github.com:25cs212/25cs212g12repo
+Mar 08 @19:16	toraon-tonaor				merge
+Mar 08 @19:14	ampair_freetime				add try exception registor
+2	2	fastapi/app/models/authprovider.py
+2	2	fastapi/app/models/authuser.py
+0	1	fastapi/app/models/courses.py
+2	2	fastapi/app/models/quiz.py
+2	2	fastapi/app/models/scores.py
+2	2	fastapi/app/models/student.py
+2	2	fastapi/app/models/teacher.py
+2	2	fastapi/app/models/uploads.py
+48	44	fastapi/app/routers/auth.py
+3	7	fastapi/app/routers/student.py
+2	2	fastapi/manage.py
+
+Mar 08 @18:46	toraon-tonaor				merge
+7	5	frontend/src/teacher/CourseManagement.vue
+
+Mar 08 @18:02	ampair_freetime				fastapi: get section ,get_number student
+2	2	fastapi/app/models/authprovider.py
+1	1	fastapi/app/models/authuser.py
+3	4	fastapi/app/models/courses.py
+2	3	fastapi/app/models/quiz.py
+3	3	fastapi/app/models/scores.py
+3	3	fastapi/app/models/student.py
+3	3	fastapi/app/models/teacher.py
+3	5	fastapi/app/models/uploads.py
+10	10	fastapi/app/routers/student.py
+42	39	fastapi/app/routers/teacher.py
+2	2	fastapi/app/schemas/teacher.py
+1	1	fastapi/manage.py
+2	2	frontend/src/router/index.js
+2	2	frontend/src/student/CourseDetail.vue
+6	6	frontend/src/student/Dashboard.vue
+6	6	frontend/src/teacher/AssignmentManagement.vue
+23	23	frontend/src/teacher/CourseManagement.vue
+1	1	frontend/src/teacher/Grade.vue
+
+Mar 08 @14:33	toraon-tonaor				Merge branch 'main' of github.com:25cs212/25cs212g12repo
+Mar 08 @14:30	ampair_freetime				student course_code
+10	8	fastapi/app/routers/student.py
+
+Mar 08 @14:22	toraon-tonaor				Merge branch 'main' of github.com:25cs212/25cs212g12repo
+Mar 08 @14:21	toraon-tonaor				Merge branch 'main' of github.com:25cs212/25cs212g12repo
+Mar 08 @14:21	toraon-tonaor				S.D.
+1	1	frontend/src/student/Score.vue
+
+Mar 08 @14:21	ampair_freetime				Merge branch 'main' of https://github.com/25cs212/25cs212g12repo
+Mar 08 @14:21	thitiphanw				fronted: change std dev to S.D. and fix create new course window
+1	1	frontend/src/student/Score.vue
+45	39	frontend/src/teacher/CourseManagement.vue
+
+Mar 08 @14:16	ampair_freetime				add course code
+1	0	fastapi/app/models/courses.py
+4	2	fastapi/app/routers/teacher.py
+0	21	fastapi/app/schemas/student.py
+1	0	fastapi/app/schemas/teacher.py
+
+Mar 07 @21:34	thitiphanw				fronted: delete scroll bar at assertment of student course detail page
+54	56	frontend/src/student/CourseDetail.vue
+
+Mar 07 @21:14	ampair_freetime				Merge branch 'main' of https://github.com/25cs212/25cs212g12repo
+Mar 07 @20:04	toraon-tonaor				Merge branch 'main' of github.com:25cs212/25cs212g12repo
+Mar 07 @20:04	toraon-tonaor				frontend: set profile pic
+2	2	frontend/src/student/Dashboard.vue
+3	3	frontend/src/teacher/AssignmentManagement.vue
+4	4	frontend/src/teacher/CourseManagement.vue
+3	5	frontend/src/teacher/Grade.vue
+
+Mar 07 @19:58	4whalelocirapter				Merge branch 'main' of https://github.com/25cs212/25cs212g12repo
+Mar 07 @19:55	4whalelocirapter				merge branch main
+Mar 07 @19:55	thitiphanw				frontend: fix student ui add forwards in animate-card css
+1	1	frontend/src/student/CourseDetail.vue
+2	2	frontend/src/student/Dashboard.vue
+1	1	frontend/src/student/Score.vue
+
+Mar 07 @19:50	4whalelocirapter				add animation score and percent
+29	2	frontend/src/student/Score.vue
+
+Mar 07 @19:39	ampair_freetime				add try exception
+Mar 07 @19:37	ampair_freetime				fastapi: add try exception in student
+70	66	fastapi/app/routers/student.py
+0	37	frontend/src/auth/Login.vue
+2	1	frontend/src/teacher/CourseManagement.vue
+
+Mar 07 @19:31	thitiphanw				frontend: add animation css
+Mar 07 @19:14	thitiphanw				main merge
+Mar 07 @19:01	toraon-tonaor				remember me && student profile
+8	3	fastapi/app/routers/teacher.py
+3	5	frontend/src/auth/Login.vue
+11	0	frontend/src/student/Score.vue
+60	18	frontend/src/teacher/Grade.vue
+
+Mar 07 @18:04	thitiphanw				main merge
+138	64	frontend/src/teacher/AssignmentManagement.vue
+52	44	frontend/src/teacher/CourseManagement.vue
+66	0	frontend/src/teacher/Grade.vue
+
+Mar 07 @17:47	toraon-tonaor				frontend: remember me, password condition
+5	1	frontend/src/auth/Login.vue
+17	6	frontend/src/auth/Signup.vue
+35	17	frontend/src/student/Score.vue
+
+Mar 07 @17:17	thitiphanw				Merge branch 'main' of https://github.com/25cs212/25cs212g12repo
+Mar 07 @17:17	thitiphanw				main merge
+82	18	frontend/src/student/CourseDetail.vue
+48	11	frontend/src/student/Dashboard.vue
+71	16	frontend/src/student/Score.vue
+3	2	frontend/src/teacher/AssignmentManagement.vue
+68	9	frontend/src/teacher/CourseManagement.vue
+3	3	frontend/src/teacher/Grade.vue
+
+Mar 07 @16:59	toraon-tonaor				Merge branch 'main' of github.com:25cs212/25cs212g12repo
+Mar 07 @16:58	ampair_freetime				fastapi: add try exept
+2	2	fastapi/app/routers/student.py
+197	162	fastapi/app/routers/teacher.py
+
+Mar 07 @16:08	toraon-tonaor				Merge branch 'main' of github.com:25cs212/25cs212g12repo
+Mar 07 @16:03	toraon-tonaor				merge
+1	16	frontend/src/student/Score.vue
+
+Mar 07 @14:53	thitiphanw				add animation botton Login&Sign and published score
+Mar 07 @14:21	thitiphanw				main merge
+Mar 07 @10:04	toraon-tonaor				Merge branch 'main' of github.com:25cs212/25cs212g12repo
+Mar 07 @10:03	toraon-tonaor				frontend: fetch student Score
+23	22	frontend/src/student/CourseDetail.vue
+187	57	frontend/src/student/Score.vue
+8	8	frontend/src/teacher/Grade.vue
+
+Mar 07 @02:51	4whalelocirapter				frontend : fix login and animation loading
+16	11	frontend/src/auth/Login.vue
+
+Mar 07 @02:31	4whalelocirapter				merge: resolve login conflict
+Mar 07 @02:24	4whalelocirapter				frontend : add loading animation
+2	1	frontend/package.json
+1	0	frontend/src/assets/animations/education-loading.json
+37	25	frontend/src/auth/Login.vue
+
+Mar 07 @01:40	thitiphanw				main merge
+80	17	frontend/src/auth/Login.vue
+66	11	frontend/src/auth/Signup.vue
+3	3	frontend/src/student/CourseDetail.vue
+2	2	frontend/src/student/Score.vue
+
+Mar 07 @01:33	ampair_freetime				fastapi:fix publish for teacher
+1	1	fastapi/app/routers/teacher.py
+
+Mar 07 @01:29	ampair_freetime				Merge branch 'main' of https://github.com/25cs212/25cs212g12repo
+Mar 07 @01:29	ampair_freetime				fastapi: add publish for teacher
+1	0	fastapi/app/models/quiz.py
+6	2	fastapi/app/routers/auth.py
+1	1	fastapi/app/routers/student.py
+17	0	fastapi/app/routers/teacher.py
+1	1	frontend/src/auth/Login.vue
+36	20	frontend/src/auth/Signup.vue
+
+Mar 07 @00:33	4whalelocirapter				 frontend,backend : improve google OAuth flow and handle unlinked account error
+8	6	fastapi/app/routers/auth.py
+20	7	frontend/src/auth/Login.vue
+
+Mar 06 @22:45	4whalelocirapter				Merge branch 'main' of https://github.com/25cs212/25cs212g12repo
+Mar 06 @22:42	4whalelocirapter				frontend,backend : handle google login when account not connected
+4	2	fastapi/app/routers/auth.py
+7	1	frontend/src/auth/Login.vue
+
+Mar 06 @13:53	toraon-tonaor				Merge branch 'main' of github.com:25cs212/25cs212g12repo
+Mar 06 @13:53	toraon-tonaor				frontend: fetch student course
+12	5	frontend/src/student/CourseDetail.vue
+1	1	frontend/src/student/Dashboard.vue
+
+Mar 06 @13:46	thitiphanw				Merge branch 'main' of https://github.com/25cs212/25cs212g12repo
+Mar 06 @13:46	thitiphanw				main merge
+3	9	frontend/src/student/CourseDetail.vue
+2	2	frontend/src/teacher/AssignmentManagement.vue
+15	15	frontend/src/teacher/Grade.vue
+
+Mar 06 @13:45	ampair_freetime				fastapi: add techer name display in student course
+5	1	fastapi/app/routers/student.py
+
+Mar 06 @12:39	toraon-tonaor				Merge branch 'main' of github.com:25cs212/25cs212g12repo
+Mar 06 @12:38	toraon-tonaor				...
+2	2	frontend/src/router/index.js
+4	2	frontend/src/student/CourseDetail.vue
+1	2	frontend/src/teacher/AssignmentManagement.vue
+
+Mar 06 @03:20	4whalelocirapter				Merge branch 'main' of https://github.com/25cs212/25cs212g12repo
+Mar 06 @03:17	4whalelocirapter				add google oauth connect feature
+1	1	fastapi/app/config.py
+102	75	fastapi/app/routers/auth.py
+1	1	fastapi/app/schemas/auth.py
+6	0	frontend/src/auth/Login.vue
+0	34	frontend/src/auth/Signup.vue
+7	1	frontend/src/router/index.js
+33	0	frontend/src/student/Dashboard.vue
+31	1	frontend/src/teacher/CourseManagement.vue
+
+Mar 06 @02:47	toraon-tonaor				frontend: SignUp(student id)
+1	1	frontend/src/auth/Signup.vue
+
+Mar 06 @02:39	toraon-tonaor				Merge branch 'main' of github.com:25cs212/25cs212g12repo
+Mar 06 @02:38	toraon-tonaor				SignUp
+23	13	fastapi/app/routers/auth.py
+16	1	frontend/src/auth/Signup.vue
+
+Mar 06 @00:51	ampair_freetime				fastapi: fix too much query it take long time to load in supabase
+3	1	fastapi/app/routers/auth.py
+
+Mar 05 @23:53	ampair_freetime				Merge branch 'main' of https://github.com/25cs212/25cs212g12repo
+Mar 05 @23:53	ampair_freetime				fastapi: fix too much query it take long time to load in supabase
+1	1	fastapi/app/db.py
+50	50	fastapi/app/routers/teacher.py
+187	194	frontend/src/teacher/CourseManagement.vue
+
+Mar 05 @21:45	thitiphanw				update pagination UI
+Mar 05 @21:41	4whalelocirapter				resolve merge conflict
+Mar 05 @21:30	ampair_freetime				change
+Mar 05 @21:24	ampair_freetime				no change
+20	12	fastapi/app/routers/auth.py
+6	7	fastapi/app/routers/teacher.py
+158	179	frontend/src/teacher/CourseManagement.vue
+
+Mar 05 @17:37	thitiphanw				main merge
+18	41	frontend/src/auth/Login.vue
+1	1	frontend/src/student/Dashboard.vue
+291	285	frontend/src/teacher/AssignmentManagement.vue
+168	162	frontend/src/teacher/CourseManagement.vue
+
+Mar 05 @17:25	toraon-tonaor				frontend: SingUp&LogIn
+4	0	frontend/src/auth/Login.vue
+32	19	frontend/src/auth/Signup.vue
+1	0	frontend/src/teacher/Grade.vue
+
+Mar 05 @17:00	4whalelocirapter				add required fields
+5	1	frontend/src/auth/Signup.vue
+1	0	frontend/src/teacher/Grade.vue
+
+Mar 05 @13:39	toraon-tonaor				frontend: fix ui2
+1	1	frontend/src/teacher/CourseManagement.vue
+6	1	frontend/src/teacher/Grade.vue
+
+Mar 05 @13:09	toraon-tonaor				frontend: fix ui
+4	2	frontend/src/teacher/CourseManagement.vue
+6	3	frontend/src/teacher/Grade.vue
+
+Mar 05 @02:07	toraon-tonaor				frontend: Grade(import file)
+3	2	fastapi/app/routers/teacher.py
+23	2	frontend/src/teacher/AssignmentManagement.vue
+1	2	frontend/src/teacher/CourseManagement.vue
+146	298	frontend/src/teacher/Grade.vue
+
+Mar 04 @22:49	thitiphanw				Merge branch 'main' of https://github.com/25cs212/25cs212g12repo
+Mar 04 @22:49	thitiphanw				fronted: edit script of Course Detail student
+41	14	frontend/src/auth/Login.vue
+65	73	frontend/src/student/CourseDetail.vue
+
+Mar 04 @22:48	toraon-tonaor				frontend: teacher/Assignment
+159	219	frontend/src/teacher/AssignmentManagement.vue
+46	33	frontend/src/teacher/CourseManagement.vue
+75	68	frontend/src/teacher/Grade.vue
+
+Mar 04 @22:47	toraon-tonaor				Merge branch 'main' of github.com:25cs212/25cs212g12repo
+Mar 04 @22:46	toraon-tonaor				Merge branch 'main' of github.com:25cs212/25cs212g12repo
+Mar 04 @22:24	thitiphanw				Merge branch 'main' of https://github.com/25cs212/25cs212g12repo
+Mar 04 @22:24	thitiphanw				fronted: edit script of Course Detail student
+2	1	frontend/src/auth/Signup.vue
+38	2	frontend/src/student/CourseDetail.vue
+
+Mar 04 @22:16	ampair_freetime				Merge branch 'main' of https://github.com/25cs212/25cs212g12repo
+Mar 04 @22:16	ampair_freetime				frontend: student dashboard dynamic
+2	1	fastapi/app/routers/auth.py
+1	1	fastapi/app/schemas/auth.py
+2	3	frontend/src/student/CourseDetail.vue
+101	175	frontend/src/student/Dashboard.vue
+
+Mar 04 @21:03	toraon-tonaor				Grade
+1	2	frontend/src/router/index.js
+6	0	frontend/src/teacher/AssignmentManagement.vue
+27	43	frontend/src/teacher/Grade.vue
+
+Mar 04 @21:01	thitiphanw				frontend: fix invisible password in login page and fix ui design
+20	9	frontend/src/auth/Login.vue
+3	5	frontend/src/student/CourseDetail.vue
+3	3	frontend/src/student/Score.vue
+233	213	frontend/src/teacher/AssignmentManagement.vue
+165	156	frontend/src/teacher/CourseManagement.vue
+425	409	frontend/src/teacher/Grade.vue
+
+Mar 04 @20:17	toraon-tonaor				Merge branch 'main' of github.com:25cs212/25cs212g12repo
+Mar 04 @20:17	toraon-tonaor				Grade
+Mar 04 @20:08	thitiphanw				fronted: fix ui design
+6	16	frontend/src/teacher/Grade.vue
+
+Mar 04 @20:01	toraon-tonaor				ASSign & Grade
+1	0	fastapi/main.py
+1	1	frontend/src/auth/Login.vue
+2	1	frontend/src/router/index.js
+156	179	frontend/src/teacher/AssignmentManagement.vue
+11	4	frontend/src/teacher/CourseManagement.vue
+23	1	frontend/src/teacher/Grade.vue
+
+Mar 04 @20:00	thitiphanw				Merge branch 'main' of https://github.com/25cs212/25cs212g12repo
+Mar 04 @20:00	thitiphanw				fronted: fix botton and ui design
+147	151	frontend/src/student/CourseDetail.vue
+0	3	frontend/src/student/Dashboard.vue
+172	170	frontend/src/student/Score.vue
+206	199	frontend/src/teacher/AssignmentManagement.vue
+423	396	frontend/src/teacher/Grade.vue
+
+Mar 04 @17:16	4whalelocirapter				Merge branch 'main' of https://github.com/25cs212/25cs212g12repo
+Mar 04 @17:14	4whalelocirapter				backend : add google login with authprovider
+1	0	fastapi/app/config.py
+3	1	fastapi/app/models/__init__.py
+18	0	fastapi/app/models/authprovider.py
+2	1	fastapi/app/models/authuser.py
+32	13	fastapi/app/routers/auth.py
+
+Mar 04 @16:31	thitiphanw				Merge branch 'main' of https://github.com/25cs212/25cs212g12repo
+Mar 04 @16:31	thitiphanw				main merge
+Mar 04 @16:25	ampair_freetime				add name return in score ,add course number student, filter is_deleted in student
+1	0	fastapi/app/models/courses.py
+15	52	fastapi/app/routers/student.py
+16	7	fastapi/app/routers/teacher.py
+22	3	fastapi/manage.py
+
+Mar 04 @15:19	thitiphanw				main merge
+1	1	frontend/src/router/index.js
+6	5	frontend/src/teacher/AssignmentManagement.vue
+44	57	frontend/src/teacher/CourseManagement.vue
+
+Mar 04 @15:02	toraon-tonaor				frontend: CourseManagement(delete_course, archive_course, restore, delete_archive)
+17	20	fastapi/app/routers/teacher.py
+134	93	frontend/src/teacher/CourseManagement.vue
+
+Mar 04 @14:18	thitiphanw				Merge branch 'main' of https://github.com/25cs212/25cs212g12repo
+Mar 04 @14:18	thitiphanw				main merge
+0	7	frontend/src/auth/Login.vue
+4	2	frontend/src/teacher/CourseManagement.vue
+
+Mar 04 @12:19	toraon-tonaor				Merge branch 'main' of github.com:25cs212/25cs212g12repo
+Mar 04 @12:18	toraon-tonaor				fastapi: delete
+2	1	fastapi/app/routers/teacher.py
+8	4	frontend/src/teacher/CourseManagement.vue
+
+Mar 04 @12:17	ampair_freetime				fastapi: fix bug -forgot .first() and commit()
+21	9	fastapi/app/routers/teacher.py
+1	1	frontend/src/teacher/CourseManagement.vue
+
+Mar 04 @11:35	toraon-tonaor				Merge branch 'main' of github.com:25cs212/25cs212g12repo
+Mar 04 @11:35	toraon-tonaor				..
+1	1	frontend/src/teacher/CourseManagement.vue
+
+Mar 04 @11:32	ampair_freetime				sign up check email for id
+1	1	fastapi/app/__init__.py
+2	7	fastapi/app/routers/student.py
+11	2	fastapi/app/routers/teacher.py
+2	12	frontend/src/auth/Login.vue
+21	24	frontend/src/auth/Signup.vue
+6	1	frontend/src/teacher/CourseManagement.vue
+
+Mar 04 @03:40	toraon-tonaor				frontend: Sigup & CourseManagement
+49	246	frontend/src/auth/Signup.vue
+44	15	frontend/src/teacher/AssignmentManagement.vue
+48	10	frontend/src/teacher/CourseManagement.vue
+
+Mar 04 @01:37	thitiphanw				Merge branch 'main' of https://github.com/25cs212/25cs212g12repo
+Mar 04 @01:37	thitiphanw				fronted: enable add course button to create new course
+2	2	fastapi/app/routers/teacher.py
+245	0	frontend/src/auth/Signup.vue
+84	275	frontend/src/teacher/CourseManagement.vue
+
+Mar 04 @01:06	ampair_freetime				fastapi: delete score router ,archive and display archive ,add is_deleted in score table , add is_archive in course table
+1	1	fastapi/app/__init__.py
+1	0	fastapi/app/models/courses.py
+1	0	fastapi/app/models/scores.py
+56	8	fastapi/app/routers/teacher.py
+0	0	fastapi/app/schemas/{s_teacher.py => teacher.py}
+16	16	frontend/src/auth/Login.vue
+
+Mar 03 @23:47	4whalelocirapter				backend: add ranking, percent, unread count and correct weighted average
+44	25	fastapi/app/routers/student.py
+
+Mar 03 @22:56	thitiphanw				Merge branch 'main' of https://github.com/25cs212/25cs212g12repo
+Mar 03 @22:46	4whalelocirapter				Merge branch 'main' of https://github.com/25cs212/25cs212g12repo
+Mar 03 @22:38	4whalelocirapter				backend: add quiz weight column, add course detail endpoint with weighted average, unread flag support
+1	1	.env.example
+2	0	fastapi/app/models/quiz.py
+123	76	fastapi/app/routers/student.py
+
+Mar 03 @22:24	thitiphanw				Merge branch 'main' of https://github.com/25cs212/25cs212g12repo
+Mar 03 @22:24	thitiphanw				main merge
+0	1	frontend/src/student/Score.vue
+
+Mar 03 @22:22	toraon-tonaor				frontend: sort by:
+4	22	frontend/src/teacher/Grade.vue
+
+Mar 03 @21:45	toraon-tonaor				frontend: Logout
+Mar 03 @20:51	toraon-tonaor				edit login
+1	7	frontend/src/auth/Login.vue
+
+Mar 03 @20:48	thitiphanw				Merge branch 'main' of https://github.com/25cs212/25cs212g12repo
+Mar 03 @20:48	thitiphanw				main merge
+0	0	frontend/src/auth/{Signin.vue => Signup.vue}
+1	1	frontend/src/router/index.js
+
+Mar 03 @20:35	toraon-tonaor				frontend : teacher script
+1	1	frontend/src/auth/Login.vue
+1	1	frontend/src/auth/Signin.vue
+74	14	frontend/src/teacher/AssignmentManagement.vue
+233	27	frontend/src/teacher/CourseManagement.vue
+115	41	frontend/src/teacher/Grade.vue
+
+Mar 03 @20:01	thitiphanw				fronted: add show password
+15	14	frontend/src/auth/Login.vue
+24	12	frontend/src/auth/Signin.vue
+
+Mar 03 @17:14	toraon-tonaor				Merge branch 'main' of github.com:25cs212/25cs212g12repo
+Mar 03 @17:12	ampair_freetime				fastAPI: fix get me,fix teacher dashboard, create soft deleted of assign and courses, display assignment and stu_score, fix import csv file, create create_assign
+6	4	fastapi/app/routers/auth.py
+106	18	fastapi/app/routers/teacher.py
+1	1	fastapi/app/schemas/auth.py
+6	2	fastapi/app/schemas/{teacher_schema.py => s_teacher.py}
+
+Mar 03 @16:50	toraon-tonaor				Merge branch 'main' of github.com:25cs212/25cs212g12repo
+Mar 03 @16:46	toraon-tonaor				frontend : assignment
+0	13	frontend/src/main.js
+49	58	frontend/src/teacher/AssignmentManagement.vue
+59	222	frontend/src/teacher/CourseManagement.vue
+26	1	frontend/src/teacher/Grade.vue
+
+Mar 03 @14:56	ampair_freetime				teacher router fix and login register
+1	2	fastapi/app/models/courses.py
+0	27	fastapi/app/models/enrollment.py
+1	2	fastapi/app/models/student.py
+3	3	fastapi/app/routers/auth.py
+71	71	fastapi/app/routers/student.py
+53	61	fastapi/app/routers/teacher.py
+
+Mar 03 @14:49	ampair_freetime				Merge branch 'main' of https://github.com/25cs212/25cs212g12repo
+Mar 03 @14:42	thitiphanw				frontend: adjust return botton position
+187	177	frontend/src/student/Score.vue
+217	222	frontend/src/teacher/AssignmentManagement.vue
+439	414	frontend/src/teacher/Grade.vue
+
+Mar 03 @12:22	ampair_freetime				222
+1	1	fastapi/app/__init__.py
+20	6	fastapi/app/routers/auth.py
+5	4	fastapi/app/schemas/auth.py
+7	0	fastapi/app/schemas/teacher_schema.py
+46	36	frontend/src/auth/Login.vue
+
+Mar 02 @22:29	thitiphanw				frontend: updated teacher script logic
+Mar 02 @14:18	thitiphanw				fix(frontend): color of return bar
+10	10	frontend/src/teacher/AssignmentManagement.vue
+1	1	frontend/src/teacher/CourseManagement.vue
+7	19	frontend/src/teacher/Grade.vue
+
+Mar 02 @02:08	4whalelocirapter				add teacher dashboard and upload CSV
+118	12	fastapi/app/routers/teacher.py
+
+Mar 02 @01:53	4whalelocirapter				add student router with dashboard and score statistic
+170	27	fastapi/app/routers/student.py
+
+Mar 02 @01:52	4whalelocirapter				add student router with dashboard and score statistic
+2	1	fastapi/app/models/courses.py
+27	0	fastapi/app/models/enrollment.py
+2	1	fastapi/app/models/student.py
+
+Mar 02 @01:17	4whalelocirapter				Merge branch 'main' of https://github.com/25cs212/25cs212g12repo
+Mar 02 @00:35	toraon-tonaor				Pop-up Profile Teacher
+13	0	frontend/src/main.js
+0	10	frontend/src/student/CourseDetail.vue
+0	10	frontend/src/student/Dashboard.vue
+1	10	frontend/src/student/Score.vue
+1	11	frontend/src/teacher/AssignmentManagement.vue
+1	11	frontend/src/teacher/CourseManagement.vue
+1	11	frontend/src/teacher/Grade.vue
+
+Mar 01 @23:58	toraon-tonaor				Merge branch 'main' of github.com:25cs212/25cs212g12repo
+Mar 01 @23:55	toraon-tonaor				Edit Pop-up Profile & Remove Green
+45	5	frontend/src/student/CourseDetail.vue
+46	6	frontend/src/student/Dashboard.vue
+44	5	frontend/src/student/Score.vue
+81	75	frontend/src/teacher/AssignmentManagement.vue
+77	71	frontend/src/teacher/CourseManagement.vue
+88	79	frontend/src/teacher/Grade.vue
+
+Mar 01 @22:57	thitiphanw				fix(frontend): change login botton color
+1	1	frontend/src/auth/Login.vue
+
+Mar 01 @22:50	thitiphanw				fix(frontend): allow profile dropdown to auto-resize based on content
+21	35	frontend/src/student/CourseDetail.vue
+13	6	frontend/src/student/Dashboard.vue
+14	21	frontend/src/student/Score.vue
+
+Mar 01 @21:48	toraon-tonaor				create course & create assignment
+324	73	frontend/src/teacher/AssignmentManagement.vue
+342	63	frontend/src/teacher/CourseManagement.vue
+179	78	frontend/src/teacher/Grade.vue
+
+Mar 01 @21:00	thitiphanw				update student script
+1	0	frontend/src/student/CourseDetail.vue
+1	0	frontend/src/student/Dashboard.vue
+1	0	frontend/src/student/Score.vue
+
+Mar 01 @20:56	thitiphanw				update student script
+42	18	frontend/src/student/CourseDetail.vue
+26	3	frontend/src/student/Dashboard.vue
+41	25	frontend/src/student/Score.vue
+
+Mar 01 @16:39	ampair_freetime				sign up route and add check passord is None in login
+47	4	fastapi/app/routers/auth.py
+8	0	fastapi/app/schemas/auth.py
+
+Mar 01 @15:47	4whalelocirapter				Merge branch 'main' of github.com:25cs212/25cs212g12repo
+Mar 01 @15:43	4whalelocirapter				student.py edit
+11	10	fastapi/app/routers/student.py
+
+Mar 01 @14:07	thitiphanw				fix: update UI
+20	38	frontend/src/auth/Login.vue
+32	45	frontend/src/auth/Signin.vue
+67	154	frontend/src/student/CourseDetail.vue
+1	21	frontend/src/student/Dashboard.vue
+1	1	frontend/src/student/Score.vue
+
+Mar 01 @13:20	ampair_freetime				Fastapi Login router not complete ,Frontend Login page and Logout button for some student page
+0	1	fastapi/app/models/courses.py
+48	15	fastapi/app/routers/auth.py
+5	1	fastapi/app/schemas/auth.py
+45	42	fastapi/manage.py
+3	1	fastapi/requirements.txt
+79	23	frontend/src/auth/Login.vue
+45	32	frontend/src/auth/Signin.vue
+172	93	frontend/src/student/CourseDetail.vue
+39	28	frontend/src/student/Dashboard.vue
+0	3	frontend/src/teacher/Grade.vue
+
+Mar 01 @12:44	Thitiphan Wongsuradaporn				Merge pull request #2 from 25cs212/feature/update-ui
+Mar 01 @12:42	Thitiphan Wongsuradaporn				Merge pull request #1 from 25cs212/feature/router_structure
+Mar 01 @12:42	Thitiphan Wongsuradaporn				Merge branch 'main' into feature/router_structure
+Feb 28 @22:26	thitiphanw				Add profile dropdown in header
+19	33	frontend/src/auth/Login.vue
+32	45	frontend/src/auth/Signin.vue
+71	17	frontend/src/student/CourseDetail.vue
+69	12	frontend/src/student/Dashboard.vue
+61	3	frontend/src/student/Score.vue
+
+Feb 28 @13:39	thitiphanw				Update UI layout and styling
+1	1	frontend/index.html
+35	140	frontend/src/student/CourseDetail.vue
+24	79	frontend/src/student/Dashboard.vue
+74	83	frontend/src/student/Score.vue
+41	94	frontend/src/teacher/CourseManagement.vue
+
+Feb 27 @02:22	4whalelocirapter				schema student.py
+16	0	fastapi/app/routers/student.py
+0	1	fastapi/app/schemas/auth.py
+21	0	fastapi/app/schemas/student.py
+
+Feb 27 @00:29	toraon-tonaor				/teacher/... & index.js edit
+195	91	frontend/src/auth/Login.vue
+256	126	frontend/src/auth/Signin.vue
+1	1	frontend/src/router/index.js
+346	181	frontend/src/student/CourseDetail.vue
+330	170	frontend/src/student/Dashboard.vue
+284	116	frontend/src/student/Score.vue
+250	135	frontend/src/teacher/AssignmentManagement.vue
+467	218	frontend/src/teacher/CourseManagement.vue
+522	297	frontend/src/teacher/Grade.vue
+
+Feb 27 @00:12	ampair_freetime				router_structure_prototype
+3	1	fastapi/app/__init__.py
+1	0	fastapi/app/routers/auth.py
+0	3	fastapi/app/routers/score.py
+18	0	fastapi/app/routers/student.py
+36	0	fastapi/app/routers/teacher.py
+
+Feb 26 @20:50	ampair_freetime				Merge branch 'feature/update-ui' of https://github.com/25cs212/25cs212g12repo
+Feb 26 @20:47	ampair_freetime				back-end in process
+6	0	fastapi/app/routers/auth.py
+
+Feb 26 @20:33	ampair_freetime				in process
+8	1	fastapi/app/routers/auth.py
+3	0	fastapi/app/routers/score.py
+
+Feb 26 @01:46	thitiphanw				chore: update UI templates
+435	0	frontend/index.html
+1	1	frontend/package.json
+3	0	frontend/src/App.vue
+100	0	frontend/src/auth/Login.vue
+135	0	frontend/src/auth/Signin.vue
+7	0	frontend/src/main.js
+39	0	frontend/src/router/index.js
+187	0	frontend/src/student/CourseDetail.vue
+176	0	frontend/src/student/Dashboard.vue
+122	0	frontend/src/student/Score.vue
+145	0	frontend/src/teacher/AssignmentManagement.vue
+228	0	frontend/src/teacher/CourseManagement.vue
+315	0	frontend/src/teacher/Grade.vue
+
+Feb 24 @10:15	ampair_freetime				new ux/ui design and database schema
+-	-	design/database/database_schema.png
+-	-	design/ui/v1/login.png
+-	-	design/ui/v1/popup_create.png
+-	-	design/ui/v1/sign_up.png
+-	-	design/ui/v1/stu_assignments.png
+-	-	design/ui/v1/stu_course.png
+-	-	design/ui/v1/stu_score.png
+-	-	design/ui/v1/teacher_edit_assignments.png
+-	-	design/ui/v1/teacher_edit_courses.png
+-	-	design/ui/v1/teacher_edit_score.png
+
+Feb 23 @19:36	4whalelocirapter				databasefinal
+3	4	fastapi/app/models/scores.py
+
+Feb 23 @18:49	4whalelocirapter				databaseV.6
+2	4	fastapi/app/models/authuser.py
+5	5	fastapi/app/models/courses.py
+4	3	fastapi/app/models/quiz.py
+4	1	fastapi/app/models/scores.py
+7	7	fastapi/app/models/student.py
+8	7	fastapi/app/models/teacher.py
+2	2	fastapi/app/models/uploads.py
+
+Feb 23 @16:59	ampair_freetime				databaseV4
+0	2	fastapi/app/models/__init__.py
+3	3	fastapi/app/models/authuser.py
+3	2	fastapi/app/models/courses.py
+0	21	fastapi/app/models/enrollments.py
+1	0	fastapi/app/models/quiz.py
+8	5	fastapi/app/models/scores.py
+7	6	fastapi/app/models/student.py
+1	1	fastapi/app/models/uploads.py
+
+Feb 23 @15:21	4whalelocirapter				databaseV.4
+5	3	fastapi/app/models/__init__.py
+5	5	fastapi/app/models/authuser.py
+13	11	fastapi/app/models/courses.py
+5	9	fastapi/app/models/enrollments.py
+25	0	fastapi/app/models/quiz.py
+22	11	fastapi/app/models/scores.py
+15	14	fastapi/app/models/student.py
+9	5	fastapi/app/models/teacher.py
+9	3	fastapi/app/models/uploads.py
+
+Feb 23 @00:33	ampair_freetime				databaseV3
+-	-	fastapi/app.db
+5	1	fastapi/app/models/__init__.py
+1	3	fastapi/app/models/authuser.py
+5	3	fastapi/app/models/courses.py
+4	7	fastapi/app/models/enrollments.py
+16	0	fastapi/app/models/scores.py
+9	10	fastapi/app/models/student.py
+11	11	fastapi/app/models/teacher.py
+19	0	fastapi/app/models/uploads.py
+1	1	fastapi/app/schemas/auth.py
+1	6	fastapi/manage.py
+
+Feb 22 @02:31	4whalelocirapter				refactor(database): split user tables and update course/enrollment relations
+-	-	fastapi/app.db
+9	3	fastapi/app/models/__init__.py
+5	14	fastapi/app/models/authuser.py
+7	5	fastapi/app/models/courses.py
+19	6	fastapi/app/models/enrollments.py
+26	0	fastapi/app/models/student.py
+24	0	fastapi/app/models/teacher.py
+1	5	fastapi/app/routers/auth.py
+5	2	fastapi/main.py
+
+Feb 19 @19:03	ampair_freetime				Project structure and DatabaseV1
+44	0	.dockerignore
+66	0	.env.example
+329	0	.gitignore
+55	0	docker-compose.yml
+39	0	fastapi/Dockerfile
+113	0	fastapi/app/__init__.py
+124	0	fastapi/app/config.py
+26	0	fastapi/app/db.py
+25	0	fastapi/app/env_detector.py
+6	0	fastapi/app/models/__init__.py
+27	0	fastapi/app/models/authuser.py
+15	0	fastapi/app/models/courses.py
+15	0	fastapi/app/models/enrollments.py
+202	0	fastapi/app/routers/auth.py
+18	0	fastapi/app/schemas/auth.py
+23	0	fastapi/gunicorn.config.py
+9	0	fastapi/main.py
+68	0	fastapi/manage.py
+26	0	fastapi/requirements.txt
+41	0	fastapi/uvicorn_starter.sh
+7	0	frontend/Dockerfile
+24	0	frontend/package.json
+10	0	frontend/start_vue.sh
+20	0	frontend/vite.config.js
+9	0	packege.json
+14	0	run.sh
+
+Feb 03 @12:36	toraon-tonaor				ui design
+-	-	design/ui/v0/GPA.png
+-	-	design/ui/v0/contact.png
+-	-	design/ui/v0/edit_grade.png
+-	-	design/ui/v0/edit_profile.png
+-	-	design/ui/v0/login.png
+-	-	design/ui/v0/subject.png
+-	-	design/ui/v0/teacher_courses.png

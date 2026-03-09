@@ -67,6 +67,24 @@
                     <p class="text-sm text-gray-500 break-all">
                       Email : {{ userProfile?.email }}
                     </p>
+                    <button
+                      v-if="!userProfile?.google_connected"
+                      @click="connectGoogle"
+                      class="mt-3 w-full flex items-center justify-center gap-2 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-600 text-sm font-medium px-3 py-2 rounded-lg transition"
+                    >
+                      <img
+                        src="https://developers.google.com/identity/images/g-logo.png"
+                        class="w-4 h-4"
+                      />
+                      Connect Google
+                    </button>
+
+                    <div
+                      v-else
+                      class="mt-3 text-green-600 dark:text-green-400 text-sm font-semibold flex items-center gap-2"
+                    >
+                      Google Connected Successfully 🎉
+                    </div>
                   </div>
                 </div>
               </div>
@@ -107,11 +125,11 @@
               <span>Return</span>
             </button>
 
-            <!-- <div class="flex flex-wrap items-center gap-2 mt-4">
+            <div class="flex flex-wrap items-center gap-2 mt-4">
               <button
                 class="hover:text-primary font-medium"
                 type="button"
-                @click="router.push('/teacher/courses')"
+                @click="router.back()"
               >
                 Course Management
               </button>
@@ -119,7 +137,7 @@
               <span class="text-[#111811] dark:text-white font-medium">
                 {{ courseTitle || `Course #${courseID}` }}
               </span>
-            </div> -->
+            </div>
           </nav>
           <div
             class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8"
@@ -129,7 +147,7 @@
             >
               {{ courseTitle }}
             </h1>
-            
+
             <div
               class="flex flex-col sm:flex-row gap-4 w-full md:w-auto"
               style="animation-delay: 0.15s"
@@ -203,7 +221,7 @@
                     <div class="flex justify-end gap-3">
                       <button
                         @click="submit"
-                        class="px-6 py-3 rounded-md bg-green-600 hover:bg-green-800 text-white text-base"
+                        class="px-6 py-3 rounded-md bg-primary hover:bg-primary-dark text-white text-base"
                       >
                         Create Assignment
                       </button>
@@ -246,6 +264,13 @@
                   >
                     View &amp; Edit Scores
                   </button>
+                  <button
+                    @click="openEditAssign(assignment)"
+                    class="btn-animate delay-2 p-2 text-gray-400 hover:text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/30 rounded-full transition-colors duration-200 group"
+                    title="Edit Assignment"
+                  >
+                    <span class="material-symbols-outlined text-xl">edit</span>
+                  </button>
 
                   <button
                     @click="archiveAssignment(assignment)"
@@ -280,6 +305,47 @@
       >
         <span class="material-symbols-outlined text-2xl"> archive </span>
       </button>
+    </div>
+    <div
+      v-if="showEditAssignModal"
+      class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+      @click.self="cancelEditAssign"
+    >
+      <div
+        class="bg-white dark:bg-gray-800 w-[600px] rounded-xl shadow-xl p-6 relative"
+      >
+        <button
+          @click="cancelEditAssign"
+          class="absolute top-3 right-3 text-2xl text-gray-500 hover:text-red-500"
+        >
+          ✕
+        </button>
+        <h2 class="text-2xl font-semibold mb-4">Edit Assignment</h2>
+        <div class="mb-4">
+          <label class="block text-lg py-1">Assignment Title</label>
+          <input
+            v-model="editAssignName"
+            type="text"
+            class="w-full border rounded-md px-3 py-2"
+          />
+        </div>
+        <div class="mb-4">
+          <label class="block text-lg py-1">Score</label>
+          <input
+            v-model="editAssignScore"
+            type="number"
+            class="w-full border rounded-md px-3 py-2"
+          />
+        </div>
+        <div class="flex justify-end gap-3">
+          <button
+            @click="submitEditAssign"
+            class="px-6 py-3 rounded-md bg-blue-600 hover:bg-blue-800 text-white text-base"
+          >
+            Save Changes
+          </button>
+        </div>
+      </div>
     </div>
     <!-- Archive Modal -->
     <div
@@ -374,6 +440,10 @@ const courseTitle = ref("");
 const csrf_token = localStorage.getItem("csrf_token");
 const archivedAssignments = ref([]);
 const randomAvatar = ref("");
+const showEditAssignModal = ref(false);
+const assignid = ref(null);
+const editAssignName = ref("");
+const editAssignScore = ref("");
 
 const BASE_URL = "http://localhost:56733";
 
@@ -386,7 +456,7 @@ const fetchAssignment = async (course_code) => {
       {
         method: "GET",
         credentials: "include",
-      }
+      },
     );
 
     if (!response.ok) {
@@ -517,6 +587,46 @@ const submit = async () => {
   }
 };
 
+const openEditAssign = (assignment) => {
+  assignid.value = assignment.assign_id;
+  editAssignName.value = assignment.assign_name || assignment.quiz_name;
+  editAssignScore.value = assignment.full_mark;
+  showEditAssignModal.value = true;
+};
+
+const cancelEditAssign = () => {
+  showEditAssignModal.value = false;
+};
+
+const submitEditAssign = async () => {
+  try {
+    const response = await fetch(
+      `${BASE_URL}/teacher/update_assign/${assignid.value}`,
+      {
+        method: "POST",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+          "X-CSRF-Token": csrf_token,
+        },
+        body: JSON.stringify({
+          quiz_name: editAssignName.value,
+          full_mark: Number(editAssignScore.value),
+        }),
+      },
+    );
+
+    if (response.ok) {
+      showEditAssignModal.value = false;
+      if (courseID.value) {
+        await fetchAssignment(courseID.value);
+      }
+    }
+  } catch (error) {
+    console.error("Update assignment error:", error);
+  }
+};
+
 const deleteAssign = async (assign_id) => {
   if (!confirm("Delete this Assignment?")) return;
 
@@ -529,7 +639,7 @@ const deleteAssign = async (assign_id) => {
           "X-CSRF-Token": csrf_token,
         },
         credentials: "include",
-      }
+      },
     );
 
     if (!response.ok) {
@@ -548,7 +658,7 @@ const archiveAssignment = async (assignment) => {
   try {
     archivedAssignments.value.push(assignment);
     assignments.value = assignments.value.filter(
-      (a) => a.assign_id !== assignment.assign_id
+      (a) => a.assign_id !== assignment.assign_id,
     );
   } catch (err) {
     console.error("Archive failed", err);
@@ -559,7 +669,7 @@ const archiveAssignment = async (assignment) => {
 //คาดว่าจะลบ
 const restoreArchivedAssignment = (assignment) => {
   archivedAssignments.value = archivedAssignments.value.filter(
-    (a) => a.assign_id !== assignment.assign_id
+    (a) => a.assign_id !== assignment.assign_id,
   );
   assignments.value.push(assignment);
 };
@@ -567,7 +677,7 @@ const restoreArchivedAssignment = (assignment) => {
 const deleteArchivedAssignment = async (assign_id) => {
   if (!confirm("Permanently delete this assignment?")) return;
   archivedAssignments.value = archivedAssignments.value.filter(
-    (a) => a.assign_id !== assign_id
+    (a) => a.assign_id !== assign_id,
   );
 };
 
@@ -602,6 +712,10 @@ const handleLogout = async () => {
   }
 };
 
+const connectGoogle = () => {
+  window.location.href = `${BASE_URL}/login_with_google`;
+};
+
 onMounted(() => {
   document.addEventListener("click", handleClickOutside);
   if (courseID.value) {
@@ -610,7 +724,18 @@ onMounted(() => {
   const seed = Math.random().toString(36).substring(7);
   randomAvatar.value = `https://robohash.org/${seed}.png`;
   fetchUserProfile();
+
+  const params = new URLSearchParams(window.location.search);
+  if (params.get("google") === "connect_success") {
+    if (!sessionStorage.getItem("google_connected")) {
+      sessionStorage.setItem("google_connected", "true");
+      alert("🎉 Google connected successfully!");
+      window.location.reload();
+    }
+    window.history.replaceState({}, document.title, window.location.pathname);
+  }
 });
+
 
 onBeforeUnmount(() => {
   document.removeEventListener("click", handleClickOutside);
