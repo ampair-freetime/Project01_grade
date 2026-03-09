@@ -327,3 +327,4 @@ dist
 .vercel
 .claude
 
+.env*.local

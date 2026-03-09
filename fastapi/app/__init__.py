@@ -46,7 +46,8 @@ fastapi_app.add_middleware(
 
 class JWTAndCSRFMiddleware(BaseHTTPMiddleware):
     async def dispatch(self, request: StarletteRequest, call_next):
-        excluded_paths = ["/", "/login", "/google/auth", "/logout", "/register"]
+        base_excluded = ["/", "/api/login", "/google/auth", "/logout", "/register"]
+        excluded_paths = base_excluded + [f"/api{p}" for p in base_excluded]
         logger.debug(f"Request method: {request.method}, path: {request.url.path}")
         if request.method not in ["POST", "PUT", "DELETE"] or request.url.path in excluded_paths:
             logger.debug("Skipping JWT/CSRF validation for this request")
