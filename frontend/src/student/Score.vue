@@ -204,7 +204,7 @@
               <span
                 class="text-sm text-gray-500 dark:text-gray-400 mt-1"
               >
-                Rank {{ scoreData?.rank ?? "-" }} / {{ scoreData?.total_students ?? "-" }}
+                Rank {{ scoreData?.ranking ?? "-" }} / {{ scoreData?.total_students ?? "-" }}
               </span>
                 <span
                   class="text-5xl font-bold text-gray-900 dark:text-white tracking-tight"
@@ -306,7 +306,7 @@
                   Rank
                 </div>
   <div class="text-2xl font-bold text-gray-900 dark:text-white">
-    {{ scoreData?.rank ?? "-" }}
+    {{ scoreData?.ranking ?? "-" }}
   </div>
 </div>
             </div>
