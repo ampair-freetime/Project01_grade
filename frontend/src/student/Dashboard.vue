@@ -204,7 +204,7 @@ const userProfile = ref(null);
 const courses = ref([]);
 const searchTerm = ref("");
 
-const BASE_URL = "http://localhost:56733";
+const BASE_URL = "/api";
 const toggleDropdown = () => {
   isOpen.value = !isOpen.value;
 };

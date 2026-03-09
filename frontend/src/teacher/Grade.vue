@@ -526,7 +526,7 @@ const readCount = computed(
 const unreadCount = computed(
   () => students.value.filter((s) => s.status === "Unread").length
 );
-const BASE_URL = "http://localhost:56733";
+const BASE_URL = "/api";
 
 const connectGoogle = () => {
   window.location.href = `${BASE_URL}/login_with_google`;

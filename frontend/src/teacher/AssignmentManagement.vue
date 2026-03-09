@@ -379,7 +379,7 @@ const editAssignName = ref("");
 const editAssignScore = ref("");
 const editAssignWeight = ref("");
 
-const BASE_URL = "http://localhost:56733";
+const BASE_URL = "/api";
 
 // ################################ fetch ###########################################################################################################################
 

@@ -517,7 +517,7 @@ const coursecode = ref(null);
 const editCourseName = ref("");
 const editCourseId = ref("");
 
-const BASE_URL = "http://localhost:56733";
+const BASE_URL = "/api";
 const connectGoogle = () => {
   window.location.href = `${BASE_URL}/login_with_google`;
 };
