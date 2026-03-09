@@ -75,24 +75,28 @@ async def student_course_detail(course_code: int,db: Session = Depends(get_db),c
     quizzes = db.query(Quiz).filter(Quiz.course_code == course_code,Quiz.is_deleted==False,Quiz.is_publish==True).all()
 
     # ดึงคะแนนทั้งหมด
-    student_scores = db.query(Score).join(Quiz).filter(Quiz.course_code == course_code,Score.student_id == student.student_id,Score.is_deleted == False,Quiz.is_deleted==False,Quiz.is_publish==True).all()
+    student_scores = db.query(Score).join(Quiz).filter(
+        Quiz.course_code == course_code,
+        Score.student_id == student.student_id,
+        Score.is_deleted == False,
+        Quiz.is_deleted == False
+    ).all()
 
     score_map = {s.quiz_id: s for s in student_scores}
 
     assessment = []
     total_weight_score = 0
-    total_weight = 0
-    
+    total_weight = sum(q.weight for q in quizzes)
+
     for q in quizzes:
         my_score = score_map.get(q.quiz_id)
         score_value = my_score.score if my_score else None
 
         percent = None
-        
+
         if score_value is not None and q.full_mark > 0:
             percent = round((score_value / q.full_mark) * 100, 2)
             total_weight_score += (score_value / q.full_mark) * q.weight
-            total_weight += q.weight
 
         assessment.append({
             "quiz_id": q.quiz_id,

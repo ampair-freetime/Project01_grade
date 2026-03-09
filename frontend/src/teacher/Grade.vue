@@ -61,7 +61,7 @@
                     <p
                       class="font-semibold text-gray-900 dark:text-white break-all"
                     >
-                      {{ userProfile?.first_name }} {{ userProfile?.last_name }}
+                      {{ userProfile?.first_name }} {{ userProfile?.middle_name }} {{ userProfile?.last_name }}
                     </p>
                     <p class="text-sm text-gray-500 break-all">
                       Email : {{ userProfile?.email }}

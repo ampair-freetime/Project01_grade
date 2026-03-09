@@ -480,7 +480,7 @@
         <div class="flex justify-end gap-3">
           <button
             @click="submitEditCourse"
-            class="px-6 py-3 rounded-md bg-blue-600 hover:bg-blue-800 text-white text-base"
+            class="px-6 py-3 rounded-md bg-primary hover:bg-primary-dark text-white text-base"
           >
             Save Changes
           </button>
