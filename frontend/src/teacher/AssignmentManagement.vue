@@ -61,7 +61,7 @@
                     <p
                       class="font-semibold text-gray-900 dark:text-white break-all"
                     >
-                      {{ userProfile?.first_name }} {{ userProfile?.middle }}
+                      {{ userProfile?.first_name }} {{ userProfile?.middle_name }}
                       {{ userProfile?.last_name }}
                     </p>
                     <p class="text-sm text-gray-500 break-all">
@@ -125,7 +125,7 @@
               <span>Return</span>
             </button>
 
-            <div class="flex flex-wrap items-center gap-2 mt-4">
+            <div class="animate-card delay-1 flex flex-wrap items-center gap-2 mt-4">
               <button
                 class="hover:text-primary font-medium"
                 type="button"
@@ -356,7 +356,7 @@
         <div class="flex justify-end gap-3">
           <button
             @click="submitEditAssign"
-            class="px-6 py-3 rounded-md bg-blue-600 hover:bg-blue-800 text-white text-base"
+            class="px-6 py-3 rounded-md bg-primary hover:bg-primary-dark text-white text-base"
           >
             Save Changes
           </button>
@@ -474,7 +474,7 @@ const fetchAssignment = async (course_code) => {
       {
         method: "GET",
         credentials: "include",
-      },
+      }
     );
 
     if (!response.ok) {
@@ -637,7 +637,7 @@ const submitEditAssign = async () => {
           full_mark: Number(editAssignScore.value),
           weight: parseFloat(editAssignWeight.value),
         }),
-      },
+      }
     );
 
     if (response.ok) {
@@ -663,7 +663,7 @@ const deleteAssign = async (assign_id) => {
           "X-CSRF-Token": csrf_token,
         },
         credentials: "include",
-      },
+      }
     );
 
     if (!response.ok) {
@@ -682,7 +682,7 @@ const archiveAssignment = async (assignment) => {
   try {
     archivedAssignments.value.push(assignment);
     assignments.value = assignments.value.filter(
-      (a) => a.assign_id !== assignment.assign_id,
+      (a) => a.assign_id !== assignment.assign_id
     );
   } catch (err) {
     console.error("Archive failed", err);
@@ -693,7 +693,7 @@ const archiveAssignment = async (assignment) => {
 //คาดว่าจะลบ
 const restoreArchivedAssignment = (assignment) => {
   archivedAssignments.value = archivedAssignments.value.filter(
-    (a) => a.assign_id !== assignment.assign_id,
+    (a) => a.assign_id !== assignment.assign_id
   );
   assignments.value.push(assignment);
 };
@@ -701,7 +701,7 @@ const restoreArchivedAssignment = (assignment) => {
 const deleteArchivedAssignment = async (assign_id) => {
   if (!confirm("Permanently delete this assignment?")) return;
   archivedAssignments.value = archivedAssignments.value.filter(
-    (a) => a.assign_id !== assign_id,
+    (a) => a.assign_id !== assign_id
   );
 };
 

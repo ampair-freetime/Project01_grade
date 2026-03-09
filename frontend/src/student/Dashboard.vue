@@ -349,7 +349,7 @@ const goToAssignment = (course_code) => {
 }
 
 .delay-4 {
-  animation-delay: 0.2s;
+  animation-delay: 0.30s;
 }
 .delay-5 {
   animation-delay: 0.25s;

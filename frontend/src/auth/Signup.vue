@@ -178,9 +178,13 @@
                   </span>
                 </button>
               </div>
-              <p class="mt-1 text-xs text-[#64748b] dark:text-gray-300 ml-1">
-                The password must contain uppercase letter and number
-              </p>
+              <ul
+                class="mt-1 text-xs text-[#64748b] dark:text-gray-300 ml-5 list-disc"
+              >
+                <li>At least one lowercase letter (a–z)</li>
+                <li>At least one uppercase letter (A–Z)</li>
+                <li>At least one number (0–9)</li>
+              </ul>
               <div class="flex flex-col gap-1.5">
                 <label
                   class="text-text-main dark:text-gray-200 text-sm font-semibold leading-normal ml-1"
@@ -304,9 +308,7 @@ const handleSignup = async () => {
     }
 
     if (!/[A-Z]/.test(password.value) || !/\d/.test(password.value)) {
-      alert(
-        "The password must contain uppercase letter and number"
-      );
+      alert("The password must contain uppercase letter and number");
       return;
     }
     //  เช็คว่า email ต้อง ลงท้ายด้วย @cmu.ac.th
@@ -405,7 +407,9 @@ const handleSignup = async () => {
 
 .link-animate {
   position: relative;
-  transition: color 0.2s ease, transform 0.15s ease;
+  transition:
+    color 0.2s ease,
+    transform 0.15s ease;
 }
 
 .link-animate:hover {

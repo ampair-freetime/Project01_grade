@@ -79,7 +79,9 @@ async def teacher_assingment(course_code: int,current_user: AuthUser = Depends(g
             "assign_id": q.quiz_id,
             "assign_name": q.quiz_name,
             "full_mark": q.full_mark,
-            "weight": q.weight
+            "weight": q.weight,
+            "is_publish": q.is_publish,
+            
         })
     return {
         "course":{
@@ -116,7 +118,8 @@ async def teacher_score(quiz_id: str,db:Session=Depends(get_db),current_user: Au
     return {
         "assignment":{
             "assign_id": assignment.quiz_id,
-            "assign_name": assignment.quiz_name
+            "assign_name": assignment.quiz_name,
+            "is_publish": assignment.is_publish,
         },
         "score":student_score
     }
