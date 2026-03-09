@@ -27,6 +27,7 @@ async def teacher_dashboard(db: Session = Depends(get_db),current_user: AuthUser
     teacher = is_teacher(db, current_user)
     # วิชาทั้งหมดที่ครูคนนั้นสร้างไว้
     courses = db.query(Course).filter(Course.teacher_id == teacher.teacher_id,Course.is_deleted == False,Course.is_archive == False).all()
+    
     courses_dash = []
 
     for c in courses:
