@@ -217,6 +217,17 @@
                         placeholder="e.g., 30"
                       />
                     </div>
+                    <div class="mb-4">
+                      <label class="block text-lg py-1">Weight (%)</label>
+                      <input
+                        v-model="weight"
+                        type="number"
+                        class="w-full border border-gray-300 dark:border-gray-800 rounded-md dark:bg-gray-700 px-3 py-2 focus:outline-none focus:ring-green-200"
+                        placeholder="e.g., 20"
+                        min="0"
+                        max="100"
+                      />
+                    </div>
 
                     <div class="flex justify-end gap-3">
                       <button
@@ -456,7 +467,7 @@ const fetchAssignment = async (course_code) => {
       {
         method: "GET",
         credentials: "include",
-      },
+      }
     );
 
     if (!response.ok) {
@@ -613,7 +624,7 @@ const submitEditAssign = async () => {
           quiz_name: editAssignName.value,
           full_mark: Number(editAssignScore.value),
         }),
-      },
+      }
     );
 
     if (response.ok) {
@@ -639,7 +650,7 @@ const deleteAssign = async (assign_id) => {
           "X-CSRF-Token": csrf_token,
         },
         credentials: "include",
-      },
+      }
     );
 
     if (!response.ok) {
@@ -658,7 +669,7 @@ const archiveAssignment = async (assignment) => {
   try {
     archivedAssignments.value.push(assignment);
     assignments.value = assignments.value.filter(
-      (a) => a.assign_id !== assignment.assign_id,
+      (a) => a.assign_id !== assignment.assign_id
     );
   } catch (err) {
     console.error("Archive failed", err);
@@ -669,7 +680,7 @@ const archiveAssignment = async (assignment) => {
 //คาดว่าจะลบ
 const restoreArchivedAssignment = (assignment) => {
   archivedAssignments.value = archivedAssignments.value.filter(
-    (a) => a.assign_id !== assignment.assign_id,
+    (a) => a.assign_id !== assignment.assign_id
   );
   assignments.value.push(assignment);
 };
@@ -677,7 +688,7 @@ const restoreArchivedAssignment = (assignment) => {
 const deleteArchivedAssignment = async (assign_id) => {
   if (!confirm("Permanently delete this assignment?")) return;
   archivedAssignments.value = archivedAssignments.value.filter(
-    (a) => a.assign_id !== assign_id,
+    (a) => a.assign_id !== assign_id
   );
 };
 
@@ -735,7 +746,6 @@ onMounted(() => {
     window.history.replaceState({}, document.title, window.location.pathname);
   }
 });
-
 
 onBeforeUnmount(() => {
   document.removeEventListener("click", handleClickOutside);

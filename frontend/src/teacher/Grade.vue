@@ -176,12 +176,18 @@
               </label>
               <button
                 @click="publishScores"
-                class="inline-flex items-center px-4 py-2 bg-sky-500 dark:bg-sky-600 border border-transparent rounded-lg text-sm font-medium text-white hover:opacity-90 shadow-sm transition-colors"
+                :disabled="isPublished"
+                :class="[
+                  'inline-flex items-center px-4 py-2 border border-transparent rounded-lg text-sm font-medium text-white shadow-sm transition-colors',
+                  isPublished
+                    ? 'bg-emerald-500 dark:bg-emerald-600 cursor-not-allowed opacity-80'
+                    : 'bg-sky-500 dark:bg-sky-600 hover:opacity-90',
+                ]"
               >
-                <span class="material-symbols-outlined text-lg mr-2"
-                  >publish</span
-                >
-                Publish Scores
+                <span class="material-symbols-outlined text-lg mr-2">
+                  {{ isPublished ? "check_circle" : "publish" }}
+                </span>
+                {{ isPublished ? "Published" : "Publish Scores" }}
               </button>
             </div>
           </div>
@@ -500,7 +506,7 @@ const searchTerm = ref("");
 const sortOption = ref("id_lowhigh");
 const sortOpen = ref(false);
 const statusFilter = ref("all");
-// const isPublished = ref(false);
+const isPublished = ref(false);
 
 const currentPage = ref(1);
 const itemsPerPage = 5;
@@ -544,6 +550,7 @@ const fetchTeacherGrade = async (quiz_id) => {
 
     const data = await response.json();
     assignment_title.value = data?.assignment?.assign_name;
+    isPublished.value = data?.assignment?.is_publish ?? false;
 
     const scoreList = Array.isArray(data?.score) ? data.score : [];
 
@@ -677,6 +684,7 @@ const handleFileUpload = async (event) => {
       return;
     }
 
+    isPublished.value = false;
     alert("CSV uploaded successfully");
     location.reload();
     await fetchTeacherGrade(quizID.value);
@@ -737,6 +745,7 @@ const publishScores = async () => {
       return;
     }
 
+    isPublished.value = true;
     alert("Scores published successfully");
   } catch (error) {
     console.error("Publish error:", error);
@@ -762,12 +771,16 @@ const sortPeople = () => {
           return hasNameB - hasNameA;
         } // มีชื่อขึ้นก่อน
 
-        const fnameCompare = (a.stu_fname || "").localeCompare( b.stu_fname || "");
+        const fnameCompare = (a.stu_fname || "").localeCompare(
+          b.stu_fname || ""
+        );
         if (fnameCompare !== 0) {
           return fnameCompare;
         }
 
-        const mnameCompare = (a.stu_mname || "").localeCompare( b.stu_mname || "");
+        const mnameCompare = (a.stu_mname || "").localeCompare(
+          b.stu_mname || ""
+        );
         if (mnameCompare !== 0) {
           return mnameCompare;
         }
