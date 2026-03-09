@@ -280,7 +280,7 @@ const loginWithGoogle = () => {
   localStorage.removeItem("csrf_token");
   localStorage.removeItem("role");
 
-  window.location.href = "https://25cs212g12.vercel.app/api/login_with_google";
+  window.location.href = "/api/login_with_google";
 };
 
 name: "Login";
