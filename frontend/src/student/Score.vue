@@ -201,6 +201,11 @@
               <div
                 class="absolute inset-0 flex flex-col items-center justify-center"
               >
+              <span
+                class="text-sm text-gray-500 dark:text-gray-400 mt-1"
+              >
+                Rank {{ scoreData?.ranking ?? "-" }} / {{ scoreData?.total_students ?? "-" }}
+              </span>
                 <span
                   class="text-5xl font-bold text-gray-900 dark:text-white tracking-tight"
                   >{{ scoreText }}</span
@@ -229,7 +234,7 @@
                 {{ scoreData?.total_students ?? 0 }} Students
               </div>
             </div>
-            <div class="grid grid-cols-2 md:grid-cols-5 gap-4">
+            <div class="grid grid-cols-2 md:grid-cols-6 gap-4">
               <div
                 class="animate-card delay-1 bg-card-light dark:bg-card-dark p-5 rounded-xl border border-border-light dark:border-blue-700 shadow-sm text-center transition-transform hover:scale-105 duration-200"
               >
@@ -292,6 +297,18 @@
                   {{ scoreData?.lowest ?? "-" }}
                 </div>
               </div>
+              <div
+                class="animate-card delay-1 bg-card-light dark:bg-card-dark p-5 rounded-xl border border-border-light dark:border-blue-700 shadow-sm text-center transition-transform hover:scale-105 duration-200"
+              >
+                <div
+                  class="text-xs font-semibold text-text-muted-light dark:text-text-muted-dark uppercase tracking-wide mb-1"
+                >
+                  Rank
+                </div>
+  <div class="text-2xl font-bold text-gray-900 dark:text-white">
+    {{ scoreData?.ranking ?? "-" }}
+  </div>
+</div>
             </div>
           </div>
           <div

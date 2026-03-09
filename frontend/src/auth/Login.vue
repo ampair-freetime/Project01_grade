@@ -140,6 +140,7 @@
                 ></div>
               </div>
               <button
+                type="button"
                 class="btn-animate w-full h-12 bg-white dark:bg-transparent hover:bg-gray-50 dark:hover:bg-white/5 text-[#0f172a] dark:text-white text-base font-medium rounded-lg border border-border-color dark:border-[#1e293b] transition-all duration-200 flex items-center justify-center gap-3 shadow-sm hover:shadow-md active:scale-[0.98]"
                 @click="loginWithGoogle"
               >
@@ -197,6 +198,8 @@ const savedEmails = ref([]);
 onMounted(() => {
   const params = new URLSearchParams(window.location.search);
   const error = params.get("error");
+
+  loading.value = false;
 
   if (error === "google_not_connected") {
     alert("Please login with email and connect your Google account first.");
@@ -260,6 +263,8 @@ const handleLogin = async () => {
 
     await new Promise((resolve) => setTimeout(resolve, 1000));
 
+    loading.value = false;
+
     if (data.role && data.role.toLowerCase() === "student") {
       router.push("/student/dashboard");
     } else {
@@ -272,12 +277,8 @@ const handleLogin = async () => {
 };
 
 const loginWithGoogle = () => {
-  const csrf = localStorage.getItem("csrf_token");
-
-  if (csrf) {
-    alert("Please login with email and connect your Google account first.");
-    return;
-  }
+  localStorage.removeItem("csrf_token");
+  localStorage.removeItem("role");
 
   window.location.href = "http://localhost:56733/login_with_google";
 };

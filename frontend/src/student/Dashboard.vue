@@ -37,10 +37,11 @@
               </div>
               <div class="relative">
                 <img
+                  v-if="userProfile?.avatar_url"
                   alt="User profile picture"
                   class="h-10 w-10 rounded-full object-cover border-2 border-primary"
-                  :src="userProfile?.avatar_url"
-                  />
+                  :src="userProfile.avatar_url"
+                />
               </div>
             </button>
             <transition name="fade">
@@ -50,9 +51,8 @@
               >
                 <div class="flex items-center space-x-3">
                   <img
-                    class="h-12 w-12 rounded-full object-cover"
-                    :src="userProfile?.avatar_url"
-                  />
+                    v-if="userProfile?.avatar_url"
+                    class="h-12 w-12 rounded-full object-cover":src="userProfile.avatar_url"/>
                   <div>
                     <p
                       class="font-semibold text-gray-900 dark:text-white break-all"
@@ -217,17 +217,18 @@ const handleClickOutside = (event) => {
 
 onMounted(() => {
   document.addEventListener("click", handleClickOutside);
+
   fetchDashboard();
   fetchUserProfile();
 
   const params = new URLSearchParams(window.location.search);
 
   if (params.get("google") === "connect_success") {
-    if (!sessionStorage.getItem("google_connected")) {
-      sessionStorage.setItem("google_connected", "true");
+    if (!sessionStorage.getItem("google_alert_shown")) {
       alert("🎉 Google connected successfully!");
-      window.location.reload();
+      sessionStorage.setItem("google_alert_shown", "true");
     }
+
     window.history.replaceState({}, document.title, window.location.pathname);
   }
 });
@@ -258,6 +259,7 @@ const fetchUserProfile = async () => {
   try {
     const response = await fetch(`${BASE_URL}/me`, {
       credentials: "include",
+      cache: "no-store"       
     });
 
     if (!response.ok) {
@@ -267,6 +269,7 @@ const fetchUserProfile = async () => {
 
     const data = await response.json();
     userProfile.value = data;
+
   } catch (error) {
     console.error("Fetch profile error:", error);
   }

@@ -20,7 +20,7 @@ from datetime import datetime, timedelta
 from httpx import AsyncClient
 
 logger = logging.getLogger(__name__)
-logger.setLevel(logging.DEBUG)  # Set this logger to DEBUG
+logger.setLevel(logging.INFO)  # Set this logger to DEBUG
 
 router = APIRouter()
 
@@ -271,7 +271,7 @@ async def register(signin_data: UserSignin, db: Session = Depends(get_db)):
                 raise HTTPException(status_code=401, detail="Yor are not invited")
             #this user not rewrite 2 ขั้น ใช้ password เป็น none และ student_id เทียบกัน
             avatar = f"https://ui-avatars.com/api/?name={signin_data.first_name}&size=128&background=random"
-            if user.student.student_id != signin_data.student_id:
+            if str(user.student.student_id).strip() != str(signin_data.student_id).strip():
                 raise HTTPException(status_code=401, detail="ID not match please enter new ID")
             if user.student and user.password is None:
                 user.student.first_name = signin_data.first_name
@@ -341,7 +341,7 @@ async def read_users_me(current_user: AuthUser = Depends(get_current_user)):
     google_connected = any(p.provider == "google" for p in current_user.providers)
     if current_user.student:
         return {
-            "id": current_user.auth_user_id,
+            "id": str(current_user.auth_user_id),
             "email": current_user.email,
             "first_name": current_user.student.first_name,
             "middle_name": current_user.student.middle_name,
@@ -352,7 +352,7 @@ async def read_users_me(current_user: AuthUser = Depends(get_current_user)):
         }
     else:
         return {
-            "id": current_user.auth_user_id,
+            "id": str(current_user.auth_user_id),
             "email": current_user.email,
             "first_name": current_user.teacher.first_name,
             "middle_name": current_user.teacher.middle_name,
