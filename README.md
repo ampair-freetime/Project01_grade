@@ -8,25 +8,25 @@
 - **Backend:** FastAPI
 ### Members:
 
-#### 1. 
-- **Student ID:**   
-- **GitHub ID:** [warisara-sr](https://github.com/warisara-sr)  
-- **Role:** Frontend  
-
-#### 2. 
-- **Student ID:** 660510645  
-- **GitHub ID:** [chanakarnpalipol](https://github.com/chanakarnpalipol)  
+#### 1. ชฎาภา อนุกูลเรืองรุ่ง
+- **Student ID:** 670510698 
+- **GitHub ID:** [4whalelocirapter](https://github.com/4whalelocirapter)  
 - **Role:** Backend
 
-#### 3. ชนากานต์ภัส ปลื้มจิตต์
-- **Student ID:** 660510693  
-- **GitHub ID:** [finol05](https://github.com/finol05)  
-- **Role:** Not specified  
+#### 2. ฐิติพันธ์ วงศ์สุรดาพร
+- **Student ID:** 670510703  
+- **GitHub ID:** [thitiphanw](https://github.com/thitiphanw)  
+- **Role:** Frontend
+
+#### 3. นภิสา ศรีทุมมา
+- **Student ID:** 670510711  
+- **GitHub ID:** [toraon-tonaor](https://github.com/toraon-tonaor)  
+- **Role:** Frontend  
 
 #### 4. ศุภาการ แก้วพวงใหม่
 - **Student ID:** 670510728  
 - **GitHub ID:** [ampair-freetime](https://github.com/ampair-freetime) 
-- **Role:** back-end  
+- **Role:** Backend 
 
 ---
 
