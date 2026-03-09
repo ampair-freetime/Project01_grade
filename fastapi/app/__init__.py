@@ -102,7 +102,7 @@ except Exception as e:
 
 auth_router = APIRouter()
 auth.register_routes(auth_router)
-fastapi_app.include_router(auth_router, prefix=api_prefix, tags=["Auth"])
+fastapi_app.include_router(auth_router, tags=["Auth"])
 fastapi_app.include_router(student.router, prefix=f"{api_prefix}/student", tags=["Student"])
 fastapi_app.include_router(teacher.router, prefix=f"{api_prefix}/teacher", tags=["Teacher"])
 # fastapi_app.include_router(
