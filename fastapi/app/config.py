@@ -10,6 +10,7 @@ load_dotenv()
 
 logging.basicConfig(level=logging.INFO)
 
+is_vercel = os.getenv("VERCEL") == "1"
 
 class CustomEnvSettingsSource(EnvSettingsSource):
     def __init__(self, settings_cls, env_nested_delimiter: str | None = None, env_prefix: str = ""):
@@ -34,8 +35,8 @@ class Settings(BaseSettings):
     jwt_secret_key: str = "my_jwt_secret"
     jwt_token_location: List[str] = ["cookies"]
     jwt_access_cookie_name: str = "jwt"
-    jwt_cookie_secure: bool = False
-    jwt_cookie_samesite: str = "Lax"
+    jwt_cookie_secure: bool = is_vercel
+    jwt_cookie_samesite: str = "none" if is_vercel else "Lax"
     jwt_cookie_csrf_protect: bool = False
     secret_key: str = "df0331cefc6c2b9a5d0208a726a5d1c0fd37324feba25506"
     json_as_ascii: bool = False
