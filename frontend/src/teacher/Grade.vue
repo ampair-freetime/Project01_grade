@@ -179,9 +179,7 @@
                 :disabled="isPublished"
                 :class="[
                   'inline-flex items-center px-4 py-2 border border-transparent rounded-lg text-sm font-medium text-white shadow-sm transition-colors',
-                  isPublished
-                    ? 'bg-black cursor-not-allowed opacity-80'
-                    : 'bg-sky-500 hover:opacity-90',
+                  isPublished ? 'bg-black cursor-not-allowed opacity-80' : 'bg-sky-500 hover:opacity-70',
                 ]"
               >
                 <span class="material-symbols-outlined text-lg mr-2">

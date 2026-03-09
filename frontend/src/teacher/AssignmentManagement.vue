@@ -280,15 +280,7 @@
                     <span class="material-symbols-outlined text-xl">edit</span>
                   </button>
 
-                  <button
-                    @click="archiveAssignment(assignment)"
-                    class="btn-animate delay-2 p-2 text-gray-400 hover:text-yellow-600 hover:bg-yellow-50 dark:hover:bg-yellow-900/30 rounded-full transition-colors duration-200 group"
-                    title="Archive Assignment"
-                  >
-                    <span class="material-symbols-outlined text-xl"
-                      >archive</span
-                    >
-                  </button>
+                  
                   <button
                     @click="deleteAssign(assignment.assign_id)"
                     class="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-500/10 rounded-full transition-colors duration-200 group"
@@ -305,15 +297,6 @@
         </div>
       </div>
     </main>
-    <div class="fixed bottom-6 left-6 z-50">
-      <button
-        @click="openArchive"
-        class="p-3 rounded-full bg-surface-light dark:bg-surface-dark text-gray-500 dark:text-gray-400 hover:text-yellow-600 dark:hover:text-yellow-400 shadow-lg border border-border-light dark:border-border-dark transition-all duration-300 focus:outline-none"
-        id="archive-btn"
-      >
-        <span class="material-symbols-outlined text-2xl"> archive </span>
-      </button>
-    </div>
     <div
       v-if="showEditAssignModal"
       class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
@@ -363,71 +346,6 @@
         </div>
       </div>
     </div>
-    <!-- Archive Modal -->
-    <div
-      v-if="showArchiveModal"
-      class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
-      @click.self="closeArchive"
-    >
-      <div
-        class="bg-white dark:bg-gray-800 w-96 rounded-2xl shadow-xl p-6 relative"
-      >
-        <button
-          @click="closeArchive"
-          class="absolute top-3 right-3 text-gray-500 hover:text-red-500"
-        >
-          ✕
-        </button>
-
-        <h2 class="text-xl font-semibold mb-4">Archived Assignment</h2>
-
-        <ul v-if="archivedAssignments.length" class="space-y-2">
-          <li
-            v-for="assignment in archivedAssignments"
-            :key="assignment.assign_id"
-            class="rounded-xl hover:bg-gray-100 dark:hover:bg-gray-600/50 transition-colors duration-150"
-          >
-            <div class="px-4 py-2 flex items-center">
-              <div class="grow items-center">
-                <div class="text-sm font-bold text-gray-900 dark:text-white">
-                  {{ assignment.assign_name || assignment.quiz_name }}
-                </div>
-              </div>
-              <div class="flex items-center gap-6">
-                <div class="flex items-end min-w-[50px]">
-                  <button
-                    class="p-2 text-gray-400 hover:text-yellow-600 hover:bg-yellow-50 dark:hover:bg-yellow-900/30 rounded-full transition-colors duration-200 group"
-                    title="Restore Assignment"
-                    @click="restoreArchivedAssignment(assignment)"
-                  >
-                    <span
-                      class="material-symbols-outlined text-xl group-hover:text-yellow-600"
-                      >restore</span
-                    >
-                  </button>
-                  <button
-                    class="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-900/30 rounded-full transition-colors duration-200 group"
-                    title="Delete Assignment"
-                    @click="deleteArchivedAssignment(assignment.assign_id)"
-                  >
-                    <span
-                      class="material-symbols-outlined text-xl group-hover:text-red-600"
-                      >delete</span
-                    >
-                  </button>
-                </div>
-              </div>
-            </div>
-          </li>
-        </ul>
-        <p
-          v-else
-          class="text-sm text-text-muted-light dark:text-text-muted-dark py-1"
-        >
-          No archived assignments.
-        </p>
-      </div>
-    </div>
   </div>
 </template>
 
@@ -442,7 +360,6 @@ defineOptions({
 const router = useRouter();
 const route = useRoute();
 
-const showArchiveModal = ref(false);
 const startCreate = ref(false);
 const isOpen = ref(false);
 const dropdownRef = ref(null);
@@ -455,7 +372,6 @@ const userProfile = ref(null);
 const assignments = ref([]);
 const courseTitle = ref("");
 const csrf_token = localStorage.getItem("csrf_token");
-const archivedAssignments = ref([]);
 const randomAvatar = ref("");
 const showEditAssignModal = ref(false);
 const assignid = ref(null);
@@ -489,6 +405,7 @@ const fetchAssignment = async (course_code) => {
     //   course: { course_code, course_name },
     //   assignment: [{ assign_id, assign_name, full_mark }, ...]
     // }
+    courseTitle.value = data.course?.course_name || courseTitle.value;
 
     if (Array.isArray(data.assignment)) {
       assignments.value = data.assignment;
@@ -497,8 +414,7 @@ const fetchAssignment = async (course_code) => {
     } else {
       assignments.value = [];
     }
-    courseTitle.value = data.course?.course_name || courseTitle.value;
-  } catch (err) {
+      } catch (err) {
     console.error(err);
   }
 };
@@ -529,14 +445,6 @@ const handleClickOutside = (event) => {
   if (dropdownRef.value && !dropdownRef.value.contains(event.target)) {
     isOpen.value = false;
   }
-};
-
-const openArchive = () => {
-  showArchiveModal.value = true;
-};
-
-const closeArchive = () => {
-  showArchiveModal.value = false;
 };
 
 const createAssignment = () => {
@@ -675,34 +583,6 @@ const deleteAssign = async (assign_id) => {
   } catch (err) {
     console.error("Delete failed", err);
   }
-};
-
-const archiveAssignment = async (assignment) => {
-  if (!confirm("Archive this assignment?")) return;
-  try {
-    archivedAssignments.value.push(assignment);
-    assignments.value = assignments.value.filter(
-      (a) => a.assign_id !== assignment.assign_id
-    );
-  } catch (err) {
-    console.error("Archive failed", err);
-  }
-};
-// ################################ Archive ###########################################################################################################################
-
-//คาดว่าจะลบ
-const restoreArchivedAssignment = (assignment) => {
-  archivedAssignments.value = archivedAssignments.value.filter(
-    (a) => a.assign_id !== assignment.assign_id
-  );
-  assignments.value.push(assignment);
-};
-
-const deleteArchivedAssignment = async (assign_id) => {
-  if (!confirm("Permanently delete this assignment?")) return;
-  archivedAssignments.value = archivedAssignments.value.filter(
-    (a) => a.assign_id !== assign_id
-  );
 };
 
 // ###########################################################################################################################################################
