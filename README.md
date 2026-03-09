@@ -1,7 +1,7 @@
 ## Team: (25cs212g12) ท้ายcomsci 📍  
 ### Project: 2 ประกาศคะแนนสอบ
 **Group ID:** 25cs212g12
-**Mentor:**  (พี่เนย)  
+**Mentor:** กนิษฐา บุตรชุมแสง (พี่เนย)  
 
 ### Tech Stack:
 - **Frontend:** Vue, Tailwind CSS, HTML5, CSS, JavaScript  
