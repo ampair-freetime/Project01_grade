@@ -405,6 +405,7 @@ const fetchAssignment = async (course_code) => {
     //   course: { course_code, course_name },
     //   assignment: [{ assign_id, assign_name, full_mark }, ...]
     // }
+    courseTitle.value = data.course?.course_name || courseTitle.value;
 
     if (Array.isArray(data.assignment)) {
       assignments.value = data.assignment;
@@ -413,8 +414,7 @@ const fetchAssignment = async (course_code) => {
     } else {
       assignments.value = [];
     }
-    courseTitle.value = data.course?.course_name || courseTitle.value;
-  } catch (err) {
+      } catch (err) {
     console.error(err);
   }
 };
