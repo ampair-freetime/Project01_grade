@@ -125,8 +125,8 @@
               <span>Return</span>
             </button>
 
-            <!-- Path -->
-            <div class="flex flex-wrap items-center gap-2">
+            <!-- Navigaton -->
+            <div class="animate-card delay-1 flex flex-wrap items-center gap-2">
               <button
                 class="hover:text-primary font-medium"
                 @click="router.go(-2)"
