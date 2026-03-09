@@ -219,16 +219,6 @@
                       <div class="font-bold text-[#111811] dark:text-white">
                         {{ item.quiz_name }}
                       </div>
-
-                      <!-- คะแนน -->
-                      <div
-                        v-if="item.my_score !== null"
-                        class="text-xs text-gray-500 mt-1"
-                      >
-                        Score: {{ item.my_score }} / {{ item.full_mark }} ({{
-                          item.percent
-                        }}%)
-                      </div>
                     </td>
 
                     <td class="p-4 text-center font-medium">
