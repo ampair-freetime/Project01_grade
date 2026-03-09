@@ -203,16 +203,16 @@ onMounted(() => {
     window.history.replaceState({}, document.title, "/login");
   }
 
-  const storedEmails = JSON.parse(localStorage.getItem("login_emails") || "[]");
-  savedEmails.value = storedEmails;
+  // const storedEmails = JSON.parse(localStorage.getItem("login_emails") || "[]");
+  // savedEmails.value = storedEmails;
 
-  const rememberedEmail = localStorage.getItem("remembered_email");
+  // const rememberedEmail = localStorage.getItem("remembered_email");
 
 
-  if (rememberedEmail){
-    email.value = rememberedEmail;
-    rememberMe.value = true;
-  }
+  // if (rememberedEmail){
+  //   email.value = rememberedEmail;
+  //   rememberMe.value = true;
+  // }
 });
 
 const showPassword = ref(false);
