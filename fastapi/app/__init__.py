@@ -22,8 +22,8 @@ logging.basicConfig(
 )
 logger = logging.getLogger("app")
 
-# Detect if running on Vercel (Vercel sets VERCEL=1 automatically)
-api_prefix = "/api" if os.getenv("VERCEL") else ""
+# Keep API paths identical in Docker and Vercel so the frontend can always use /api.
+api_prefix = "/api"
 logger.info(f"Running with api_prefix: '{api_prefix}' (VERCEL={os.getenv('VERCEL')})")
 
 fastapi_app = FastAPI(

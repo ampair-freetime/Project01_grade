@@ -12,6 +12,12 @@ export default defineConfig({
   server: { // dev
     host: '0.0.0.0', // Allows Vite to listen on all interfaces
     port: 8080, // Ensure the port matches the one in your Dockerfile
+    proxy: {
+      '/api': {
+        target: 'http://fastapi:8080',
+        changeOrigin: true,
+      },
+    },
     // watch: {
     //   usePolling: true
     // }

@@ -359,9 +359,19 @@ const handleSignup = async () => {
       }),
     });
     if (!response.ok) {
-      // alert("not complete");
-      const errorData = await response.json();
-      throw new Error(errorData.detail || "SignUp failed");
+      const responseText = await response.text();
+      let errorMessage = `Sign up failed (${response.status})`;
+
+      if (responseText) {
+        try {
+          const errorData = JSON.parse(responseText);
+          errorMessage = errorData.detail || errorMessage;
+        } catch {
+          errorMessage = responseText;
+        }
+      }
+
+      throw new Error(errorMessage);
     }
 
     router.push("/login");
