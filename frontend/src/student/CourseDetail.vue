@@ -225,6 +225,15 @@
                       {{ item.weight }}%
                     </td>
                   </tr>
+                  <!-- เพิ่ง join วิชา ยังไม่มีคะแนนที่ publish -->
+                  <tr v-if="loaded && !assessments.length">
+                    <td
+                      colspan="2"
+                      class="p-8 text-center text-[#637888] dark:text-[#a0b8cf]"
+                    >
+                      No scores have been published yet.
+                    </td>
+                  </tr>
                 </tbody>
               </table>
             </div>
@@ -245,6 +254,7 @@ const route = useRoute();
 const userProfile = ref(null);
 const course = ref(null);
 const assessments = ref([]);
+const loaded = ref(false);
 const weightedAverage = ref(0);
 
 const courseId = route.params.course_code;
@@ -307,6 +317,7 @@ const fetchCourseDetail = async (courseId) => {
     course.value = data;
     assessments.value = data.assessments;
     weightedAverage.value = data.weighted_average;
+    loaded.value = true;
   } catch (error) {
     console.error("Fetch course detail error:", error);
   }

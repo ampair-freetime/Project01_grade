@@ -194,6 +194,17 @@
                     >
                       section: {{ course.section }}
                     </div>
+                    <div
+                      class="text-xs text-gray-500 dark:text-gray-400 tracking-wide"
+                    >
+                      Join code:
+                      <span class="font-mono font-semibold">{{
+                        course.join_code
+                      }}</span>
+                      <span v-if="!course.join_open" class="text-yellow-600">
+                        (closed)</span
+                      >
+                    </div>
                   </div>
 
                   <div class="flex items-center gap-6 shrink-0">
@@ -216,6 +227,15 @@
                     </div>
 
                     <div class="flex items-end min-w-[50px]">
+                      <button
+                        @click.stop="enrollmentCourse = course.course_code"
+                        class="btn-animate delay-2 p-2 text-gray-400 hover:text-primary hover:bg-sky-50 dark:hover:bg-sky-900/30 rounded-full transition-colors duration-200 group"
+                        title="Enrollment"
+                      >
+                        <span class="material-symbols-outlined text-xl"
+                          >group_add</span
+                        >
+                      </button>
                       <button
                         @click.stop="openEditCourse(course)"
                         class="btn-animate delay-2 p-2 text-gray-400 hover:text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/30 rounded-full transition-colors duration-200 group"
@@ -446,6 +466,12 @@
         </div>
       </div>
     </div>
+    <EnrollmentModal
+      v-if="enrollmentCourse !== null"
+      :course-code="enrollmentCourse"
+      @close="enrollmentCourse = null"
+      @changed="fetchDashboard"
+    />
     <div
       v-if="showEditModal"
       class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
@@ -493,6 +519,7 @@
 <script setup>
 import { ref, onMounted, onBeforeUnmount, computed } from "vue";
 import { useRouter } from "vue-router";
+import EnrollmentModal from "./EnrollmentModal.vue";
 
 const router = useRouter();
 
@@ -516,6 +543,8 @@ const showEditModal = ref(false);
 const coursecode = ref(null);
 const editCourseName = ref("");
 const editCourseId = ref("");
+// course_code ของวิชาที่เปิดหน้า enrollment อยู่
+const enrollmentCourse = ref(null);
 
 const BASE_URL = "/api";
 const connectGoogle = () => {
@@ -667,7 +696,7 @@ const filteredCourses = computed(() => {
   return courses.value.filter(
     (c) =>
       c.course_name.toLowerCase().includes(searchTerm.value.toLowerCase()) ||
-      String(c.course_code).includes(searchTerm.value),
+      String(c.course_id ?? "").toLowerCase().includes(searchTerm.value.toLowerCase()),
   );
 });
 

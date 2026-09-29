@@ -276,8 +276,6 @@ const showPassword = ref(false);
 const confirmPassword = ref("");
 const showConfirmPassword = ref(false);
 
-let email_first = "";
-
 const togglePassword = () => {
   showPassword.value = !showPassword.value;
 };
@@ -293,6 +291,16 @@ const isStudentEmail = computed(() => {
   const parts = prefix.split("_");
 
   return parts.length === 2 && parts[0].length > 0 && parts[1].length > 0;
+});
+
+// teacher จะเป็นจุดก่อนเสมอ tea.cher@cmu.ac.th (ต้องตรงกับ classify_email ใน backend)
+const isTeacherEmail = computed(() => {
+  if (!email.value.endsWith("@cmu.ac.th")) return false;
+
+  const prefix = email.value.split("@")[0];
+  return (
+    prefix.includes(".") && !prefix.startsWith(".") && !prefix.endsWith(".")
+  );
 });
 
 const handleSignup = async () => {
@@ -312,31 +320,19 @@ const handleSignup = async () => {
       return;
     }
     //  เช็คว่า email ต้อง ลงท้ายด้วย @cmu.ac.th
-    if (email.value.endsWith("@cmu.ac.th")) {
-      email_first = email.value.split("@cmu.ac.th");
-    }
-
-    // ถ้าเป็น student email มี_
-    if (!email_first[0]) {
+    if (!email.value.endsWith("@cmu.ac.th")) {
       alert("Not CMU mail");
       return;
     }
-    if (email_first[0].includes("_") && email.value.endsWith("@cmu.ac.th")) {
-      if (!studentID.value) {
+    // ถ้าเป็น student email มี_ ต้องใส่ student ID (ตัวเลข)
+    if (isStudentEmail.value) {
+      if (!/^\d+$/.test(String(studentID.value ?? "").trim())) {
         alert("ใส่ Student ID ด้วยจ้า");
         return;
       }
-    }
-    //เป็น teacher แน่นอน
-    if (!studentID.value) {
-      if (
-        !email_first[0].includes(".") ||
-        email_first[0].endsWith(".") ||
-        email_first[0].startsWith(".")
-      ) {
-        alert("CMU mail not correct pattern");
-        return;
-      }
+    } else if (!isTeacherEmail.value) {
+      alert("CMU mail not correct pattern");
+      return;
     }
 
     if (password.value !== confirmPassword.value) {
@@ -354,7 +350,10 @@ const handleSignup = async () => {
         last_name: lastName.value,
         middle_name: middleName.value,
         email: email.value,
-        student_id: studentID.value,
+        // ส่ง student_id เฉพาะ email นักศึกษา (กันค่าค้างตอนแก้ email เป็นของอาจารย์)
+        student_id: isStudentEmail.value
+          ? String(studentID.value).trim()
+          : null,
         password: password.value,
       }),
     });

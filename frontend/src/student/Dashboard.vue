@@ -139,7 +139,42 @@
               >
                 Current Enrolled Courses
               </h3>
+              <button
+                @click="openJoin"
+                class="btn-animate inline-flex items-center gap-1 px-4 py-2 rounded-lg bg-primary hover:bg-primary-dark text-white text-sm font-medium shadow-sm transition-colors"
+              >
+                <span class="material-symbols-outlined text-lg">add</span>
+                Join Course
+              </button>
             </div>
+            <!-- empty state -->
+            <div
+              v-if="loaded && !courses.length"
+              class="bg-white dark:bg-[#1a232e] rounded-xl shadow-sm p-10 flex flex-col items-center text-center gap-3"
+            >
+              <span class="material-symbols-outlined text-5xl text-primary"
+                >school</span
+              >
+              <h4 class="text-lg font-semibold text-[#111811] dark:text-white">
+                You haven't joined any courses yet
+              </h4>
+              <p class="text-sm text-[#637888] dark:text-[#a0b8cf]">
+                Enter the join code from your teacher to get started.
+              </p>
+              <button
+                @click="openJoin"
+                class="btn-animate mt-2 inline-flex items-center gap-1 px-4 py-2 rounded-lg bg-primary hover:bg-primary-dark text-white text-sm font-medium"
+              >
+                <span class="material-symbols-outlined text-lg">add</span>
+                Join Your First Course
+              </button>
+            </div>
+            <p
+              v-else-if="courses.length && !filteredCourses.length"
+              class="text-sm text-[#637888] dark:text-[#a0b8cf] text-center py-6"
+            >
+              No courses found.
+            </p>
             <!-- Add courses -->
             <ul class="divide-y divide-border-light dark:divide-border-dark">
               <li
@@ -168,6 +203,17 @@
                         >
                           {{ course.course_name }}
                         </h4>
+                        <p
+                          class="text-xs text-[#637888] dark:text-[#a0b8cf] truncate"
+                        >
+                          {{ course.course_id }}
+                          <span v-if="course.section">
+                            · Section {{ course.section }}</span
+                          >
+                          <span v-if="course.teacher_name">
+                            · {{ course.teacher_name }}</span
+                          >
+                        </p>
                       </div>
                     </div>
                     <div
@@ -186,6 +232,126 @@
         </div>
       </div>
     </main>
+
+    <!-- Join course modal: กรอก code → ยืนยันวิชา → สำเร็จ -->
+    <div
+      v-if="joinOpen"
+      class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4"
+      @click.self="closeJoin"
+    >
+      <div
+        class="animate-card bg-white dark:bg-gray-800 w-full max-w-md rounded-xl shadow-xl p-6 relative"
+        role="dialog"
+        aria-labelledby="join-title"
+      >
+        <button
+          @click="closeJoin"
+          class="absolute top-3 right-3 text-2xl text-gray-500 hover:text-red-500"
+          aria-label="Close"
+        >
+          ✕
+        </button>
+        <h2 id="join-title" class="text-2xl font-semibold mb-1">
+          {{
+            joinStage === "success"
+              ? "Enrollment Successful"
+              : joinStage === "review"
+                ? "Confirm Course"
+                : "Join Course"
+          }}
+        </h2>
+
+        <form v-if="joinStage === 'input'" @submit.prevent="findCourse">
+          <p class="text-sm text-gray-500 dark:text-gray-400 mb-4">
+            Enter the 6-character code shared by your teacher.
+          </p>
+          <label for="join-code" class="block py-1 text-sm font-semibold"
+            >Class Join Code</label
+          >
+          <input
+            id="join-code"
+            v-model="joinCode"
+            maxlength="6"
+            autocomplete="off"
+            spellcheck="false"
+            placeholder="e.g. K7MX2P"
+            class="w-full border border-gray-300 dark:border-gray-600 rounded-md dark:bg-gray-700 px-3 py-3 text-center text-2xl font-mono tracking-[0.4em] uppercase focus:outline-none focus:ring-2 focus:ring-primary"
+          />
+          <p v-if="joinError" class="text-sm text-red-600 mt-2" role="alert">
+            {{ joinError }}
+          </p>
+          <div class="flex justify-end gap-3 mt-6">
+            <button
+              type="button"
+              @click="closeJoin"
+              class="px-4 py-2 rounded-md border border-gray-300 dark:border-gray-600"
+            >
+              Cancel
+            </button>
+            <button
+              type="submit"
+              :disabled="joinBusy || joinCode.trim().length !== 6"
+              class="px-4 py-2 rounded-md bg-primary hover:bg-primary-dark text-white disabled:opacity-50"
+            >
+              Find Course
+            </button>
+          </div>
+        </form>
+
+        <div v-else-if="joinStage === 'review'">
+          <p class="text-sm text-gray-500 dark:text-gray-400 mb-4">
+            Please check the course details before joining.
+          </p>
+          <div
+            class="rounded-lg border border-gray-200 dark:border-gray-700 p-4"
+          >
+            <h3 class="text-lg font-semibold">
+              {{ joinCourse?.course_name }}
+            </h3>
+            <p class="text-sm text-gray-500 dark:text-gray-400">
+              Course ID: {{ joinCourse?.course_id }}
+            </p>
+            <p class="text-sm text-gray-500 dark:text-gray-400">
+              Teacher: {{ joinCourse?.teacher_name }}
+            </p>
+          </div>
+          <p v-if="joinError" class="text-sm text-red-600 mt-2" role="alert">
+            {{ joinError }}
+          </p>
+          <div class="flex justify-end gap-3 mt-6">
+            <button
+              @click="joinStage = 'input'"
+              class="px-4 py-2 rounded-md border border-gray-300 dark:border-gray-600"
+            >
+              Back
+            </button>
+            <button
+              @click="confirmJoin"
+              :disabled="joinBusy"
+              class="px-4 py-2 rounded-md bg-primary hover:bg-primary-dark text-white disabled:opacity-50"
+            >
+              Confirm Enrollment
+            </button>
+          </div>
+        </div>
+
+        <div v-else class="text-center py-4" role="status">
+          <span class="material-symbols-outlined text-5xl text-green-600"
+            >check_circle</span
+          >
+          <h3 class="text-lg font-semibold mt-2">You're enrolled!</h3>
+          <p class="text-sm text-gray-500 dark:text-gray-400">
+            {{ joinCourse?.course_name }} is now in your courses.
+          </p>
+          <button
+            @click="closeJoin"
+            class="mt-6 px-4 py-2 rounded-md bg-primary hover:bg-primary-dark text-white"
+          >
+            View My Courses
+          </button>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -202,7 +368,16 @@ const dropdownRef = ref(null);
 
 const userProfile = ref(null);
 const courses = ref([]);
+const loaded = ref(false);
 const searchTerm = ref("");
+
+// join course
+const joinOpen = ref(false);
+const joinStage = ref("input");
+const joinCode = ref("");
+const joinCourse = ref(null);
+const joinError = ref("");
+const joinBusy = ref(false);
 
 const BASE_URL = "/api";
 const toggleDropdown = () => {
@@ -250,6 +425,7 @@ const fetchDashboard = async () => {
 
     const data = await response.json();
     courses.value = data.courses;
+    loaded.value = true;
   } catch (error) {
     console.error("Fetch dashboard error:", error);
   }
@@ -302,12 +478,79 @@ const filteredCourses = computed(() => {
   return courses.value.filter(
     (c) =>
       c.course_name.toLowerCase().includes(searchTerm.value.toLowerCase()) ||
-      String(c.course_code).includes(searchTerm.value),
+      String(c.course_id ?? "").toLowerCase().includes(searchTerm.value.toLowerCase()),
   );
 });
 
 const goToAssignment = (course_code) => {
   router.push(`/student/course/${course_code}`);
+};
+
+// ################################################################# join course ###################################
+const readError = async (response, fallback) => {
+  const data = await response.json().catch(() => null);
+  return data?.detail || fallback;
+};
+
+const openJoin = () => {
+  joinCode.value = "";
+  joinCourse.value = null;
+  joinError.value = "";
+  joinStage.value = "input";
+  joinOpen.value = true;
+};
+
+const closeJoin = () => {
+  joinOpen.value = false;
+};
+
+// ดูข้อมูลวิชาจาก code ก่อน
+const findCourse = async () => {
+  joinError.value = "";
+  joinBusy.value = true;
+  try {
+    const code = joinCode.value.trim().toUpperCase();
+    const response = await fetch(
+      `${BASE_URL}/student/enroll/${encodeURIComponent(code)}`,
+      { credentials: "include" },
+    );
+    if (!response.ok) {
+      joinError.value = await readError(response, "Could not find course");
+      return;
+    }
+    joinCourse.value = await response.json();
+    joinStage.value = "review";
+  } catch (error) {
+    joinError.value = "Something went wrong. Please try again.";
+  } finally {
+    joinBusy.value = false;
+  }
+};
+
+const confirmJoin = async () => {
+  joinError.value = "";
+  joinBusy.value = true;
+  try {
+    const response = await fetch(`${BASE_URL}/student/enroll`, {
+      method: "POST",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+        "X-CSRF-Token": localStorage.getItem("csrf_token") || "",
+      },
+      body: JSON.stringify({ code: joinCode.value.trim().toUpperCase() }),
+    });
+    if (!response.ok) {
+      joinError.value = await readError(response, "Enrollment failed");
+      return;
+    }
+    joinStage.value = "success";
+    await fetchDashboard();
+  } catch (error) {
+    joinError.value = "Something went wrong. Please try again.";
+  } finally {
+    joinBusy.value = false;
+  }
 };
 </script>
 

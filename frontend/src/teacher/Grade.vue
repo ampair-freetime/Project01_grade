@@ -190,6 +190,52 @@
             </div>
           </div>
 
+          <!-- ผล import CSV: คนที่ยังไม่มีบัญชี / email ไม่ตรง จะยังไม่ได้คะแนน -->
+          <div
+            v-if="uploadResult"
+            class="rounded-xl border p-4 text-sm"
+            :class="
+              uploadResult.unmatched.length
+                ? 'border-yellow-300 bg-yellow-50 dark:bg-yellow-900/20 dark:border-yellow-700'
+                : 'border-green-300 bg-green-50 dark:bg-green-900/20 dark:border-green-700'
+            "
+            role="status"
+          >
+            <div class="flex items-start justify-between gap-3">
+              <p class="font-semibold">
+                Imported {{ uploadResult.matched }} score(s).
+                <span v-if="uploadResult.unmatched.length">
+                  {{ uploadResult.unmatched.length }} row(s) skipped — these
+                  students need to sign up (or fix the email), then import the
+                  CSV again.
+                </span>
+              </p>
+              <button
+                @click="uploadResult = null"
+                class="text-gray-500 hover:text-red-500"
+                aria-label="Dismiss"
+              >
+                ✕
+              </button>
+            </div>
+            <ul v-if="uploadResult.unmatched.length" class="mt-2 space-y-1">
+              <li
+                v-for="row in uploadResult.unmatched"
+                :key="row.student_id"
+                class="flex flex-wrap gap-x-3"
+              >
+                <span class="font-mono">{{ row.student_id }}</span>
+                <span>{{ row.name }}</span>
+                <span class="text-gray-500">{{ row.email }}</span>
+                <span class="text-yellow-700 dark:text-yellow-400">{{
+                  row.reason === "email_mismatch"
+                    ? "email does not match account"
+                    : "not signed up"
+                }}</span>
+              </li>
+            </ul>
+          </div>
+
           <div
             class="animate-card delay-3 px-4 py-6 bg-surface-light dark:bg-surface-dark rounded-xl border border-border-light dark:border-border-dark flex flex-col md:flex-row items-center justify-between gap-4 shadow-sm"
           >
@@ -505,6 +551,7 @@ const sortOption = ref("id_lowhigh");
 const sortOpen = ref(false);
 const statusFilter = ref("all");
 const isPublished = ref(false);
+const uploadResult = ref(null);
 
 const currentPage = ref(1);
 const itemsPerPage = 5;
@@ -648,6 +695,8 @@ const handleClickOutside = (event) => {
 
 const handleFileUpload = async (event) => {
   const file = event.target.files[0];
+  // ให้เลือกไฟล์เดิมซ้ำได้ (import ใหม่หลังนักศึกษาสมัครแล้ว)
+  event.target.value = "";
 
   console.log("File:", file);
   console.log("courseId:", courseId.value);
@@ -683,8 +732,7 @@ const handleFileUpload = async (event) => {
     }
 
     isPublished.value = false;
-    alert("CSV uploaded successfully");
-    location.reload();
+    uploadResult.value = await response.json();
     await fetchTeacherGrade(quizID.value);
   } catch (err) {
     console.error(err);

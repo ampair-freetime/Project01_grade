@@ -5,6 +5,8 @@ import logging
 import secrets
 from fastapi import APIRouter, Request, Depends, HTTPException, status, Response
 from fastapi.responses import RedirectResponse, JSONResponse
+from sqlalchemy import func
+from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 from app.db import get_db
 from app.schemas.auth import UserResponse, Message, UserLogin, UserSignin
@@ -265,61 +267,97 @@ async def login(login_data: UserLogin,response: Response, db: Session = Depends(
         "role": user_role
     }
 
+def classify_email(email: str):
+    # รูปแบบ email เดิม: student มี _ คั่น 2 ส่วน (stu_dent@cmu.ac.th), teacher มี . (tea.cher@cmu.ac.th)
+    # ต้องตรงกับ isStudentEmail / เช็ค pattern ใน frontend/src/auth/Signup.vue
+    local, _, domain = email.strip().lower().rpartition("@")
+    if domain != settings.allowed_email_domain.lower():
+        return None
+    parts = local.split("_")
+    if len(parts) == 2 and parts[0] and parts[1]:
+        return "student"
+    if "." in local and not local.startswith(".") and not local.endswith("."):
+        return "teacher"
+    return None
+
+
 @router.post("/register")
 async def register(signin_data: UserSignin, db: Session = Depends(get_db)):
-    #check email is teacher or student
-    #example email stu_dent@cmu.ac.th นักเรียนต้องมี ขีดเท่านั้น tea.cher@cmu.ac.th teacher จะเป็นจุดก่อนเสมอ
-    #student
-    try:
-        if signin_data.student_id:
-            user = db.query(AuthUser).filter(AuthUser.email == signin_data.email).first()
-            if not user:
-                raise HTTPException(status_code=401, detail="Yor are not invited")
-            #this user not rewrite 2 ขั้น ใช้ password เป็น none และ student_id เทียบกัน
-            avatar = f"https://ui-avatars.com/api/?name={signin_data.first_name}&size=128&background=random"
-            if str(user.student.student_id).strip() != str(signin_data.student_id).strip():
-                raise HTTPException(status_code=401, detail="ID not match please enter new ID")
-            if user.student and user.password is None:
-                user.student.first_name = signin_data.first_name
-                user.student.last_name = signin_data.last_name
-                user.student.middle_name = signin_data.middle_name
-                user.password = password_hash.hash(signin_data.password)
-                user.student.avatar_url = avatar
-                db.commit()
-                return {"message": "Account successful"}
-            else:
-                raise HTTPException(status_code=401, detail="This student user already used")
-        else:
-            #teacher
-            user = db.query(AuthUser).filter(AuthUser.email == signin_data.email).first()
-            if user:
-                raise HTTPException(status_code=401, detail="Email teacher already used")
-                #ต้องไม่มี ใน databse
-            new_auth = AuthUser(
-                email=signin_data.email,
-                password=password_hash.hash(signin_data.password)
-            )
-            db.add(new_auth)
-            db.commit()
-            db.refresh(new_auth)
+    # เก็บ email ตามที่พิมพ์ (login เทียบแบบตรงตัว) แต่เช็คซ้ำแบบไม่สนตัวพิมพ์
+    email = signin_data.email.strip()
+    role = classify_email(email)
+    if role is None:
+        raise HTTPException(status_code=400, detail="CMU mail not correct pattern")
 
-            avatar = f"https://ui-avatars.com/api/?name={signin_data.first_name}&size=128&background=random"
-            new_profile = Teacher(
+    avatar = f"https://ui-avatars.com/api/?name={signin_data.first_name}&size=128&background=random"
+    try:
+        user = db.query(AuthUser).filter(func.lower(AuthUser.email) == email.lower()).first()
+
+        if role == "student":
+            student_id = str(signin_data.student_id or "").strip()
+            if not student_id.isdigit():
+                raise HTTPException(status_code=400, detail="Please enter a valid student ID")
+
+            if user:
+                # legacy: ถูกเชิญผ่าน CSV (สมัยก่อน) แต่ยังไม่ได้ตั้ง password → claim แถวเดิม
+                # แถวนี้มีคะแนนผูกกับ student_id อยู่ ห้ามลบ/สร้างใหม่
+                if user.password is None and user.student:
+                    if str(user.student.student_id).strip() != student_id:
+                        raise HTTPException(status_code=409, detail="ID not match please enter new ID")
+                    user.student.first_name = signin_data.first_name
+                    user.student.last_name = signin_data.last_name
+                    user.student.middle_name = signin_data.middle_name
+                    user.student.avatar_url = avatar
+                    user.password = password_hash.hash(signin_data.password)
+                    db.commit()
+                    return {"message": "Account successful"}
+                raise HTTPException(status_code=409, detail="Email already used")
+
+            # กันสวมรอย: student_id นี้ผูกกับ email อื่นแล้ว
+            if db.query(Student).filter(Student.student_id == student_id).first():
+                raise HTTPException(status_code=409, detail="Student ID already used")
+
+            new_auth = AuthUser(email=email, password=password_hash.hash(signin_data.password))
+            db.add(new_auth)
+            db.flush()
+            db.add(Student(
+                student_id=student_id,
                 first_name=signin_data.first_name,
-                last_name= signin_data.last_name,
-                middle_name= signin_data.middle_name,
+                last_name=signin_data.last_name,
+                middle_name=signin_data.middle_name,
                 auth_user_id=new_auth.auth_user_id,
                 avatar_url=avatar,
-            )
-            db.add(new_profile)
+            ))
             db.commit()
-        #if request.email แยก เป็น 
-        #ใช้สมัครสำหรับ นักเรียนใหม่ เพื่อเข้าสู่ระบบ เช็ค database แล้วเปลี่ยนเอา หรือ สร้าง database ใหม่
+            return {"message": "Sign up completed"}
+
+        # teacher — ต้องไม่มี email ใน database
+        if user:
+            raise HTTPException(status_code=409, detail="Email teacher already used")
+        new_auth = AuthUser(email=email, password=password_hash.hash(signin_data.password))
+        db.add(new_auth)
+        db.flush()
+        db.add(Teacher(
+            first_name=signin_data.first_name,
+            last_name=signin_data.last_name,
+            middle_name=signin_data.middle_name,
+            auth_user_id=new_auth.auth_user_id,
+            avatar_url=avatar,
+        ))
+        db.commit()
         #ถ้ามีเวลาให้เอาอันนี้ออก แล้ว ใช้ การ ส่งรหัสผ่าน email (advance)
         return {"message": "Sign up completed"}
+    except HTTPException:
+        db.rollback()
+        raise
+    except IntegrityError:
+        # สมัครพร้อมกัน email/student_id ซ้ำ
+        db.rollback()
+        raise HTTPException(status_code=409, detail="Email or student ID already used")
     except Exception as e:
         db.rollback()
-        raise HTTPException(status_code=400,detail=f"Upload failed: {str(e)}")
+        logger.error(f"Register error: {e}")
+        raise HTTPException(status_code=400, detail="Sign up failed")
 
 @router.get("/logout")
 async def logout(response: Response):

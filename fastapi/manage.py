@@ -3,6 +3,7 @@ from app.db import SessionLocal
 # 🌟 แก้ไขบรรทัดนี้: ลบ Enrollment ออก เอา Quiz กับ Score เข้ามาแทน
 from app.models import AuthUser, Teacher, Student, Course, Quiz, Score 
 from pwdlib import PasswordHash
+from migrate_enrollment import migrate_enrollment
 
 password_hash = PasswordHash.recommended()
 
@@ -83,3 +84,5 @@ def seed_data():
 
 if __name__ == "__main__":
     seed_data()
+    # สร้าง enrollments + join_code ให้ข้อมูล seed (รันซ้ำได้)
+    migrate_enrollment()

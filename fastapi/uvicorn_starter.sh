@@ -2,8 +2,7 @@
 # Ensure Python uses the correct path
 export PATH="/usr/local/bin:$PATH"
 
-# Debug: Verify if Python sees Alembic and Uvicorn
-python3 -m alembic -h >/dev/null 2>&1 || { echo "Error: alembic not found"; exit 1; }
+# Debug: Verify if Python sees Uvicorn
 python3 -m uvicorn --help >/dev/null 2>&1 || { echo "Error: uvicorn not found"; exit 1; }
 
 if [ "$APP_ENV" = "development" ]; then
@@ -23,8 +22,20 @@ if [ "$APP_ENV" = "development" ]; then
         echo "Using Supabase - Skipping local DB wait..."
     fi
 
+    # โปรเจกต์ไม่มี alembic.ini/versions — ใช้ script ที่รันซ้ำได้แทน
+    # (สร้างตารางที่ขาด + enrollments + join_code + backfill)
+    # port เปิดแล้วแต่ Postgres อาจยังไม่พร้อมตอนบูตครั้งแรก — ลองซ้ำ
     echo "Running database migrations..."
-    python3 -m alembic upgrade head  # Run Alembic migrations
+    tries=0
+    until python3 migrate_enrollment.py; do
+        tries=$((tries + 1))
+        if [ "$tries" -ge 10 ]; then
+            echo "Error: migrations failed"
+            exit 1
+        fi
+        echo "Migration failed, retrying ($tries/10)..."
+        sleep 3
+    done
     echo "Migrations applied"
 
     if [ "$DEBUG" = "1" ]; then

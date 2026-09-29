@@ -68,6 +68,8 @@ class Settings(BaseSettings):
     google_client_id: Optional[str] = None
     google_client_secret: Optional[str] = None
     google_discovery_url: Optional[str] = None
+    # โดเมน email มหาลัยที่อนุญาตให้สมัคร
+    allowed_email_domain: str = "cmu.ac.th"
     frontend_login_success_uri: str = "http://localhost:8080/student/dashboard"
     frontend_login_failure_uri: str = "http://localhost:8080/login-failure"
 
