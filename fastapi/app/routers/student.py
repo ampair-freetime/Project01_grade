@@ -71,6 +71,7 @@ def course_summary(course: Course):
         "course_code": course.course_code,
         "course_name": course.course_name,
         "course_id": course.course_id,
+        "section": course.section,
         "teacher_name": teacher_full_name(course.teacher),
     }
 
@@ -121,7 +122,7 @@ async def student_dashboard(db: Session = Depends(get_db),current_user: AuthUser
             "course_code": e.course.course_code,
             "course_name": e.course.course_name,
             "course_id": e.course.course_id,
-            "section": e.section,
+            "section": e.section or e.course.section,
             "teacher_name": teacher_full_name(e.course.teacher),
         })
 
@@ -196,7 +197,7 @@ async def student_course_detail(course_code: int,db: Session = Depends(get_db),c
         "course_code": course.course_code,
         "course_name": course.course_name,
         "course_id": course.course_id,
-        "section": enrollment.section,
+        "section": enrollment.section or course.section,
         "teacher_name": teacher_full_name(course.teacher),
         "weighted_average": weighted_average,
         "assessments": assessment

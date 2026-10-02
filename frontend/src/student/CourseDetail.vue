@@ -146,6 +146,9 @@
                 >
                   {{ course?.course_name }}
                 </h1>
+                <p v-if="course?.section" class="text-sm text-text-muted-light dark:text-text-muted-dark">
+                  Section: {{ course.section }}
+                </p>
                 <div
                   class="flex items-center gap-2 text-primary dark:text-primary mt-1"
                 >

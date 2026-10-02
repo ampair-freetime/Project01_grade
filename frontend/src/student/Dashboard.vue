@@ -311,6 +311,9 @@
             <p class="text-sm text-gray-500 dark:text-gray-400">
               Course ID: {{ joinCourse?.course_id }}
             </p>
+            <p v-if="joinCourse?.section" class="text-sm text-gray-500 dark:text-gray-400">
+              Section: {{ joinCourse.section }}
+            </p>
             <p class="text-sm text-gray-500 dark:text-gray-400">
               Teacher: {{ joinCourse?.teacher_name }}
             </p>

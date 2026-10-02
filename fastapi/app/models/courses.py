@@ -11,6 +11,8 @@ class Course(Base, SerializerMixin):
 
     course_name = Column(VARCHAR(255))
     course_id = Column(VARCHAR)
+    # Default section for students without an enrollment-specific section.
+    section = Column(VARCHAR(50))
     # รหัสให้นักศึกษา join เอง (6 ตัว, ไม่มี 0/O/1/I)
     join_code = Column(VARCHAR(8), unique=True, index=True)
     join_open = Column(Boolean, nullable=False, default=True, server_default=text("true"))

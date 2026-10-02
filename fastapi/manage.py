@@ -47,6 +47,7 @@ def seed_data():
     db.refresh(student_profile2)
 
     course_cs101 = Course(course_name="Intro to Computer Science", teacher_id=teacher_profile.teacher_id)
+    course_cs101.section = "001"
     db.add(course_cs101)
     db.commit()
     db.refresh(course_cs101)
@@ -63,7 +64,6 @@ def seed_data():
     student_score = Score(
         score=24.0, 
         unread_flag=True, 
-        section="001", 
         student_id=student_profile.student_id, 
         quiz_id=assignment_1.quiz_id
     )
@@ -73,7 +73,6 @@ def seed_data():
     student_score2 = Score(
         score=28.0,
         unread_flag=True, 
-        section="001", 
         student_id=student_profile2.student_id, 
         quiz_id=assignment_1.quiz_id
     )

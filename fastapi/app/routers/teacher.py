@@ -49,11 +49,13 @@ async def teacher_dashboard(db: Session = Depends(get_db),current_user: AuthUser
         # จำนวนนักศึกษาจาก enrollments (รวมคนที่ join เองแต่ยังไม่มีคะแนน)
         student_number = count_enrolled(db, c.course_code)
 
-        get_section = db.query(Score).join(Quiz, Quiz.quiz_id == Score.quiz_id).filter(Quiz.course_code == c.course_code).first()
-        if get_section:
-            section = get_section.section
-        else:
-            section= None
+        sections = db.query(Enrollment.section).filter(
+            Enrollment.course_code == c.course_code,
+            Enrollment.status == "active",
+            Enrollment.section.isnot(None),
+            Enrollment.section != "",
+        ).distinct().order_by(Enrollment.section).all()
+        section = c.section or ", ".join(row.section for row in sections) or None
         courses_dash.append({
             "course_code": c.course_code,
             "course_name": c.course_name,
@@ -107,15 +109,19 @@ async def teacher_score(quiz_id: str,db:Session=Depends(get_db),current_user: Au
         raise HTTPException(status_code=404,detail="score not found")
 
     student_score = []
-    all_score = db.query(Score).filter(Score.quiz_id == quiz_id, Score.is_deleted == False).all()
-    for s in all_score:
+    all_score = db.query(Score, Enrollment.section).outerjoin(
+        Enrollment,
+        (Enrollment.student_id == Score.student_id)
+        & (Enrollment.course_code == assignment.course_code),
+    ).filter(Score.quiz_id == quiz_id, Score.is_deleted == False).all()
+    for s, section in all_score:
         # ข้อมูลนักศึกษาสำหรับแสดงชื่อ/รูปโปรไฟล์ในหน้า Grade
         stu = s.student
         student_score.append({
                 "score_id": s.score_id,
                 "score": s.score,
                 "unread_flag": s.unread_flag,
-                "section": s.section,
+                "section": section or assignment.course.section,
                 "stu_id": s.student_id,
                 "stu_fname": stu.first_name if stu else None,
                 "stu_mname": stu.middle_name if stu else None,
@@ -165,7 +171,7 @@ async def course_roster(course_code: int, db: Session = Depends(get_db), current
             "last_name": stu.last_name,
             "email": stu.auth_user.email if stu.auth_user else None,
             "avatar_url": stu.avatar_url,
-            "section": e.section,
+            "section": e.section or course.section,
             "joined_via": e.joined_via,
             # ถูกเพิ่มผ่าน CSV สมัยก่อนแต่ยังไม่ได้สมัครบัญชี
             "signed_up": bool(stu.auth_user and stu.auth_user.password),
@@ -194,6 +200,7 @@ async def create_course(course: Teacher_Course,db: Session = Depends(get_db),cur
             course_name=course.course_name,
             teacher_id=teacher.teacher_id,
             course_id=course.course_id,
+            section=course.section,
             join_code=generate_join_code(db)
         )
 
@@ -302,12 +309,11 @@ async def upload_csv(quiz_id: str,course_code: int,file: UploadFile = File(...),
             if t_score:
                 # Update คะแนนเดิม
                 t_score.score = r["score"]
-                t_score.section = r["section"]
                 t_score.unread_flag = True
                 t_score.is_deleted = False
             else:
                 # สร้างคะแนนใหม่
-                t_score = Score(score=r["score"], section=r["section"], quiz_id=quiz_id, student_id=r["student_id"])
+                t_score = Score(score=r["score"], quiz_id=quiz_id, student_id=r["student_id"])
                 db.add(t_score)
                 score_index[r["student_id"]] = t_score
 

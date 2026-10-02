@@ -192,7 +192,7 @@
                     <div
                       class="text-xs text-gray-500 dark:text-gray-400 tracking-wide"
                     >
-                      section: {{ course.section }}
+                      Section: {{ course.section || "-" }}
                     </div>
                     <div
                       class="text-xs text-gray-500 dark:text-gray-400 tracking-wide"
@@ -456,6 +456,20 @@
             placeholder="e.g., 204212"
           />
         </div>
+        <div class="mb-4">
+          <label for="create-course-section" class="block py-1">Section (optional)</label>
+          <input
+            id="create-course-section"
+            v-model="courseSection"
+            type="text"
+            maxlength="50"
+            class="w-full border border-gray-300 dark:border-gray-800 rounded-md dark:bg-gray-700 px-3 py-2 focus:outline-none focus:ring-green-200"
+            placeholder="e.g., 001"
+          />
+          <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
+            Students will see this section when joining your course.
+          </p>
+        </div>
         <div class="flex justify-end gap-3">
           <button
             @click="submit"
@@ -539,6 +553,7 @@ const csrf_token = localStorage.getItem("csrf_token");
 const currentPage = ref(1);
 const itemsPerPage = 5;
 const courseID = ref("");
+const courseSection = ref("");
 const showEditModal = ref(false);
 const coursecode = ref(null);
 const editCourseName = ref("");
@@ -715,12 +730,14 @@ const submit = async () => {
       body: JSON.stringify({
         course_name: courseName.value,
         course_id: courseID.value,
+        section: courseSection.value.trim() || null,
       }),
     });
 
     if (response.ok) {
       courseName.value = "";
       courseID.value = "";
+      courseSection.value = "";
       startCreate.value = false;
       await fetchDashboard();
     }

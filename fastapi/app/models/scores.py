@@ -16,8 +16,6 @@ class Score(Base, SerializerMixin):
     score = Column(Float, default=0.0)
     # เปิดดูแล้วหรือยัง
     unread_flag = Column(Boolean, default=True)
-    # section
-    section = Column(VARCHAR(50))
     is_deleted = Column(Boolean,default=False)
 
     # เชื่อมต่อกับ quiz
@@ -30,4 +28,3 @@ class Score(Base, SerializerMixin):
     # create/update
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
-
