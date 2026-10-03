@@ -35,6 +35,13 @@
 
 ### Database migration: section stored in enrollment
 
+Docker development startup runs `migrate_enrollment.py` automatically. For old
+Docker volumes, it first upgrades integer IDs to text, preserving their values
+and foreign keys, renames the internal `course_id` to `course_code`, and adds
+the new course code and quiz publication fields. Back up the database and stop
+application workers before running migrations manually. Existing data volumes
+do not need to be deleted.
+
 Student-specific sections are stored in `enrollments`. CSV uploads still accept
 the `section` column, and score API responses read it from the student's course
 enrollment, falling back to the optional course section set by the teacher.

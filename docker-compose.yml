@@ -21,6 +21,8 @@ services:
 
   db:
     image: postgres:13-alpine
+    ports:
+      - "127.0.0.1:5433:5432"
     profiles:
       - with-db # Only starts when using: docker compose --profile with-db up
     volumes:

@@ -6,9 +6,12 @@ from sqlalchemy import inspect, text
 from app.db import Base, SessionLocal, engine
 from app.models import Course
 from app.join_code import generate_join_code
+from migrate_legacy_schema import migrate_legacy_schema
 
 
 def migrate_enrollment():
+    # Existing Docker volumes may still contain the original integer-ID schema.
+    migrate_legacy_schema(engine)
     # 1. สร้างตารางที่ยังไม่มี (DB ใหม่ = ทุกตาราง, DB เดิม = enrollments) — ไม่แตะตารางที่มีอยู่แล้ว
     Base.metadata.create_all(bind=engine)
 
