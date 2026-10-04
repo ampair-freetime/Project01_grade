@@ -23,7 +23,7 @@
 - **GitHub ID:** [toraon-tonaor](https://github.com/toraon-tonaor)  
 - **Role:** Frontend  
 
-#### 4. ศุภาการ แก้วพวงใหม่
+#### 4. ศุภากร แก้วพวงใหม่
 - **Student ID:** 670510728  
 - **GitHub ID:** [ampair-freetime](https://github.com/ampair-freetime) 
 - **Role:** Backend 

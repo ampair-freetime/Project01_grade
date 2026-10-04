@@ -1,0 +1,7 @@
+role,student_id,first_name,last_name,email,password
+teacher,,Demo,Teacher,demo.teacher@cmu.ac.th,DemoScore69!
+student,690510901,Demo,One,demo_one@cmu.ac.th,DemoScore69!
+student,690510902,Demo,Two,demo_two@cmu.ac.th,DemoScore69!
+student,690510903,Demo,Three,demo_three@cmu.ac.th,DemoScore69!
+student,690510904,Demo,Four,demo_four@cmu.ac.th,DemoScore69!
+student,690510905,Demo,Five,demo_five@cmu.ac.th,DemoScore69!

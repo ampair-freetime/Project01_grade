@@ -457,7 +457,7 @@
           />
         </div>
         <div class="mb-4">
-          <label for="create-course-section" class="block py-1">Section (optional)</label>
+          <label for="create-course-section" class="block py-1">Section</label>
           <input
             id="create-course-section"
             v-model="courseSection"
@@ -466,9 +466,6 @@
             class="w-full border border-gray-300 dark:border-gray-800 rounded-md dark:bg-gray-700 px-3 py-2 focus:outline-none focus:ring-green-200"
             placeholder="e.g., 001"
           />
-          <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
-            Students will see this section when joining your course.
-          </p>
         </div>
         <div class="flex justify-end gap-3">
           <button
@@ -517,6 +514,17 @@
             class="w-full border rounded-md px-3 py-2"
           />
         </div>
+        <div class="mb-4">
+          <label for="edit-course-section" class="block py-1">Section</label>
+          <input
+            id="edit-course-section"
+            v-model="editCourseSection"
+            type="text"
+            maxlength="50"
+            class="w-full border rounded-md px-3 py-2"
+            placeholder="e.g., 001"
+          />
+        </div>
         <div class="flex justify-end gap-3">
           <button
             @click="submitEditCourse"
@@ -558,6 +566,7 @@ const showEditModal = ref(false);
 const coursecode = ref(null);
 const editCourseName = ref("");
 const editCourseId = ref("");
+const editCourseSection = ref("");
 // course_code ของวิชาที่เปิดหน้า enrollment อยู่
 const enrollmentCourse = ref(null);
 
@@ -749,6 +758,7 @@ const openEditCourse = (course) => {
   coursecode.value = course.course_code;
   editCourseName.value = course.course_name;
   editCourseId.value = course.course_id;
+  editCourseSection.value = course.course_section ?? "";
   showEditModal.value = true;
 };
 
@@ -770,6 +780,7 @@ const submitEditCourse = async () => {
         body: JSON.stringify({
           course_name: editCourseName.value,
           course_id: editCourseId.value,
+          section: editCourseSection.value.trim() || null,
         }),
       },
     );

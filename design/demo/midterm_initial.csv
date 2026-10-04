@@ -1,0 +1,6 @@
+student_id,student_email,score,section,name
+690510901,demo_one@cmu.ac.th,60,001,Demo One
+690510902,demo_two@cmu.ac.th,70,001,Demo Two
+690510903,demo_three@cmu.ac.th,80,001,Demo Three
+690510904,demo_four@cmu.ac.th,90,001,Demo Four
+690510905,demo_five@cmu.ac.th,100,001,Demo Five

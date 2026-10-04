@@ -62,6 +62,7 @@ async def teacher_dashboard(db: Session = Depends(get_db),current_user: AuthUser
             "course_id": c.course_id,
             "number_student": student_number,
             "section":section,
+            "course_section": c.section,
             "join_code": c.join_code,
             "join_open": c.join_open
         })
@@ -473,6 +474,8 @@ async def update_course(course_code: int, course_data: CourseUpdate, db: Session
 
         course.course_name = course_data.course_name
         course.course_id = course_data.course_id
+        if "section" in course_data.model_fields_set:
+            course.section = course_data.section
         db.commit()
         return {"message": "Course updated successfully"}
     except Exception as e:

@@ -48,10 +48,6 @@
       <div v-if="course" class="grid gap-4 sm:grid-cols-2 mb-6">
         <!-- join code -->
         <div class="rounded-lg border border-gray-200 dark:border-gray-700 p-4">
-          <div class="text-sm font-semibold">Class join code</div>
-          <p class="text-xs text-gray-500 dark:text-gray-400 mb-3">
-            Share this code with students to join your course.
-          </p>
           <div class="flex items-center justify-between gap-3">
             <span class="font-mono text-2xl font-bold tracking-[0.3em]">{{
               course.join_code
@@ -75,9 +71,6 @@
           <div class="flex items-center justify-between gap-3">
             <div>
               <div class="text-sm font-semibold">Allow enrollment</div>
-              <p class="text-xs text-gray-500 dark:text-gray-400">
-                Students with the code can join immediately.
-              </p>
             </div>
             <button
               role="switch"
@@ -97,9 +90,6 @@
           <div class="flex items-center justify-between gap-3">
             <div>
               <div class="text-sm font-semibold">Reset join code</div>
-              <p class="text-xs text-gray-500 dark:text-gray-400">
-                Existing students stay enrolled.
-              </p>
             </div>
             <button
               @click="confirmReset = !confirmReset"

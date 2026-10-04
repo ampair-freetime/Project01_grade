@@ -1,0 +1,151 @@
+// Source: fastapi/app/models/*.py (current application models).
+// Python/SQLAlchemy client defaults are notes, not database DEFAULT clauses.
+// ORM relationship cascades do not imply ON DELETE CASCADE on foreign keys.
+// This describes the models; legacy database volumes may have extra columns.
+
+Project grade_management_current {
+  database_type: 'PostgreSQL'
+  Note: 'Current 9-table application schema. section is stored in enrollments, with courses.section as the display fallback. courses.course_code is the internal primary key; courses.course_id is the displayed course identifier.'
+}
+
+Table auth_users {
+  auth_user_id varchar [pk, not null, default: `gen_random_uuid()`]
+  email varchar(100) [not null, unique]
+  password varchar(255)
+
+  indexes {
+    auth_user_id [name: 'ix_auth_users_auth_user_id']
+  }
+}
+
+Table auth_providers {
+  provider_id varchar [pk, not null, default: `gen_random_uuid()`]
+  auth_user_id varchar
+  provider varchar(50)
+  provider_user_id varchar(255)
+
+  indexes {
+    provider_id [name: 'ix_auth_providers_provider_id']
+  }
+}
+
+Table students {
+  student_id varchar [pk, not null]
+  first_name varchar(255)
+  middle_name varchar(255)
+  last_name varchar(255)
+  avatar_url varchar(500)
+  created_at timestamp [note: 'Application default: datetime.utcnow']
+  auth_user_id varchar [note: 'ORM uses a single student per auth user; the database does not enforce uniqueness on this column.']
+
+  indexes {
+    student_id [name: 'ix_students_student_id']
+  }
+}
+
+Table teachers {
+  teacher_id varchar [pk, not null, default: `gen_random_uuid()`]
+  first_name varchar(255)
+  middle_name varchar(255)
+  last_name varchar(255)
+  avatar_url varchar(500)
+  created_at timestamp [note: 'Application default: datetime.utcnow']
+  auth_user_id varchar [note: 'ORM uses a single teacher per auth user; the database does not enforce uniqueness on this column.']
+
+  indexes {
+    teacher_id [name: 'ix_teachers_teacher_id']
+  }
+}
+
+Table courses {
+  course_code integer [pk, not null, increment, note: 'Internal primary key, not the displayed course identifier.']
+  course_name varchar(255)
+  course_id varchar [note: 'Displayed course identifier, e.g. CS212.']
+  section varchar(50) [note: 'Default section displayed when enrollment.section is empty.']
+  join_code varchar(8)
+  join_open boolean [not null, default: true]
+  teacher_id varchar [not null]
+  created_at timestamp [note: 'Application default: datetime.utcnow']
+  is_deleted boolean [note: 'Application default: false']
+  is_archive boolean [note: 'Application default: false']
+
+  indexes {
+    course_code [name: 'ix_courses_course_code']
+    join_code [unique, name: 'ix_courses_join_code']
+  }
+}
+
+Table enrollments {
+  enrollment_id varchar [pk, not null, default: `gen_random_uuid()`]
+  student_id varchar [not null]
+  course_code integer [not null]
+  section varchar(50) [note: 'Student section within this course; CSV currently creates or updates this value.']
+  status varchar(20) [not null, default: 'active']
+  joined_via varchar(20) [not null, default: 'code', note: 'Origin recorded when enrollment is created: code or csv.']
+  created_at timestamptz [default: `now()`]
+
+  indexes {
+    enrollment_id [name: 'ix_enrollments_enrollment_id']
+    (student_id, course_code) [unique, name: 'unique_student_course']
+  }
+
+  checks {
+    `status IN ('active', 'dropped')` [name: 'enrollment_status_check']
+    `joined_via IN ('code', 'csv')` [name: 'enrollment_joined_via_check']
+  }
+}
+
+Table quizzes {
+  quiz_id varchar [pk, not null, default: `gen_random_uuid()`]
+  course_code integer
+  quiz_name varchar(255)
+  full_mark integer [note: 'Application default: 100']
+  weight float [note: 'Application default: 1.0']
+  is_publish boolean [note: 'Application default: false']
+  created_at timestamp [note: 'Application default: datetime.utcnow']
+  is_deleted boolean [note: 'Application default: false']
+
+  indexes {
+    quiz_id [name: 'ix_quizzes_quiz_id']
+  }
+}
+
+Table scores {
+  score_id varchar [pk, not null, default: `gen_random_uuid()`]
+  score float [note: 'Application default: 0.0']
+  unread_flag boolean [note: 'Application default: true']
+  is_deleted boolean [note: 'Application default: false']
+  quiz_id varchar
+  student_id varchar
+  created_at timestamptz [default: `now()`]
+  updated_at timestamptz [default: `now()`, note: 'SQLAlchemy onupdate: now(); the models do not define a database update trigger.']
+
+  indexes {
+    score_id [name: 'ix_scores_score_id']
+    (student_id, quiz_id) [unique, name: 'unique_student_quiz']
+  }
+}
+
+Table uploads {
+  upload_id varchar [pk, not null, default: `gen_random_uuid()`]
+  file_name varchar(255) [not null]
+  created_at timestamp [note: 'Application default: datetime.utcnow']
+  teacher_id varchar
+  course_code integer
+
+  indexes {
+    upload_id [name: 'ix_uploads_upload_id']
+  }
+}
+
+Ref: auth_providers.auth_user_id > auth_users.auth_user_id
+Ref: students.auth_user_id > auth_users.auth_user_id
+Ref: teachers.auth_user_id > auth_users.auth_user_id
+Ref: courses.teacher_id > teachers.teacher_id
+Ref: enrollments.student_id > students.student_id
+Ref: enrollments.course_code > courses.course_code
+Ref: quizzes.course_code > courses.course_code
+Ref: scores.quiz_id > quizzes.quiz_id
+Ref: scores.student_id > students.student_id
+Ref: uploads.teacher_id > teachers.teacher_id
+Ref: uploads.course_code > courses.course_code

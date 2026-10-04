@@ -17,9 +17,8 @@ class Assignment(BaseModel):
     full_mark:int
     weight:float
 
-class CourseUpdate(BaseModel):
-    course_name: str
-    course_id: str
+class CourseUpdate(Teacher_Course):
+    pass
 
 class AssignmentUpdate(BaseModel):
     quiz_name: str
