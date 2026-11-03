@@ -1,0 +1,1294 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Data Normalization &amp; Functional Dependency v5 — FK only (204321)</title>
+  <style>
+    :root {
+      --bg: #f8fafc;
+      --surface: #ffffff;
+      --border: #cbd5e1;
+      --text: #0f172a;
+      --muted: #475569;
+      --primary: #1e40af;
+      --pass-bg: #f0fdf4;
+      --pass-border: #86efac;
+      --pass-text: #166534;
+      --fail-bg: #fef2f2;
+      --fail-border: #fca5a5;
+      --fail-text: #991b1b;
+      --warn-bg: #fffbeb;
+      --warn-border: #fcd34d;
+      --warn-text: #92400e;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Sarabun', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      line-height: 1.65;
+      padding-bottom: 64px;
+    }
+
+    header {
+      background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 100%);
+      color: #ffffff;
+      padding: 26px 32px;
+      border-bottom: 1px solid #1e293b;
+    }
+
+    .header-container {
+      max-width: 1480px;
+      margin: 0 auto;
+    }
+
+    header h1 {
+      font-size: 1.5rem;
+      font-weight: 700;
+    }
+
+    header p {
+      color: #cbd5e1;
+      font-size: 0.94rem;
+      margin-top: 6px;
+    }
+
+    .rubric-banner {
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 8px;
+      padding: 12px 16px;
+      margin-top: 14px;
+      font-size: 0.9rem;
+      color: #f1f5f9;
+    }
+
+    .rubric-banner ul {
+      margin-left: 20px;
+      margin-top: 4px;
+    }
+
+    .controls-bar {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 2px 8px rgba(15, 23, 42, 0.05);
+    }
+
+    .controls-inner {
+      max-width: 1480px;
+      margin: 0 auto;
+      padding: 12px 32px;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .tabs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .tab-btn {
+      padding: 8px 14px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background: #f8fafc;
+      color: var(--muted);
+      font-weight: 600;
+      font-size: 0.88rem;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .tab-btn:hover {
+      background: #e2e8f0;
+      color: var(--text);
+    }
+
+    .tab-btn.active {
+      background: var(--primary);
+      color: #ffffff;
+      border-color: var(--primary);
+    }
+
+    .toggles {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 10px;
+      font-size: 0.84rem;
+    }
+
+    .toggle-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+      user-select: none;
+      font-weight: 500;
+      color: var(--text);
+      background: #f1f5f9;
+      padding: 6px 11px;
+      border-radius: 6px;
+      border: 1px solid #e2e8f0;
+    }
+
+    .toggle-label input {
+      accent-color: var(--primary);
+      width: 15px;
+      height: 15px;
+      cursor: pointer;
+    }
+
+    .main-container {
+      max-width: 1480px;
+      margin: 24px auto;
+      padding: 0 32px;
+    }
+
+    .section-panel {
+      display: none;
+    }
+
+    .section-panel.active {
+      display: block;
+    }
+
+    .section-intro {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-left: 5px solid var(--primary);
+      border-radius: 10px;
+      padding: 18px 24px;
+      margin-bottom: 24px;
+    }
+
+    .section-intro h2 {
+      font-size: 1.22rem;
+      color: var(--text);
+      margin-bottom: 6px;
+    }
+
+    .section-intro p {
+      color: var(--muted);
+      font-size: 0.92rem;
+    }
+
+    .case-block {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 22px 26px;
+      margin-bottom: 28px;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
+    }
+
+    .case-header {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      padding-bottom: 12px;
+      margin-bottom: 16px;
+      border-bottom: 2px solid #f1f5f9;
+    }
+
+    .case-title {
+      font-size: 1.18rem;
+      font-weight: 700;
+      color: #0f172a;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .badge {
+      font-family: 'Courier New', Courier, monospace;
+      font-size: 0.82rem;
+      font-weight: 700;
+      padding: 3px 10px;
+      border-radius: 999px;
+    }
+
+    .badge-1nf { background: var(--fail-bg); color: var(--fail-text); border: 1px solid var(--fail-border); }
+    .badge-2nf { background: var(--warn-bg); color: var(--warn-text); border: 1px solid var(--warn-border); }
+    .badge-3nf { background: var(--pass-bg); color: var(--pass-text); border: 1px solid var(--pass-border); }
+
+    .svg-canvas {
+      width: 100%;
+      overflow-x: auto;
+      padding: 14px 16px;
+      border-radius: 8px;
+      margin-bottom: 16px;
+      border: 1px solid #cbd5e1;
+    }
+
+    .svg-canvas.dark-canvas {
+      background-color: #14181f;
+      background-image:
+        linear-gradient(to right, rgba(255,255,255,0.05) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(255,255,255,0.05) 1px, transparent 1px);
+      background-size: 16px 16px;
+      border-color: #2d3748;
+    }
+
+    .svg-canvas.light-canvas {
+      background-color: #ffffff;
+      border-color: #cbd5e1;
+    }
+
+    .why-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 12px;
+      margin-top: 12px;
+      margin-bottom: 14px;
+    }
+
+    .why-card {
+      padding: 12px 14px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      font-size: 0.87rem;
+    }
+
+    .why-card.pass { background: var(--pass-bg); border-color: var(--pass-border); }
+    .why-card.fail { background: var(--fail-bg); border-color: var(--fail-border); }
+    .why-card.warn { background: var(--warn-bg); border-color: var(--warn-border); }
+
+    .why-card h4 {
+      font-size: 0.92rem;
+      margin-bottom: 6px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .step-arrow-divider {
+      text-align: center;
+      margin: 18px 0;
+      padding: 10px;
+      background: #eff6ff;
+      border: 1px dashed #3b82f6;
+      border-radius: 8px;
+      color: #1e40af;
+      font-weight: 700;
+      font-size: 0.92rem;
+    }
+
+    .fd-text-box {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      padding: 10px 14px;
+      font-size: 0.86rem;
+      margin-bottom: 12px;
+    }
+
+    .fd-text-box ul {
+      list-style: none;
+      margin-top: 4px;
+    }
+
+    .fd-text-box li {
+      margin-bottom: 3px;
+    }
+
+    code {
+      font-family: 'Courier New', Courier, monospace;
+      background: rgba(15, 23, 42, 0.06);
+      padding: 2px 5px;
+      border-radius: 4px;
+      font-size: 0.88em;
+    }
+
+    @media print {
+      .controls-bar { position: static; box-shadow: none; }
+      .section-panel { display: block !important; page-break-after: always; }
+      body { background: #fff; }
+    }
+
+    .sample-table {
+      border-collapse: collapse;
+      font-size: 0.84rem;
+      margin: 8px 0 14px;
+      background: var(--surface);
+    }
+
+    .sample-table th, .sample-table td {
+      border: 1px solid var(--border);
+      padding: 5px 10px;
+      text-align: left;
+      vertical-align: top;
+    }
+
+    .sample-table th {
+      background: #f1f5f9;
+      font-family: 'Courier New', Courier, monospace;
+      font-size: 0.82rem;
+    }
+
+    .sample-table td.nested {
+      background: var(--fail-bg);
+    }
+
+    .sample-table .nested-inner {
+      border-collapse: collapse;
+      font-size: 0.8rem;
+    }
+
+    .sample-table .nested-inner td {
+      border: 1px dashed var(--fail-border);
+      padding: 2px 6px;
+      background: transparent;
+    }
+
+    .table-scroll {
+      width: 100%;
+      overflow-x: auto;
+    }
+
+    .schema-line {
+      font-family: 'Courier New', Courier, monospace;
+      font-size: 0.88rem;
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      padding: 8px 12px;
+      margin-bottom: 8px;
+      overflow-x: auto;
+      white-space: nowrap;
+    }
+
+    .schema-line .pk { text-decoration: underline; font-weight: 700; }
+    .schema-line .grp { color: var(--fail-text); font-weight: 700; }
+
+    .note-box {
+      background: var(--warn-bg);
+      border: 1px solid var(--warn-border);
+      color: var(--warn-text);
+      border-radius: 8px;
+      padding: 10px 14px;
+      font-size: 0.86rem;
+      margin-bottom: 12px;
+    }
+
+    .fk-chip {
+      display: inline-block;
+      font-family: 'Courier New', Courier, monospace;
+      font-size: 0.8rem;
+      background: #eff6ff;
+      border: 1px solid #bfdbfe;
+      color: #1e40af;
+      border-radius: 6px;
+      padding: 1px 7px;
+      margin: 2px 4px 2px 0;
+    }
+
+    .hypo-title {
+      font-size: 1.1rem;
+      font-weight: 700;
+      margin: 34px 0 12px;
+      padding-top: 18px;
+      border-top: 2px dashed var(--warn-border);
+      color: var(--warn-text);
+    }
+
+    .why-card h4 {
+      display: block;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="header-container">
+    <h1>การทำ Data Normalization และวิเคราะห์ Functional Dependency (204321)</h1>
+    <p>ฉบับที่ 5: แต่ละ relation เก็บเฉพาะ attribute ของตัวเอง และอ้างถึง relation อื่นด้วย Foreign Key เท่านั้น (ไม่พ่วง attribute ของ relation อื่นมาด้วย)</p>
+    <div class="rubric-banner">
+      <strong>เกณฑ์การอธิบายตามข้อกำหนดของอาจารย์:</strong>
+      <ul>
+        <li><strong>กรณีที่ 1 (Relation อยู่ใน 3NF ตั้งแต่แรก):</strong> อธิบายพิสูจน์ว่าทำไมถึงผ่านเกณฑ์ 1NF, 2NF และอยู่ใน 3NF ตั้งแต่แรก</li>
+        <li><strong>กรณีที่ 2 (Relation ไม่อยู่ใน 3NF):</strong> ดำเนินการแตกตาราง (Decompose) ให้อยู่ใน 3NF พร้อมอธิบายว่า <strong>ทำไมถึงไม่อยู่ใน 1NF, 2NF และ 3NF ในแต่ละขั้นตอนที่ดำเนินการ</strong></li>
+      </ul>
+    </div>
+  </div>
+</header>
+
+<div class="controls-bar">
+  <div class="controls-inner">
+    <div class="tabs">
+      <button class="tab-btn active" onclick="switchTab('tab-approach', this)">หลักการ</button>
+      <button class="tab-btn" onclick="switchTab('tab-stage1', this)">ขั้นที่ 1: 1NF</button>
+      <button class="tab-btn" onclick="switchTab('tab-stage2', this)">ขั้นที่ 2: 2NF</button>
+      <button class="tab-btn" onclick="switchTab('tab-stage3', this)">ขั้นที่ 3: 3NF / BCNF</button>
+      <button class="tab-btn" onclick="switchTab('tab-final', this)">ตารางสุดท้าย</button>
+      <button class="tab-btn" onclick="switchTab('tab-appendix', this)">ภาคผนวก: กรณีสมมติ</button>
+    </div>
+    <div class="toggles">
+      <label class="toggle-label" title="แสดงพื้นหลังสีเข้มและเส้น FD สีขาวล้วนตามภาพตัวอย่างใน Draw.io">
+        <input type="checkbox" id="darkCanvasToggle" checked onchange="renderAll()">
+        <span>โหมดพื้นดำ + เส้น FD สีขาว (ตามภาพตัวอย่าง)</span>
+      </label>
+      <label class="toggle-label" title="เปิดหรือปิดการกำหนดให้ join_code เป็น Candidate Key">
+        <input type="checkbox" id="joinCodeCkToggle" checked onchange="renderAll()">
+        <span>ให้ <code>join_code</code> เป็น Candidate Key</span>
+      </label>
+    </div>
+  </div>
+</div>
+
+<div class="main-container">
+
+  <!-- ================================================================= -->
+  <!-- APPROACH                                                          -->
+  <!-- ================================================================= -->
+  <div id="tab-approach" class="section-panel active">
+    <div class="section-intro">
+      <h2>หลักการ: relation หนึ่งเก็บข้อมูลของ entity / relationship เดียว</h2>
+      <p>
+        ฉบับก่อน (v4) เริ่มจากตารางที่พ่วงข้อมูลของ relation อื่นเข้ามาด้วย เช่น <code>ENROLL_1</code> มีชื่อและอีเมลของนักศึกษา และ <code>SCORE_1</code> มีรายละเอียดของควิซ
+        ฉบับนี้เริ่มจาก relation ที่ได้จากการแปลง ER diagram (ER-to-Relational Mapping) โดยตรง
+        แต่ละ relation มีแค่ attribute ของตัวเอง และอ้างถึง relation อื่นด้วย <strong>Foreign Key</strong> เท่านั้น
+      </p>
+    </div>
+
+    <div class="case-block">
+      <div class="case-header">
+        <div class="case-title"><span>ตัวอย่าง: relation การลงทะเบียน</span></div>
+      </div>
+      <p style="margin-bottom:6px; font-weight:600;">v4 (พ่วง attribute ของ STUDENT มาด้วย)</p>
+      <div class="schema-line">ENROLL_1(<span class="pk">student_id</span>, <span class="pk">course_code</span>, <span class="grp">s_first_name, s_middle_name, s_last_name, s_avatar_url, s_created_at, s_auth_user_id, s_email, s_password</span>, e_section, e_status, e_joined_via, e_created_at)</div>
+      <p style="margin:12px 0 6px; font-weight:600;">v5 (มีแค่ FK)</p>
+      <div class="schema-line">ENROLLMENTS_1(<span class="pk">student_id</span>, <span class="pk">course_code</span>, section, status, joined_via, created_at)</div>
+      <p style="font-size:0.88rem; color:var(--muted); margin-top:8px;">
+        <code>student_id</code> และ <code>course_code</code> ยังต้องอยู่ เพราะเป็น FK ที่บอกว่า "นักศึกษาคนไหนลงวิชาไหน" และเป็นฝั่งซ้ายของ FD
+        ส่วนชื่อ อีเมล และรหัสผ่านของนักศึกษาดูได้จาก <code>STUDENTS_1</code> และ <code>AUTH_USERS_1</code> โดย join ผ่าน FK
+      </p>
+    </div>
+
+    <div class="case-block">
+      <div class="case-header">
+        <div class="case-title"><span>ผลที่เปลี่ยนไปจาก v4</span></div>
+      </div>
+      <div class="table-scroll">
+        <table class="sample-table">
+          <thead>
+            <tr><th>Relation ใน v4</th><th>attribute ที่พ่วงมาจาก relation อื่น</th><th>ปัญหาที่เกิดใน v4</th><th>v5</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><code>ENROLL_1</code></td><td>ข้อมูลของ STUDENT และ AUTH_USER</td><td>partial dependency <code>student_id → s_first_name, …</code> และ transitive dependency <code>s_auth_user_id → s_email, s_password</code></td><td><code>ENROLLMENTS_1</code> อยู่ใน 3NF ตั้งแต่แรก</td></tr>
+            <tr><td><code>SCORE_1</code></td><td>ข้อมูลของ QUIZ</td><td>partial dependency <code>quiz_id → quiz_name, full_mark, …</code></td><td><code>SCORES_1</code> และ <code>QUIZZES_1</code> อยู่ใน 3NF ตั้งแต่แรก</td></tr>
+            <tr><td><code>TEACHERS_1</code></td><td><code>email</code>, <code>password</code> ของ AUTH_USER</td><td>transitive dependency <code>teacher_id → t_auth_user_id → t_email, t_password</code></td><td><code>TEACHERS_1</code> อยู่ใน 3NF หลังแปลงเป็น 1NF</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p style="font-size:0.9rem;">
+        partial และ transitive dependency ใน v4 เกิดจาก attribute ที่พ่วงมาทั้งหมด
+        เมื่อไม่พ่วงแล้ว ขั้นที่ยังต้องทำจริงเหลือแค่ <strong>UNF → 1NF</strong> คือแยก composite attribute (<code>Name</code>) และ multivalued attribute (<code>Login_provider</code>) ที่มาจาก ER diagram
+        หลังจากนั้นทุก relation ผ่าน 2NF, 3NF และ BCNF
+      </p>
+      <p style="font-size:0.9rem; margin-top:10px;"><strong>เทียบกับเกณฑ์ของอาจารย์:</strong></p>
+      <ul style="font-size:0.9rem; margin:4px 0 0 22px;">
+        <li><strong>กรณีที่ 1 (อยู่ใน 3NF ตั้งแต่แรก):</strong> <code>COURSES_1</code>, <code>QUIZZES_1</code>, <code>ENROLLMENTS_1</code>, <code>SCORES_1</code>, <code>UPLOADS_1</code></li>
+        <li><strong>กรณีที่ 2 (ไม่อยู่ใน 3NF):</strong> <code>AUTH_USER_0</code>, <code>STUDENT_0</code>, <code>TEACHER_0</code> ไม่ผ่านตั้งแต่ 1NF และแก้ในขั้นที่ 1 แล้วผ่าน 2NF, 3NF ต่อได้ทันที</li>
+      </ul>
+      <p style="font-size:0.9rem; margin-top:8px;">แท็บถัดไปจะไล่ทีละขั้น 1NF → 2NF → 3NF แต่ละขั้นมีตารางตรวจรวม แล้วตามด้วยรูป FD และเหตุผลว่าทำไมแต่ละ relation อยู่ในขั้นนั้น</p>
+    </div>
+  </div>
+
+  <div id="tab-stage1" class="section-panel"><div id="container-stage1"></div></div>
+  <div id="tab-stage2" class="section-panel"><div id="container-stage2"></div></div>
+  <div id="tab-stage3" class="section-panel"><div id="container-stage3"></div></div>
+  <div id="tab-final" class="section-panel"><div id="container-final"></div></div>
+  <div id="tab-appendix" class="section-panel"><div id="container-appendix"></div></div>
+
+</div>
+
+<script>
+function attrWidth(name, isCK) {
+  const w = Math.round(name.length * 7.6 + 20);
+  return isCK ? Math.max(w, 96) : Math.max(w, 68);
+}
+
+/**
+ * Draws an SVG diagram matching image_401dd4.png:
+ * - White FD lines & labels on dark canvas (or black on light canvas)
+ * - "candidate key" label above each candidate key; a composite key gets one bracket over all its boxes
+ * - Uniform box fill color, underlined Primary Key
+ */
+function drawRelationSVG(rel, isDark) {
+  const leftMargin = 52;
+  const boxGap = 6;
+  const boxHeight = 32;
+
+  const ckSet = new Set();
+  (rel.cks || []).forEach(group => group.forEach(a => ckSet.add(a)));
+
+  let curX = leftMargin;
+  const attrMap = {};
+  rel.attrs.forEach(attr => {
+    const w = attrWidth(attr, ckSet.has(attr));
+    attrMap[attr] = {
+      name: attr,
+      x: curX,
+      w: w,
+      cx: curX + w / 2,
+      isPK: rel.pks.includes(attr),
+      isCK: ckSet.has(attr)
+    };
+    curX += w + boxGap;
+  });
+
+  const hasCK = ckSet.size > 0;
+  const boxY = hasCK ? 34 : 14;
+  const boxBottomY = boxY + boxHeight;
+
+  const fdRowGap = 20;
+  const firstFdY = boxBottomY + 20;
+  const totalHeight = firstFdY + rel.fds.length * fdRowGap + 10;
+  const totalWidth = Math.max(curX + 24, 580);
+
+  // Compute port offsets so vertical stems on the same box never collide
+  const attrUsage = {};
+  rel.attrs.forEach(a => { attrUsage[a] = []; });
+  rel.fds.forEach((fd, fdIdx) => {
+    fd.from.forEach(a => { if (attrUsage[a]) attrUsage[a].push({ fdIdx, role: "from" }); });
+    fd.to.forEach(a => { if (attrUsage[a]) attrUsage[a].push({ fdIdx, role: "to" }); });
+  });
+
+  const portX = {};
+  Object.keys(attrUsage).forEach(attr => {
+    const usages = attrUsage[attr];
+    const n = usages.length;
+    const box = attrMap[attr];
+    if (n === 1) {
+      portX[`${attr}_${usages[0].fdIdx}_${usages[0].role}`] = box.cx;
+    } else if (n > 1) {
+      const span = Math.min(box.w * 0.55, (n - 1) * 14);
+      const startX = box.cx - span / 2;
+      const step = span / (n - 1);
+      usages.forEach((u, i) => {
+        portX[`${attr}_${u.fdIdx}_${u.role}`] = Math.round((startX + i * step) * 10) / 10;
+      });
+    }
+  });
+
+  const boxFill = isDark ? "#0d1117" : "#ffffff";
+  const boxStroke = isDark ? "#cbd5e1" : "#18212c";
+  const boxText = isDark ? "#f8fafc" : "#0f172a";
+  const ckLabelColor = isDark ? "#94a3b8" : "#475569";
+  const fdColor = isDark ? "#ffffff" : "#18212c";
+
+  let svg = `<svg width="${totalWidth}" height="${totalHeight}" viewBox="0 0 ${totalWidth} ${totalHeight}" xmlns="http://www.w3.org/2000/svg">`;
+
+  // One "candidate key" label per key. A composite key gets one bracket spanning all of its boxes,
+  // so {provider, provider_user_id} reads as a single key, not two separate keys.
+  if (hasCK) {
+    (rel.cks || []).forEach(group => {
+      const boxes = group.map(a => attrMap[a]);
+      const left = Math.min(...boxes.map(b => b.x));
+      const right = Math.max(...boxes.map(b => b.x + b.w));
+      const mid = (left + right) / 2;
+      if (group.length > 1) {
+        const yb = boxY - 6;
+        svg += `<polyline points="${left + 3},${boxY - 1} ${left + 3},${yb} ${right - 3},${yb} ${right - 3},${boxY - 1}" fill="none" stroke="${ckLabelColor}" stroke-width="1.1"/>`;
+        svg += `<text x="${mid}" y="${boxY - 10}" text-anchor="middle" font-family="Courier New, monospace" font-size="11.5" fill="${ckLabelColor}">candidate key (composite)</text>`;
+      } else {
+        svg += `<text x="${mid}" y="${boxY - 9}" text-anchor="middle" font-family="Courier New, monospace" font-size="11.5" fill="${ckLabelColor}">candidate key</text>`;
+      }
+    });
+  }
+
+  // Attribute boxes
+  rel.attrs.forEach(attr => {
+    const b = attrMap[attr];
+    const textDeco = b.isPK ? "underline" : "none";
+    const fontWeight = b.isPK ? "700" : "500";
+    svg += `<rect x="${b.x}" y="${boxY}" width="${b.w}" height="${boxHeight}" fill="${boxFill}" stroke="${boxStroke}" stroke-width="1.3"/>`;
+    svg += `<text x="${b.cx}" y="${boxY + 20}" text-anchor="middle" font-family="Courier New, monospace" font-size="12" font-weight="${fontWeight}" text-decoration="${textDeco}" fill="${boxText}">${b.name}</text>`;
+  });
+
+  // FD lines (all pure white in dark mode)
+  rel.fds.forEach((fd, fdIdx) => {
+    const yLine = firstFdY + fdIdx * fdRowGap;
+    const fromXs = fd.from.map(a => portX[`${a}_${fdIdx}_from`]);
+    const toXs = fd.to.map(a => portX[`${a}_${fdIdx}_to`]);
+    const allXs = [...fromXs, ...toXs];
+    const minX = Math.min(...allXs);
+    const maxX = Math.max(...allXs);
+
+    svg += `<text x="4" y="${yLine + 4}" font-family="Courier New, monospace" font-size="11.5" font-weight="700" fill="${fdColor}">${fd.id}</text>`;
+    svg += `<line x1="${minX}" y1="${yLine}" x2="${maxX}" y2="${yLine}" stroke="${fdColor}" stroke-width="1.6"/>`;
+
+    fromXs.forEach(x => {
+      svg += `<line x1="${x}" y1="${boxBottomY}" x2="${x}" y2="${yLine}" stroke="${fdColor}" stroke-width="1.6"/>`;
+    });
+
+    toXs.forEach(x => {
+      svg += `<line x1="${x}" y1="${yLine}" x2="${x}" y2="${boxBottomY + 5}" stroke="${fdColor}" stroke-width="1.6"/>`;
+      const tipY = boxBottomY + 0.5;
+      const baseY = boxBottomY + 7.5;
+      svg += `<polygon points="${x},${tipY} ${x - 3.6},${baseY} ${x + 3.6},${baseY}" fill="${fdColor}"/>`;
+    });
+  });
+
+  svg += `</svg>`;
+  return svg;
+}
+
+function numberFds(fds) {
+  return fds.map((fd, i) => Object.assign({}, fd, { id: `FD${i + 1}` }));
+}
+
+function getData(joinCodeIsCK) {
+  const courseAttrs = ["course_code", "course_id", "course_name", "section", "join_code", "join_open", "teacher_id", "is_archive", "is_deleted", "created_at"];
+  const courseCks = joinCodeIsCK ? [["join_code"]] : [];
+  const courseFdsRaw = [
+    { from: ["course_code"], to: courseAttrs.filter(a => a !== "course_code"), desc: "course_code (PK) กำหนดข้อมูลรายวิชาและอาจารย์ผู้สอน (teacher_id)" }
+  ];
+  if (joinCodeIsCK) {
+    courseFdsRaw.push({ from: ["join_code"], to: courseAttrs.filter(a => a !== "join_code"), desc: "join_code (Candidate Key) ระบุรายวิชาได้หนึ่งรายการ" });
+  }
+  const courseFds = numberFds(courseFdsRaw);
+
+  const authUsers1 = {
+    name: "AUTH_USERS_1", nf: "BCNF",
+    pks: ["auth_user_id"], cks: [["email"]],
+    attrs: ["auth_user_id", "email", "password"],
+    fks: [],
+    fds: numberFds([
+      { from: ["auth_user_id"], to: ["email", "password"], desc: "auth_user_id (PK) กำหนดอีเมลและรหัสผ่าน" },
+      { from: ["email"], to: ["auth_user_id", "password"], desc: "email (Candidate Key) ระบุบัญชีได้หนึ่งบัญชี" }
+    ])
+  };
+
+  const login1 = {
+    name: "AUTH_PROVIDERS_1", nf: "BCNF",
+    pks: ["provider_id"], cks: [["provider", "provider_user_id"]],
+    attrs: ["provider_id", "auth_user_id", "provider", "provider_user_id"],
+    fks: [["auth_user_id", "AUTH_USERS_1"]],
+    fds: numberFds([
+      { from: ["provider_id"], to: ["auth_user_id", "provider", "provider_user_id"], desc: "provider_id (PK) คือรหัสของการผูกบัญชีหนึ่งครั้ง บอกได้ว่าเป็นบัญชีไหน ผูกกับ provider อะไร และรหัสฝั่ง provider คืออะไร" },
+      { from: ["provider", "provider_user_id"], to: ["provider_id", "auth_user_id"], desc: "{provider, provider_user_id} (Candidate Key) บัญชี Google หนึ่งบัญชีผูกกับผู้ใช้ในระบบได้คนเดียว" }
+    ])
+  };
+
+  function profile1(name, idAttr, label) {
+    const attrs = [idAttr, "first_name", "middle_name", "last_name", "avatar_url", "auth_user_id", "created_at"];
+    return {
+      name, nf: "BCNF",
+      pks: [idAttr], cks: [["auth_user_id"]],
+      attrs,
+      fks: [["auth_user_id", "AUTH_USERS_1"]],
+      fds: numberFds([
+        { from: [idAttr], to: attrs.filter(a => a !== idAttr), desc: `${idAttr} (PK) กำหนดข้อมูลส่วนตัวของ${label}และบัญชีที่ผูกไว้` },
+        { from: ["auth_user_id"], to: attrs.filter(a => a !== "auth_user_id"), desc: `auth_user_id (Candidate Key) หนึ่งบัญชีมีโปรไฟล์${label}ได้ไม่เกินหนึ่งโปรไฟล์ (HAS_PROFILE 1:1)` }
+      ])
+    };
+  }
+  const students1 = profile1("STUDENTS_1", "student_id", "นักศึกษา");
+  const teachers1 = profile1("TEACHERS_1", "teacher_id", "อาจารย์");
+
+  const courses1 = {
+    name: "COURSES_1", nf: "BCNF",
+    pks: ["course_code"], cks: courseCks,
+    attrs: courseAttrs,
+    fks: [["teacher_id", "TEACHERS_1"]],
+    fds: courseFds
+  };
+
+  const quizzes1 = {
+    name: "QUIZZES_1", nf: "BCNF",
+    pks: ["quiz_id"], cks: [],
+    attrs: ["quiz_id", "course_code", "quiz_name", "full_mark", "weight", "is_publish", "is_deleted", "created_at"],
+    fks: [["course_code", "COURSES_1"]],
+    fds: numberFds([
+      { from: ["quiz_id"], to: ["course_code", "quiz_name", "full_mark", "weight", "is_publish", "is_deleted", "created_at"], desc: "quiz_id (PK) กำหนดวิชาที่ควิซนี้อยู่ และรายละเอียดของควิซ" }
+    ])
+  };
+
+  const enrollments1 = {
+    name: "ENROLLMENTS_1", nf: "BCNF",
+    pks: ["student_id", "course_code"], cks: [],
+    attrs: ["student_id", "course_code", "section", "status", "joined_via", "created_at"],
+    fks: [["student_id", "STUDENTS_1"], ["course_code", "COURSES_1"]],
+    fds: numberFds([
+      { from: ["student_id", "course_code"], to: ["section", "status", "joined_via", "created_at"], desc: "{student_id, course_code} (PK) กำหนดข้อมูลของการลงทะเบียนครั้งนั้น" }
+    ])
+  };
+
+  const scores1 = {
+    name: "SCORES_1", nf: "BCNF",
+    pks: ["student_id", "quiz_id"], cks: [],
+    attrs: ["student_id", "quiz_id", "score", "unread_flag", "is_deleted", "created_at", "updated_at"],
+    fks: [["student_id", "STUDENTS_1"], ["quiz_id", "QUIZZES_1"]],
+    fds: numberFds([
+      { from: ["student_id", "quiz_id"], to: ["score", "unread_flag", "is_deleted", "created_at", "updated_at"], desc: "{student_id, quiz_id} (PK) กำหนดคะแนนของนักศึกษาในควิซนั้น" }
+    ])
+  };
+
+  const uploads1 = {
+    name: "UPLOADS_1", nf: "BCNF",
+    pks: ["upload_id"], cks: [],
+    attrs: ["upload_id", "file_name", "teacher_id", "course_code", "created_at"],
+    fks: [["teacher_id", "TEACHERS_1"], ["course_code", "COURSES_1"]],
+    fds: numberFds([
+      { from: ["upload_id"], to: ["file_name", "teacher_id", "course_code", "created_at"], desc: "upload_id (PK) กำหนดชื่อไฟล์ ผู้อัปโหลด วิชา และเวลา" }
+    ])
+  };
+
+  // ---------- reasons, one per stage ----------
+  authUsers1.from = "AUTH_USER_0";
+  authUsers1.why1nf = "ได้จาก <code>AUTH_USER_0</code> หลังย้าย multivalued attribute <code>Login_provider</code> ออกไปเป็น <code>AUTH_PROVIDERS_1</code> attribute ที่เหลือ (<code>auth_user_id</code>, <code>email</code>, <code>password</code>) เก็บค่าเดี่ยวทั้งหมด";
+  authUsers1.why2nf = "candidate key ทั้งสองชุด (<code>auth_user_id</code> และ <code>email</code>) เป็นคอลัมน์เดียว จึงไม่มี \"ส่วนของคีย์\" ให้ non-prime ไปขึ้นกับ และเกิด partial dependency ไม่ได้";
+  authUsers1.why3nf = "non-prime มีตัวเดียวคือ <code>password</code> จึงไม่มี non-prime → non-prime และฝั่งซ้ายของ FD1, FD2 เป็น candidate key ทั้งคู่ จึงอยู่ใน BCNF ด้วย";
+
+  login1.from = "AUTH_USER_0";
+  login1.why1nf = "ได้จากการแยก multivalued attribute <code>Login_provider</code> ออกจาก <code>AUTH_USER_0</code> หนึ่งแถวคือการผูกบัญชีหนึ่งครั้ง (บัญชีไหน ผูกกับ provider อะไร) จึงไม่มีค่าหลายค่าซ้อนในช่องเดียว";
+  login1.why2nf = "candidate key มี 2 ชุด: <code>provider_id</code> และคีย์ผสม <code>{provider, provider_user_id}</code> (<strong>สองคอลัมน์รวมกันเป็น key เดียว</strong> ไม่ใช่ <code>provider</code> เป็น key ด้วยตัวเอง) "
+    + "<code>provider</code> อย่างเดียวซ้ำได้ (ทุกแถวเป็น <code>google</code>) และ <code>provider_user_id</code> ไม่ซ้ำแค่ภายใน provider เดียวกัน (Google กับ provider อื่นอาจออกรหัสเดียวกัน) แต่ทั้งคู่รวมกันไม่ซ้ำ จึงเป็น candidate key "
+    + "non-prime มีตัวเดียวคือ <code>auth_user_id</code> ซึ่งต้องใช้ทั้งสองคอลัมน์ในการระบุ จึงไม่มี partial dependency";
+  login1.why3nf = "non-prime มีตัวเดียวคือ <code>auth_user_id</code> จึงไม่มี non-prime → non-prime ตัวกำหนดใน FD1 และ FD2 เป็น candidate key ทั้งคู่ จึงอยู่ใน BCNF ด้วย";
+  login1.note3 = "<code>{auth_user_id, provider}</code> ไม่ใช่ key เพราะฐานข้อมูลไม่มี UNIQUE บนคู่นี้ และโค้ดใน <code>routers/auth.py</code> ยอมให้บัญชีเดียวผูก Google ได้มากกว่าหนึ่งบัญชี ส่วน FD2 บังคับในโค้ด (ถ้า Google บัญชีนี้ผูกกับคนอื่นแล้วจะได้ <code>already_in_use</code>) แต่ฐานข้อมูลยังไม่มี UNIQUE <code>(provider, provider_user_id)</code> ควรเพิ่มเพื่อให้ FD2 ถูกบังคับที่ระดับฐานข้อมูลด้วย";
+
+  [[students1, "STUDENT_0", "student_id", "นักศึกษา"], [teachers1, "TEACHER_0", "teacher_id", "อาจารย์"]].forEach(([r, src, id, label]) => {
+    r.from = src;
+    r.why1nf = `ได้จาก <code>${src}</code> หลังแตก composite attribute <code>Name</code> เป็น <code>first_name</code>, <code>middle_name</code>, <code>last_name</code> ทุกช่องจึงเก็บค่าเดี่ยว ไม่ต้องแยกตาราง`;
+    r.why2nf = `candidate key ทั้งสองชุด (<code>${id}</code> และ <code>auth_user_id</code>) เป็นคอลัมน์เดียว จึงเกิด partial dependency ไม่ได้`;
+    r.why3nf = `ตารางนี้มีแค่ FK <code>auth_user_id</code> ไม่มี <code>email</code> หรือ <code>password</code> พ่วงมา จึงไม่มี transitive dependency <code>${id} → auth_user_id → email, password</code> แบบใน v4 non-prime ที่เหลือ (ชื่อ, avatar_url, created_at) ไม่ได้กำหนดกันเอง ส่วน FD2 <code>auth_user_id → …</code> มีฝั่งซ้ายเป็น candidate key (หนึ่งบัญชีมีโปรไฟล์${label}ได้หนึ่งโปรไฟล์) จึงอยู่ใน BCNF ด้วย`;
+    r.note3 = `ตอนนี้ฐานข้อมูลยังไม่มี UNIQUE บน <code>${src === "STUDENT_0" ? "students" : "teachers"}.auth_user_id</code> ถ้าจะให้ <code>auth_user_id</code> เป็น candidate key จริงตามรูป ควรเพิ่ม UNIQUE constraint`;
+  });
+
+  courses1.from = "COURSE";
+  courses1.why1nf = "entity COURSE ใน ER ไม่มี composite หรือ multivalued attribute ทุกช่องจึงเก็บค่าเดี่ยวตั้งแต่แรก รายชื่อนักศึกษาและควิซของวิชาไม่ได้เก็บซ้อนไว้ในแถวของวิชา แต่อยู่ใน <code>ENROLLMENTS_1</code> และ <code>QUIZZES_1</code> ซึ่งชี้กลับมาด้วย FK <code>course_code</code>";
+  courses1.why2nf = "PK <code>course_code</code> เป็นคอลัมน์เดียว (candidate key <code>join_code</code> ก็คอลัมน์เดียว) จึงเกิด partial dependency ไม่ได้";
+  courses1.why3nf = "ในตารางมีแค่ FK <code>teacher_id</code> ไม่มีชื่อหรืออีเมลของอาจารย์พ่วงมา <code>teacher_id</code> จึงไม่ได้กำหนด attribute อื่นในตารางนี้ และไม่มี transitive dependency ตัวกำหนดทุกตัว (<code>course_code</code>, <code>join_code</code>) เป็น candidate key จึงอยู่ใน BCNF ด้วย";
+  courses1.note3 = "<code>course_id → course_name</code> ไม่ถือเป็น FD เพราะ <code>course_id</code> ซ้ำได้ (CS212 มี section 001 และ 002 คนละแถว) และระบบไม่ได้บังคับว่ารหัสวิชาเดียวกันต้องมีชื่อเดียวกัน ถ้าบังคับ ตารางนี้จะไม่ผ่าน 3NF (ดูกรณีสมมติ ข. ในแท็บภาคผนวก)";
+
+  quizzes1.from = "QUIZ";
+  quizzes1.why1nf = "entity QUIZ ไม่มี composite หรือ multivalued attribute หนึ่งแถวคือควิซหนึ่งรายการ และคะแนนของนักศึกษาไม่ได้เก็บซ้อนอยู่ในแถวของควิซ";
+  quizzes1.why2nf = "PK <code>quiz_id</code> เป็นคอลัมน์เดียว จึงไม่มี partial dependency";
+  quizzes1.why3nf = "<code>course_code</code> เป็น FK ที่ไม่ได้กำหนด attribute อื่นในตารางนี้ (ชื่อวิชาอยู่ใน <code>COURSES_1</code>) และ <code>quiz_name</code> ก็ไม่ใช่ตัวกำหนด เพราะชื่อ \"Quiz 1: ER Diagram\" ซ้ำได้ในวิชา 1 และ 2 จึงไม่มี non-prime → non-prime และอยู่ใน BCNF ด้วย";
+
+  enrollments1.from = "ENROLLS (M:N)";
+  enrollments1.why1nf = "relationship M:N <code>ENROLLS</code> แปลงเป็น relation ของตัวเอง (mapping step 5) หนึ่งแถวคือการลงทะเบียนหนึ่งครั้ง ไม่มีรายการวิชาซ้อนอยู่ในช่องเดียว";
+  enrollments1.why2nf = "PK เป็นคีย์ผสม <code>{student_id, course_code}</code> จึงต้องตรวจว่า non-prime ขึ้นกับคีย์ทั้งตัวหรือไม่ <code>student_id</code> อย่างเดียวกำหนดไม่ได้ (6609610029 ลงวิชา 1 ผ่าน <code>code</code> แต่ลงวิชา 3 ผ่าน <code>csv</code>) และ <code>course_code</code> อย่างเดียวก็กำหนดไม่ได้ (วิชา 1 มีทั้ง <code>active</code> และ <code>dropped</code>, section มีทั้ง 001 และ NULL) non-prime ทุกตัวจึงขึ้นกับคีย์ทั้งตัว ไม่มี partial dependency";
+  enrollments1.why3nf = "ไม่มีข้อมูลนักศึกษาหรือรายวิชาพ่วงมา จึงไม่มี non-prime ตัวใดกำหนด non-prime ตัวอื่น (เช่น <code>status</code> ไม่ได้กำหนด <code>joined_via</code>) และตัวกำหนดเดียวคือ PK จึงอยู่ใน BCNF ด้วย";
+  enrollments1.note2 = "<code>section</code> ในตารางนี้คือค่าที่กรอกตอนลงทะเบียน (อาจเป็น NULL แล้วใช้ section ของวิชาแทน) จึงไม่ได้ขึ้นกับ <code>course_code</code> อย่างเดียว ถ้าบังคับว่าต้องเท่ากับ section ของวิชาเสมอ ตารางนี้จะไม่ผ่าน 2NF (ดูกรณีสมมติ ก. ในแท็บภาคผนวก)";
+
+  scores1.from = "GET_SCORE (M:N)";
+  scores1.why1nf = "relationship M:N <code>GET_SCORE</code> แปลงเป็น relation ของตัวเอง หนึ่งแถวคือคะแนนของนักศึกษาหนึ่งคนในควิซหนึ่งรายการ ไม่ได้เก็บคะแนนหลายควิซไว้ในแถวเดียว";
+  scores1.why2nf = "PK เป็นคีย์ผสม <code>{student_id, quiz_id}</code> และ <code>score</code> ต้องใช้ทั้งสองคอลัมน์: ควิซ Q01 มีคะแนน 8.5, 9.0, 6.0 ตามนักศึกษา และนักศึกษา 6609610011 มีคะแนน 8.5, 41.0, 18.0 ตามควิซ ข้อมูลของควิซ (<code>quiz_name</code>, <code>full_mark</code>, …) ไม่ได้พ่วงมา จึงไม่มี partial dependency <code>quiz_id → …</code> แบบใน v4";
+  scores1.why3nf = "ไม่มี non-prime → non-prime และไม่เก็บ <code>course_code</code> ซ้ำในตารางนี้ (ถ้าเก็บจะเป็น transitive ผ่าน <code>quiz_id</code>) ถ้าต้องการรู้วิชาให้ join ผ่าน FK <code>quiz_id</code> ไปยัง <code>QUIZZES_1</code> ตัวกำหนดเดียวคือ PK จึงอยู่ใน BCNF ด้วย";
+
+  uploads1.from = "UPLOAD";
+  uploads1.why1nf = "entity UPLOAD ไม่มี composite หรือ multivalued attribute หนึ่งแถวคือการอัปโหลดไฟล์หนึ่งครั้ง";
+  uploads1.why2nf = "PK <code>upload_id</code> เป็นคอลัมน์เดียว จึงไม่มี partial dependency";
+  uploads1.why3nf = "<code>teacher_id</code> และ <code>course_code</code> เป็นแค่ FK และไม่มีชื่ออาจารย์หรือชื่อวิชาพ่วงมา จึงไม่มี transitive dependency และอยู่ใน BCNF ด้วย";
+  uploads1.note3 = "ถือว่า <code>teacher_id</code> คือผู้อัปโหลด ณ เวลานั้น ไม่ได้ถูกกำหนดจาก <code>course_code</code> (ถ้าภายหลังโอนวิชาให้อาจารย์คนอื่น ค่านี้ก็ยังถูก) ถ้าถือว่า <code>course_code → teacher_id</code> เป็น FD จะเกิด transitive dependency <code>upload_id → course_code → teacher_id</code> และต้องลบ <code>teacher_id</code> ออกจากตารางนี้";
+
+  // ---------- hypothetical cases ----------
+  const enrollHypo = {
+    name: "ENROLLMENTS_H", nf: "1NF",
+    pks: ["student_id", "course_code"], cks: [],
+    attrs: ["student_id", "course_code", "section", "status", "joined_via", "created_at"],
+    fks: [["student_id", "STUDENTS_1"], ["course_code", "COURSES_1"]],
+    fds: numberFds([
+      { from: ["student_id", "course_code"], to: ["status", "joined_via", "created_at"] },
+      { from: ["course_code"], to: ["section"] }
+    ])
+  };
+  const enrollHypo2 = {
+    name: "ENROLLMENTS_2", nf: "BCNF",
+    pks: ["student_id", "course_code"], cks: [],
+    attrs: ["student_id", "course_code", "status", "joined_via", "created_at"],
+    fks: [["student_id", "STUDENTS_1"], ["course_code", "COURSES_1"]],
+    fds: numberFds([
+      { from: ["student_id", "course_code"], to: ["status", "joined_via", "created_at"] }
+    ])
+  };
+
+  const courseHypoAttrs = courseAttrs;
+  const courseHypoFds = courseFdsRaw.slice();
+  courseHypoFds.push({ from: ["course_id"], to: ["course_name"] });
+  const coursesHypo = {
+    name: "COURSES_H", nf: "2NF",
+    pks: ["course_code"], cks: courseCks,
+    attrs: courseHypoAttrs,
+    fks: [["teacher_id", "TEACHERS_1"]],
+    fds: numberFds(courseHypoFds)
+  };
+  const courses3Attrs = courseAttrs.filter(a => a !== "course_name");
+  const courses3FdsRaw = [{ from: ["course_code"], to: courses3Attrs.filter(a => a !== "course_code") }];
+  if (joinCodeIsCK) courses3FdsRaw.push({ from: ["join_code"], to: courses3Attrs.filter(a => a !== "join_code") });
+  const coursesHypo3 = {
+    name: "COURSES_3", nf: "BCNF",
+    pks: ["course_code"], cks: courseCks,
+    attrs: courses3Attrs,
+    fks: [["teacher_id", "TEACHERS_1"], ["course_id", "COURSE_CATALOG_3"]],
+    fds: numberFds(courses3FdsRaw)
+  };
+  const catalog3 = {
+    name: "COURSE_CATALOG_3", nf: "BCNF",
+    pks: ["course_id"], cks: [],
+    attrs: ["course_id", "course_name"],
+    fks: [],
+    fds: numberFds([{ from: ["course_id"], to: ["course_name"] }])
+  };
+
+  // ---------- final 9 tables (physical design, surrogate keys) ----------
+  const finals = [
+    { name: "auth_users", nf: "BCNF", pks: ["auth_user_id"], cks: [["email"]], attrs: ["auth_user_id", "email", "password"], fks: [], fds: numberFds([
+      { from: ["auth_user_id"], to: ["email", "password"] },
+      { from: ["email"], to: ["auth_user_id", "password"] }
+    ])},
+    Object.assign({}, login1, { name: "auth_providers", fks: [["auth_user_id", "auth_users"]] }),
+    Object.assign({}, students1, { name: "students", fks: [["auth_user_id", "auth_users"]] }),
+    Object.assign({}, teachers1, { name: "teachers", fks: [["auth_user_id", "auth_users"]] }),
+    Object.assign({}, courses1, { name: "courses", fks: [["teacher_id", "teachers"]] }),
+    { name: "enrollments", nf: "BCNF", pks: ["enrollment_id"], cks: [["student_id", "course_code"]], attrs: ["enrollment_id", "student_id", "course_code", "section", "status", "joined_via", "created_at"], fks: [["student_id", "students"], ["course_code", "courses"]], fds: numberFds([
+      { from: ["enrollment_id"], to: ["student_id", "course_code", "section", "status", "joined_via", "created_at"] },
+      { from: ["student_id", "course_code"], to: ["enrollment_id", "section", "status", "joined_via", "created_at"] }
+    ])},
+    Object.assign({}, quizzes1, { name: "quizzes", fks: [["course_code", "courses"]] }),
+    { name: "scores", nf: "BCNF", pks: ["score_id"], cks: [["quiz_id", "student_id"]], attrs: ["score_id", "quiz_id", "student_id", "score", "unread_flag", "is_deleted", "created_at", "updated_at"], fks: [["quiz_id", "quizzes"], ["student_id", "students"]], fds: numberFds([
+      { from: ["score_id"], to: ["quiz_id", "student_id", "score", "unread_flag", "is_deleted", "created_at", "updated_at"] },
+      { from: ["quiz_id", "student_id"], to: ["score_id", "score", "unread_flag", "is_deleted", "created_at", "updated_at"] }
+    ])},
+    Object.assign({}, uploads1, { name: "uploads", fks: [["teacher_id", "teachers"], ["course_code", "courses"]] })
+  ];
+
+  return {
+    authUsers1, login1, students1, teachers1, courses1, quizzes1, enrollments1, scores1, uploads1,
+    part1: [courses1, quizzes1, enrollments1, scores1, uploads1],
+    all1nf: [authUsers1, login1, students1, teachers1, courses1, quizzes1, enrollments1, scores1, uploads1],
+    enrollHypo, enrollHypo2, coursesHypo, coursesHypo3, catalog3,
+    finals
+  };
+}
+
+// ---------------------------------------------------------------- helpers
+
+function badgeClass(nf) {
+  if (nf === "UNF" || nf === "1NF") return "badge-1nf";
+  if (nf === "2NF") return "badge-2nf";
+  return "badge-3nf";
+}
+
+function fkLine(rel) {
+  if (!rel.fks || rel.fks.length === 0) return `<div style="font-size:0.84rem; margin-bottom:10px; color:var(--muted);">Foreign Key: ไม่มี</div>`;
+  const chips = rel.fks.map(([a, t]) => `<span class="fk-chip">${a} → ${t}</span>`).join("");
+  return `<div style="font-size:0.84rem; margin-bottom:10px;"><strong>Foreign Key:</strong> ${chips}</div>`;
+}
+
+function fdBox(rel) {
+  const items = rel.fds.map(f => `<li><strong>${f.id}:</strong> <code>{${f.from.join(", ")}} → {${f.to.join(", ")}}</code>${f.desc ? " — " + f.desc : ""}</li>`).join("");
+  return `
+    <div class="fd-text-box">
+      <strong>Functional Dependency ของ <code>${rel.name}</code>:</strong>
+      <ul>${items}</ul>
+    </div>`;
+}
+
+function diagram(rel, isDark, withList, badge) {
+  const canvasClass = isDark ? "dark-canvas" : "light-canvas";
+  return `
+    ${badge === null ? "" : `<div style="display:flex; align-items:center; gap:10px; margin-bottom:6px;">
+      <strong style="font-family:monospace; font-size:1.05rem;">${rel.name}</strong>
+      <span class="badge ${badgeClass(rel.nf)}">[${rel.nf}]</span>
+    </div>`}
+    <div class="svg-canvas ${canvasClass}">${drawRelationSVG(rel, isDark)}</div>
+    ${fkLine(rel)}
+    ${withList ? fdBox(rel) : ""}`;
+}
+
+function schemaLine(name, parts) {
+  return `<div class="schema-line">${name}(${parts.join(", ")})</div>`;
+}
+
+const PK = s => `<span class="pk">${s}</span>`;
+const GRP = s => `<span class="grp">${s}</span>`;
+
+
+// ---------------------------------------------------------------- key analysis
+
+function keysOf(rel) {
+  const cks = [rel.pks].concat(rel.cks || []);
+  const prime = new Set();
+  cks.forEach(k => k.forEach(a => prime.add(a)));
+  const nonprime = rel.attrs.filter(a => !prime.has(a));
+  return { cks, prime, nonprime };
+}
+
+const fmtSet = arr => `{${arr.join(", ")}}`;
+const codeList = arr => arr.length ? arr.map(a => `<code>${a}</code>`).join(", ") : "<em>ไม่มี</em>";
+
+// stage card: diagram + FD list + one reason for this stage
+function stageCard(no, rel, isDark, stageLabel, reason, note) {
+  return `
+    <div class="case-block">
+      <div class="case-header">
+        <div class="case-title"><span>${no} <code>${rel.name}</code></span></div>
+        <span class="badge badge-3nf">ผ่าน ${stageLabel}</span>
+      </div>
+      ${diagram(rel, isDark, true, null)}
+      <div class="why-card pass" style="margin-bottom:${note ? "12px" : "0"};">
+        <h4>✅ ทำไม <code>${rel.name}</code> อยู่ใน ${stageLabel}?</h4>
+        <p>${reason}</p>
+      </div>
+      ${note ? `<div class="note-box" style="margin-bottom:0;"><strong>หมายเหตุ:</strong> ${note}</div>` : ""}
+    </div>`;
+}
+
+function stageIntro(title, defn, how) {
+  return `
+    <div class="section-intro">
+      <h2>${title}</h2>
+      <p><strong>นิยาม:</strong> ${defn}</p>
+      <p style="margin-top:6px;"><strong>วิธีตรวจ:</strong> ${how}</p>
+    </div>`;
+}
+
+// ---------------------------------------------------------------- stage 1: UNF -> 1NF
+
+function renderStage1(data, isDark) {
+  const nestedCell = rows => rows.length === 0
+    ? `<td class="nested"><em style="color:var(--muted);">{ } (ยังไม่ผูก)</em></td>`
+    : `<td class="nested"><table class="nested-inner">${rows.map(r => `<tr><td>${r[0]}</td><td>${r[1]}</td></tr>`).join("")}</table></td>`;
+
+  const authRows = [
+    ["AU01", "somchai.j@uni.ac.th", "$2b$12$Lq3k…", [["google", "112093847561092837465"]]],
+    ["AU02", "warunee.k@uni.ac.th", "NULL", [["google", "104857392016482915733"]]],
+    ["AU03", "john.smith@uni.ac.th", "$2b$12$8HdP…", []],
+    ["AU06", "anan.s@student.uni.ac.th", "$2b$12$Za1x…", [["google", "101928374650192837465"]]],
+    ["AU08", "kritsada.p@student.uni.ac.th", "$2b$12$Rf4c…", []]
+  ];
+  const authTable = `
+    <div class="table-scroll"><table class="sample-table">
+      <thead><tr><th>auth_user_id</th><th>email</th><th>password</th><th>{Login_provider (provider, provider_user_id)}</th></tr></thead>
+      <tbody>${authRows.map(r => `<tr><td>${r[0]}</td><td>${r[1]}</td><td>${r[2]}</td>${nestedCell(r[3])}</tr>`).join("")}</tbody>
+    </table></div>`;
+
+  const studentRows = [
+    ["6609610011", "Anan", "NULL", "Saetang", "avatars/s0011.jpg", "AU06", "2026-06-05 19:02"],
+    ["6609610029", "Pimchanok", "NULL", "Rattana", "https://lh3.googleusercontent.com/a/…", "AU07", "2026-06-05 20:15"],
+    ["6609610037", "Kritsada", "NULL", "Phonsri", "NULL", "AU08", "2026-06-06 08:30"],
+    ["6609610045", "Maria", "Grace", "Lopez", "NULL", "AU09", "2026-06-06 11:47"],
+    ["6609610052", "Thanakorn", "NULL", "Boonmee", "avatars/s0052.jpg", "AU10", "2026-06-07 09:05"]
+  ];
+  const nameTable = `
+    <div class="table-scroll"><table class="sample-table">
+      <thead><tr><th>student_id</th><th>Name (first, middle, last)</th><th>avatar_url</th><th>auth_user_id</th><th>created_at</th></tr></thead>
+      <tbody>${studentRows.map(r => `<tr><td>${r[0]}</td><td class="nested">(${r[1]}, ${r[2]}, ${r[3]})</td><td>${r[4]}</td><td>${r[5]}</td><td>${r[6]}</td></tr>`).join("")}</tbody>
+    </table></div>`;
+
+  const summary = data.all1nf.map(r => {
+    const action = {
+      AUTH_USER_0: r.name === "AUTH_PROVIDERS_1" ? "แยก multivalued <code>Login_provider</code> ออกมาเป็นตารางนี้ และตั้ง <code>provider_id</code> เป็น PK" : "ย้าย <code>Login_provider</code> ออกไป",
+      STUDENT_0: "แตก composite <code>Name</code>",
+      TEACHER_0: "แตก composite <code>Name</code>"
+    }[r.from] || "ไม่ต้องแก้ (ได้จาก ER เป็น 1NF อยู่แล้ว)";
+    return `<tr><td><code>${r.name}</code></td><td>${r.from}</td><td>${action}</td><td>✅ 1NF</td></tr>`;
+  }).join("");
+
+  let html = stageIntro(
+    "ขั้นที่ 1: ทำให้อยู่ใน First Normal Form (1NF)",
+    "ทุก attribute ต้องเก็บค่าเดี่ยว (atomic) ห้ามมี composite attribute, multivalued attribute หรือ nested relation",
+    "แปลงทุก entity / relationship ใน ER diagram เป็น relation (เก็บแค่ attribute ของตัวเอง + FK) แล้วดูว่ามี attribute ใดเก็บค่าที่มีโครงสร้างย่อยหรือหลายค่าในช่องเดียวหรือไม่"
+  );
+
+  html += `
+    <div class="case-block">
+      <div class="case-header">
+        <div class="case-title"><span>1.1 จุดเริ่มต้น (UNF): relation ที่ยังไม่อยู่ใน 1NF</span></div>
+        <span class="badge badge-1nf">ไม่ผ่าน 1NF</span>
+      </div>
+      ${schemaLine("AUTH_USER_0", [PK("auth_user_id"), "email", "password", GRP("{Login_provider(provider, provider_user_id)}")])}
+      ${schemaLine("STUDENT_0", [PK("student_id"), GRP("Name(first_name, middle_name, last_name)"), "avatar_url", "auth_user_id", "created_at"])}
+      ${schemaLine("TEACHER_0", [PK("teacher_id"), GRP("Name(first_name, middle_name, last_name)"), "avatar_url", "auth_user_id", "created_at"])}
+      <p style="font-size:0.86rem; color:var(--muted); margin:6px 0 14px;">ส่วนสีแดงคือ attribute ที่ผิด 1NF ส่วน COURSE, QUIZ, ENROLLS, GET_SCORE และ UPLOAD ไม่มี composite หรือ multivalued attribute จึงเป็น 1NF ตั้งแต่แปลงจาก ER</p>
+
+      <p style="margin-bottom:6px; font-weight:600;">ตัวอย่าง <code>AUTH_USER_0</code></p>
+      ${authTable}
+      <p style="margin-bottom:6px; font-weight:600;">ตัวอย่าง <code>STUDENT_0</code> (<code>TEACHER_0</code> มีโครงสร้างเหมือนกัน)</p>
+      ${nameTable}
+
+      <div class="why-grid">
+        <div class="why-card fail">
+          <h4>❌ ทำไม <code>AUTH_USER_0</code> ไม่อยู่ใน 1NF?</h4>
+          <p><code>Login_provider</code> เป็น <strong>multivalued composite attribute</strong> (วงรีสองชั้นใน ER) หนึ่งบัญชีผูกได้ 0..n provider ช่องเดียวจึงเก็บได้หลายคู่ <code>(provider, provider_user_id)</code> ซึ่งคือ nested relation ซ้อนอยู่ในแถว ตอนนี้ระบบมีแค่ <code>google</code> แต่โครงสร้างรองรับหลายค่า</p>
+        </div>
+        <div class="why-card fail">
+          <h4>❌ ทำไม <code>STUDENT_0</code> และ <code>TEACHER_0</code> ไม่อยู่ใน 1NF?</h4>
+          <p><code>Name</code> เป็น <strong>composite attribute</strong> ค่าในช่องเดียวมีโครงสร้างย่อย 3 ส่วน (ชื่อต้น ชื่อกลาง นามสกุล) จึงไม่ใช่ atomic value เช่น ค้นหาหรือเรียงตามนามสกุลโดยตรงไม่ได้</p>
+        </div>
+      </div>
+
+      <div class="step-arrow-divider">
+        ⬇️ แปลง UNF → 1NF<br>
+        • <code>AUTH_USER_0</code>: ย้าย <code>Login_provider</code> ไปเป็นตารางใหม่ <code>AUTH_PROVIDERS_1</code> โดยนำ PK เดิม <code>auth_user_id</code> ไปด้วยเป็น FK และให้แต่ละแถว (การผูกบัญชีหนึ่งครั้ง) มีรหัสของตัวเองคือ <code>provider_id</code> เป็น PK เหมือนตาราง <code>auth_providers</code> ในฐานข้อมูล<br>
+        • <code>STUDENT_0</code>, <code>TEACHER_0</code>: แตก <code>Name</code> เป็น <code>first_name</code>, <code>middle_name</code>, <code>last_name</code> (ไม่ต้องแยกตาราง)
+      </div>
+
+      <div class="why-grid">
+        <div class="why-card warn">
+          <h4>❓ ตาราง AUTH_PROVIDERS มาจากไหน ทั้งที่ ER ไม่มี entity นี้</h4>
+          <p>ใน ER มี <code>Login_provider</code> เป็น <strong>multivalued attribute</strong> (วงรีสองชั้น) ของ AUTH_USER ไม่ใช่ entity
+          ตารางนี้จึงไม่ได้เพิ่มขึ้นมาเอง แต่เป็นที่เก็บของ attribute นั้น เพราะ relation เก็บหลายค่าในช่องเดียวไม่ได้ (ผิด 1NF)
+          ทั้งกฎ 1NF และ ER mapping step 6 จึงให้ย้าย multivalued attribute ไปเป็น relation ใหม่ที่มี PK ของ entity เดิม (<code>auth_user_id</code>) เป็น FK
+          ผลลัพธ์นี้จะเกิดกับทุกระบบที่มี multivalued attribute</p>
+        </div>
+        <div class="why-card warn">
+          <h4>❓ provider_id มาจากไหน</h4>
+          <p>ใน ER ไม่มี <code>provider_id</code> ตาม mapping step 6 แบบตำรา PK ของตารางใหม่จะเป็น FK + attribute เดิม คือ <code>{auth_user_id, provider}</code>
+          แต่ในโปรเจกต์ตั้งรหัสให้แต่ละแถว (การผูกบัญชีหนึ่งครั้ง) เป็น <code>provider_id</code> สร้างด้วย <code>gen_random_uuid()</code> และใช้เป็น PK
+          เอกสารนี้ใช้ <code>provider_id</code> ตามฐานข้อมูลจริง ซึ่งเป็นการเลือกตอนออกแบบตาราง (surrogate key) ไม่ได้เปลี่ยนความหมายของข้อมูล</p>
+        </div>
+      </div>
+
+      <p style="margin-bottom:6px; font-weight:600;">ข้อมูลหลังแยก: กลุ่ม <code>Login_provider</code> ที่ซ้อนอยู่ใน <code>AUTH_USER_0</code> กลายเป็นแถวของ <code>AUTH_PROVIDERS_1</code> (บัญชีที่ไม่ได้ผูก เช่น AU03, AU08 ไม่มีแถว)</p>
+      <div class="table-scroll"><table class="sample-table">
+        <thead><tr><th>provider_id</th><th>auth_user_id</th><th>provider</th><th>provider_user_id</th></tr></thead>
+        <tbody>${[
+          ["PV01", "AU02", "google", "104857392016482915733"],
+          ["PV02", "AU07", "google", "117302948561029384756"],
+          ["PV03", "AU11", "google", "109283746501928374651"],
+          ["PV04", "AU01", "google", "112093847561092837465"],
+          ["PV05", "AU06", "google", "101928374650192837465"]
+        ].map(r => `<tr>${r.map(c => `<td>${c}</td>`).join("")}</tr>`).join("")}</tbody>
+      </table></div>
+
+      <p style="margin-bottom:6px; font-weight:600;">ผลลัพธ์ขั้น 1NF: 9 relation</p>
+      <div class="table-scroll"><table class="sample-table">
+        <thead><tr><th>Relation (1NF)</th><th>มาจาก</th><th>สิ่งที่ทำในขั้นนี้</th><th>ผล</th></tr></thead>
+        <tbody>${summary}</tbody>
+      </table></div>
+    </div>`;
+
+  data.all1nf.forEach((r, i) => {
+    html += stageCard(`1.${i + 2}`, r, isDark, "1NF", r.why1nf, null);
+  });
+
+  html += `
+    <div class="step-arrow-divider">ทั้ง 9 relation ผ่าน 1NF แล้ว ➜ ไปตรวจ 2NF ต่อ</div>`;
+
+  document.getElementById("container-stage1").innerHTML = html;
+}
+
+// ---------------------------------------------------------------- stage 2: 2NF
+
+function renderStage2(data, isDark) {
+  const rows = data.all1nf.map(r => {
+    const k = keysOf(r);
+    const composite = k.cks.some(c => c.length > 1);
+    let partial;
+    if (!composite) partial = "ไม่มี (คีย์คอลัมน์เดียว)";
+    else if (k.nonprime.length === 0) partial = "ไม่มี (ไม่มี non-prime)";
+    else partial = "ไม่มี (non-prime ขึ้นกับคีย์ทั้งตัว)";
+    return `<tr>
+      <td><code>${r.name}</code></td>
+      <td>${k.cks.map(c => `<code>${fmtSet(c)}</code>`).join("<br>")}</td>
+      <td>${composite ? "มี" : "ไม่มี"}</td>
+      <td>${codeList(k.nonprime)}</td>
+      <td>${partial}</td>
+      <td style="white-space:nowrap;">✅ 2NF</td>
+    </tr>`;
+  }).join("");
+
+  let html = stageIntro(
+    "ขั้นที่ 2: ตรวจ Second Normal Form (2NF)",
+    "อยู่ใน 1NF และ non-prime attribute ทุกตัวต้อง <strong>fully functionally dependent</strong> กับทุก candidate key คือห้ามขึ้นกับ \"ส่วนหนึ่ง\" ของคีย์ (partial dependency)",
+    "หา candidate key ทุกชุดและแยก prime / non-prime ถ้าคีย์ทุกชุดเป็นคอลัมน์เดียว ผ่าน 2NF ทันที ถ้ามีคีย์ผสม ต้องดูว่ามี non-prime ตัวใดถูกกำหนดได้ด้วยคีย์แค่บางส่วนหรือไม่"
+  );
+
+  html += `
+    <div class="case-block">
+      <div class="case-header">
+        <div class="case-title"><span>2.1 ตารางตรวจ partial dependency</span></div>
+      </div>
+      <div class="table-scroll"><table class="sample-table">
+        <thead><tr><th>Relation</th><th>Candidate key</th><th>คีย์ผสม?</th><th>Non-prime attribute</th><th>Partial dependency</th><th>ผล</th></tr></thead>
+        <tbody>${rows}</tbody>
+      </table></div>
+      <p style="font-size:0.88rem;">
+        relation ที่ต้องตรวจละเอียดคือ 3 ตัวที่มีคีย์ผสม ได้แก่ <code>AUTH_PROVIDERS_1</code>, <code>ENROLLMENTS_1</code> และ <code>SCORES_1</code> (เหตุผลอยู่ในการ์ดของแต่ละตาราง)
+        ใน v4 ขั้นนี้ต้องแยก <code>ENROLL_1</code> และ <code>SCORE_1</code> เพราะมีข้อมูลนักศึกษาและควิซพ่วงมา แต่ใน v5 ไม่มี จึงไม่ต้องแยกตารางเพิ่ม
+      </p>
+    </div>`;
+
+  data.all1nf.forEach((r, i) => {
+    html += stageCard(`2.${i + 2}`, r, isDark, "2NF", r.why2nf, r.note2);
+  });
+
+  html += `
+    <div class="step-arrow-divider">ทั้ง 9 relation ผ่าน 2NF โดยไม่ต้องแยกตาราง ➜ ไปตรวจ 3NF ต่อ</div>`;
+
+  document.getElementById("container-stage2").innerHTML = html;
+}
+
+// ---------------------------------------------------------------- stage 3: 3NF
+
+function renderStage3(data, isDark) {
+  const rows = data.all1nf.map(r => {
+    const k = keysOf(r);
+    const isSuper = lhs => k.cks.some(c => c.every(a => lhs.includes(a)));
+    const bad = r.fds.filter(f => !isSuper(f.from));
+    const np2np = r.fds.filter(f => f.from.every(a => !k.prime.has(a)) && f.to.some(a => !k.prime.has(a)));
+    return `<tr>
+      <td><code>${r.name}</code></td>
+      <td>${r.fds.map(f => `${f.id}: <code>${fmtSet(f.from)}</code>`).join("<br>")}</td>
+      <td>${bad.length ? bad.map(f => f.id).join(", ") : "ไม่มี (ฝั่งซ้ายทุก FD เป็น superkey)"}</td>
+      <td>${np2np.length ? np2np.map(f => f.id).join(", ") : "ไม่มี"}</td>
+      <td style="white-space:nowrap;">${np2np.length ? "❌" : "✅ 3NF"}</td>
+      <td style="white-space:nowrap;">${bad.length ? "❌" : "✅ BCNF"}</td>
+    </tr>`;
+  }).join("");
+
+  let html = stageIntro(
+    "ขั้นที่ 3: ตรวจ Third Normal Form (3NF) และ BCNF",
+    "อยู่ใน 2NF และไม่มี non-prime attribute ตัวใด <strong>transitively dependent</strong> กับคีย์ (ไม่มี คีย์ → non-prime → non-prime) หรือเขียนแบบทั่วไป: ทุก FD X → A ต้องมี X เป็น superkey หรือ A เป็น prime ส่วน BCNF เข้มกว่านั้นคือ X ต้องเป็น superkey เสมอ",
+    "ไล่ทุก FD ในตาราง ดูว่าฝั่งซ้ายเป็น superkey (มี candidate key อยู่ข้างใน) หรือไม่ และมี FD ที่ non-prime กำหนด non-prime หรือไม่"
+  );
+
+  html += `
+    <div class="case-block">
+      <div class="case-header">
+        <div class="case-title"><span>3.1 ตารางตรวจ transitive dependency</span></div>
+      </div>
+      <div class="table-scroll"><table class="sample-table">
+        <thead><tr><th>Relation</th><th>ฝั่งซ้ายของแต่ละ FD</th><th>FD ที่ฝั่งซ้ายไม่ใช่ superkey</th><th>non-prime → non-prime</th><th>3NF</th><th>BCNF</th></tr></thead>
+        <tbody>${rows}</tbody>
+      </table></div>
+      <p style="font-size:0.88rem;">
+        ใน v4 ขั้นนี้ต้องแยก <code>email</code>, <code>password</code> ออกจาก <code>TEACHERS_1</code> และ <code>STUDENT_2</code> เพราะเกิด <code>id → auth_user_id → email, password</code>
+        ใน v5 ตารางโปรไฟล์มีแค่ FK <code>auth_user_id</code> จึงไม่มี transitive dependency ตั้งแต่ต้น
+      </p>
+    </div>`;
+
+  data.all1nf.forEach((r, i) => {
+    html += stageCard(`3.${i + 2}`, r, isDark, "3NF (และ BCNF)", r.why3nf, r.note3);
+  });
+
+  html += `
+    <div class="step-arrow-divider">ทั้ง 9 relation อยู่ใน 3NF และ BCNF ➜ นำไปออกแบบตารางจริง (physical design)</div>`;
+
+  document.getElementById("container-stage3").innerHTML = html;
+}
+
+// ---------------------------------------------------------------- final tables
+
+function renderFinal(data, isDark) {
+  let html = `
+    <div class="section-intro">
+      <h2>ตารางสุดท้าย 9 ตาราง (physical design)</h2>
+      <p>
+        เพิ่ม surrogate key <code>enrollment_id</code> และ <code>score_id</code> เป็น PK แทนคีย์ผสม (<code>auth_providers</code> มี <code>provider_id</code> ตั้งแต่ขั้น 1NF แล้ว จึงเหมือน <code>AUTH_PROVIDERS_1</code> ทุกอย่าง) และเก็บคีย์ผสมเดิมไว้เป็น UNIQUE (candidate key)
+        FD จึงเพิ่มขึ้น แต่ฝั่งซ้ายของทุก FD ยังเป็น candidate key จึงยังอยู่ใน BCNF
+      </p>
+    </div>
+    <div class="case-block">
+      <div class="case-header"><div class="case-title"><span>ความสัมพันธ์ระหว่างขั้น</span></div></div>
+      <div class="table-scroll"><table class="sample-table">
+        <thead><tr><th>UNF / ER</th><th>1NF</th><th>2NF</th><th>3NF / BCNF</th><th>ตารางจริง</th></tr></thead>
+        <tbody>
+          <tr><td rowspan="2">AUTH_USER_0</td><td>AUTH_USERS_1</td><td>AUTH_USERS_1</td><td>AUTH_USERS_1</td><td><code>auth_users</code></td></tr>
+          <tr><td>AUTH_PROVIDERS_1</td><td>AUTH_PROVIDERS_1</td><td>AUTH_PROVIDERS_1</td><td><code>auth_providers</code></td></tr>
+          <tr><td>STUDENT_0</td><td>STUDENTS_1</td><td>STUDENTS_1</td><td>STUDENTS_1</td><td><code>students</code></td></tr>
+          <tr><td>TEACHER_0</td><td>TEACHERS_1</td><td>TEACHERS_1</td><td>TEACHERS_1</td><td><code>teachers</code></td></tr>
+          <tr><td>COURSE</td><td>COURSES_1</td><td>COURSES_1</td><td>COURSES_1</td><td><code>courses</code></td></tr>
+          <tr><td>QUIZ</td><td>QUIZZES_1</td><td>QUIZZES_1</td><td>QUIZZES_1</td><td><code>quizzes</code></td></tr>
+          <tr><td>ENROLLS</td><td>ENROLLMENTS_1</td><td>ENROLLMENTS_1</td><td>ENROLLMENTS_1</td><td><code>enrollments</code> (+ enrollment_id)</td></tr>
+          <tr><td>GET_SCORE</td><td>SCORES_1</td><td>SCORES_1</td><td>SCORES_1</td><td><code>scores</code> (+ score_id)</td></tr>
+          <tr><td>UPLOAD</td><td>UPLOADS_1</td><td>UPLOADS_1</td><td>UPLOADS_1</td><td><code>uploads</code></td></tr>
+        </tbody>
+      </table></div>
+    </div>
+    <div class="case-block">
+      ${data.finals.map(r => `<div style="margin-bottom:18px;">${diagram(r, isDark, false)}</div>`).join("")}
+    </div>`;
+  document.getElementById("container-final").innerHTML = html;
+}
+
+// ---------------------------------------------------------------- appendix: hypothetical
+
+function renderAppendix(data, isDark) {
+  const html = `
+    <div class="section-intro">
+      <h2>ภาคผนวก: กรณีสมมติ (ไม่ใช่ schema จริง)</h2>
+      <p>ถ้ากติกาธุรกิจเปลี่ยน แม้ไม่พ่วง attribute ของ relation อื่น ก็ยังไม่ผ่าน 2NF หรือ 3NF ได้ สองกรณีนี้ใช้ประกอบการอธิบายขั้นแยกตารางเท่านั้น ระบบจริงไม่มี FD สองตัวนี้ (เหตุผลอยู่ในหมายเหตุของ <code>ENROLLMENTS_1</code> ในขั้นที่ 2 และ <code>COURSES_1</code> ในขั้นที่ 3)</p>
+    </div>
+
+    <div class="case-block">
+      <div class="case-header">
+        <div class="case-title"><span>กรณีสมมติ ก.: ถ้า <code>course_code → section</code> (section ของนักศึกษาต้องเท่ากับ section ของวิชาเสมอ)</span></div>
+        <span class="badge badge-1nf">[1NF] ไม่ผ่าน 2NF</span>
+      </div>
+      ${diagram(data.enrollHypo, isDark, true)}
+      <div class="why-grid">
+        <div class="why-card pass"><h4>✅ ทำไมอยู่ใน 1NF?</h4><p>ทุกช่องเป็น atomic value หนึ่งแถวคือการลงทะเบียนหนึ่งครั้ง</p></div>
+        <div class="why-card fail"><h4>❌ ทำไมไม่อยู่ใน 2NF?</h4><p>PK คือ <code>{student_id, course_code}</code> แต่ FD2 <code>course_code → section</code> ขึ้นกับคีย์แค่บางส่วน (partial dependency) ค่า section จึงซ้ำทุกแถวของวิชาเดียวกัน ถ้าแก้ section ของวิชาต้องแก้ทุกแถว (update anomaly)</p></div>
+        <div class="why-card fail"><h4>❌ ทำไมไม่อยู่ใน 3NF?</h4><p>ยังไม่ผ่าน 2NF จึงไม่อยู่ใน 3NF ด้วย</p></div>
+      </div>
+      <div class="step-arrow-divider">⬇️ แปลง 1NF → 2NF: ย้าย <code>section</code> ไปอยู่กับ <code>course_code</code> ซึ่ง <code>COURSES_1</code> มีอยู่แล้ว จึงแค่ลบ <code>section</code> ออกจากตารางนี้ (ไม่ต้องสร้างตารางใหม่)</div>
+      ${diagram(data.enrollHypo2, isDark, true)}
+      <div class="why-card pass"><h4>✅ ทำไม <code>ENROLLMENTS_2</code> อยู่ใน 2NF, 3NF และ BCNF?</h4><p>non-prime ที่เหลือขึ้นกับคีย์ทั้งตัว ไม่มี non-prime → non-prime และตัวกำหนดเดียวคือ PK ส่วน section ดูจาก <code>COURSES_1</code> โดย join ผ่าน FK <code>course_code</code></p></div>
+    </div>
+
+    <div class="case-block">
+      <div class="case-header">
+        <div class="case-title"><span>กรณีสมมติ ข.: ถ้า <code>course_id → course_name</code> (รหัสวิชาเดียวกันต้องชื่อเดียวกัน)</span></div>
+        <span class="badge badge-2nf">[2NF] ไม่ผ่าน 3NF</span>
+      </div>
+      ${diagram(data.coursesHypo, isDark, true)}
+      <div class="why-grid">
+        <div class="why-card pass"><h4>✅ ทำไมอยู่ใน 1NF และ 2NF?</h4><p>ทุกช่องเป็น atomic value และ PK <code>course_code</code> เป็นคอลัมน์เดียว จึงไม่มี partial dependency</p></div>
+        <div class="why-card fail"><h4>❌ ทำไมไม่อยู่ใน 3NF?</h4><p>มี transitive dependency <code>course_code → course_id → course_name</code> คือ non-prime (<code>course_id</code>) กำหนด non-prime (<code>course_name</code>) ชื่อ "Database Systems" จึงซ้ำในวิชา 1 และ 2 ซึ่งเป็น CS212 ทั้งคู่</p></div>
+      </div>
+      <div class="step-arrow-divider">⬇️ แปลง 2NF → 3NF: แยก <code>course_name</code> ออกไปเป็น <code>COURSE_CATALOG_3(course_id, course_name)</code> และคง <code>course_id</code> ไว้ใน <code>COURSES_3</code> เป็น FK</div>
+      ${diagram(data.coursesHypo3, isDark, true)}
+      ${diagram(data.catalog3, isDark, true)}
+      <div class="why-card pass"><h4>✅ ทำไมทั้งสองตารางอยู่ใน 3NF และ BCNF?</h4><p>ใน <code>COURSES_3</code> ไม่มี <code>course_name</code> แล้ว <code>course_id</code> จึงเป็นแค่ FK ที่ไม่กำหนด attribute อื่น และใน <code>COURSE_CATALOG_3</code> ตัวกำหนดเดียวคือ PK <code>course_id</code></p></div>
+    </div>`;
+  document.getElementById("container-appendix").innerHTML = html;
+}
+
+function renderAll() {
+  const isDark = document.getElementById("darkCanvasToggle").checked;
+  const joinCodeIsCK = document.getElementById("joinCodeCkToggle").checked;
+  const data = getData(joinCodeIsCK);
+
+  renderStage1(data, isDark);
+  renderStage2(data, isDark);
+  renderStage3(data, isDark);
+  renderFinal(data, isDark);
+  renderAppendix(data, isDark);
+}
+
+function switchTab(tabId, btnEl) {
+  document.querySelectorAll(".section-panel").forEach(p => p.classList.remove("active"));
+  document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
+  document.getElementById(tabId).classList.add("active");
+  btnEl.classList.add("active");
+  window.scrollTo(0, 0);
+}
+
+window.addEventListener("DOMContentLoaded", renderAll);
+</script>
+
+</body>
+</html>

@@ -329,7 +329,7 @@
           />
         </div>
         <div class="mb-4">
-          <label class="block text-lg py-1">Score</label>
+          <label class="block text-lg py-1">Weight</label>
           <input
             v-model="editAssignWeight"
             type="number"
@@ -447,12 +447,20 @@ const handleClickOutside = (event) => {
   }
 };
 
+const resetCreateForm = () => {
+  assignmentTitle.value = "";
+  score.value = "";
+  assign_weight.value = "";
+};
+
 const createAssignment = () => {
+  resetCreateForm();
   startCreate.value = true;
 };
 
 const cancleCreate = () => {
   startCreate.value = false;
+  resetCreateForm();
 };
 
 // ################################ Assignment ###########################################################################################################################
@@ -478,8 +486,9 @@ const submit = async () => {
       alert("Please enter full mark");
       return;
     }
-    if (!assign_weight.value) {
+    if (assign_weight.value === "" || assign_weight.value == null) {
       alert("Please enter weight");
+      return;
     }
 
     const response = await fetch(`${BASE_URL}/teacher/create_assign`, {
@@ -506,8 +515,7 @@ const submit = async () => {
 
     startCreate.value = false;
 
-    assignmentTitle.value = "";
-    score.value = "";
+    resetCreateForm();
 
     if (courseID.value) {
       await fetchAssignment(courseID.value);

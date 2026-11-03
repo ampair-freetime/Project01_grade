@@ -1,151 +1,176 @@
-// Source: fastapi/app/models/*.py (current application models).
-// Python/SQLAlchemy client defaults are notes, not database DEFAULT clauses.
-// ORM relationship cascades do not imply ON DELETE CASCADE on foreign keys.
-// This describes the models; legacy database volumes may have extra columns.
+// =============================================================
+//  Grade Management — Database Schema (PostgreSQL)
+//  วางไฟล์นี้ที่ https://dbdiagram.io/d เพื่อดู diagram
+//  ที่มา: fastapi/app/models/*.py
+//
+//  หมายเหตุ
+//  - "app default" = ค่า default ที่ SQLAlchemy ใส่ฝั่ง Python
+//    ไม่ใช่ DEFAULT ใน database
+//  - cascade ใน ORM ไม่ได้แปลว่า FK มี ON DELETE CASCADE
+// =============================================================
 
-Project grade_management_current {
+Project grade_management {
   database_type: 'PostgreSQL'
-  Note: 'Current 9-table application schema. section is stored in enrollments, with courses.section as the display fallback. courses.course_code is the internal primary key; courses.course_id is the displayed course identifier.'
+  Note: '''
+  ระบบจัดการคะแนน 9 ตาราง แบ่งเป็น 4 กลุ่ม
+  - Auth: บัญชีผู้ใช้และวิธีล็อกอิน
+  - People: นักศึกษา / อาจารย์
+  - Course: รายวิชาและการลงทะเบียน
+  - Grading: ควิซ คะแนน และไฟล์อัปโหลด
+  '''
 }
 
-Table auth_users {
-  auth_user_id varchar [pk, not null, default: `gen_random_uuid()`]
-  email varchar(100) [not null, unique]
-  password varchar(255)
 
-  indexes {
-    auth_user_id [name: 'ix_auth_users_auth_user_id']
-  }
+// ---------------------------------------------------------------
+//  AUTH
+// ---------------------------------------------------------------
+
+Table auth_users [headercolor: #3d5a80] {
+  auth_user_id  varchar       [pk, default: `gen_random_uuid()`]
+  email         varchar(100)  [not null, unique]
+  password      varchar(255)  [note: 'null ได้ ถ้าล็อกอินผ่าน Google']
+
+  Note: 'บัญชีล็อกอิน 1 บัญชี = นักศึกษา 1 คน หรือ อาจารย์ 1 คน'
 }
 
-Table auth_providers {
-  provider_id varchar [pk, not null, default: `gen_random_uuid()`]
-  auth_user_id varchar
-  provider varchar(50)
-  provider_user_id varchar(255)
+Table auth_providers [headercolor: #3d5a80] {
+  provider_id       varchar       [pk, default: `gen_random_uuid()`]
+  auth_user_id      varchar       [ref: > auth_users.auth_user_id]
+  provider          varchar(50)   [note: 'เช่น google / password']
+  provider_user_id  varchar(255)  [note: 'id จาก provider เช่น Google user id']
 
-  indexes {
-    provider_id [name: 'ix_auth_providers_provider_id']
-  }
+  Note: 'วิธีล็อกอินของแต่ละบัญชี'
 }
 
-Table students {
-  student_id varchar [pk, not null]
-  first_name varchar(255)
-  middle_name varchar(255)
-  last_name varchar(255)
-  avatar_url varchar(500)
-  created_at timestamp [note: 'Application default: datetime.utcnow']
-  auth_user_id varchar [note: 'ORM uses a single student per auth user; the database does not enforce uniqueness on this column.']
 
-  indexes {
-    student_id [name: 'ix_students_student_id']
-  }
+// ---------------------------------------------------------------
+//  PEOPLE
+// ---------------------------------------------------------------
+
+Table students [headercolor: #2a9d8f] {
+  student_id    varchar       [pk, note: 'รหัสนักศึกษา']
+  first_name    varchar(255)
+  middle_name   varchar(255)
+  last_name     varchar(255)
+  avatar_url    varchar(500)
+  auth_user_id  varchar       [ref: > auth_users.auth_user_id, note: 'ORM ใช้แบบ 1:1 แต่ DB ไม่ได้บังคับ unique']
+  created_at    timestamp     [note: 'app default: utcnow']
 }
 
-Table teachers {
-  teacher_id varchar [pk, not null, default: `gen_random_uuid()`]
-  first_name varchar(255)
-  middle_name varchar(255)
-  last_name varchar(255)
-  avatar_url varchar(500)
-  created_at timestamp [note: 'Application default: datetime.utcnow']
-  auth_user_id varchar [note: 'ORM uses a single teacher per auth user; the database does not enforce uniqueness on this column.']
-
-  indexes {
-    teacher_id [name: 'ix_teachers_teacher_id']
-  }
+Table teachers [headercolor: #2a9d8f] {
+  teacher_id    varchar       [pk, default: `gen_random_uuid()`]
+  first_name    varchar(255)
+  middle_name   varchar(255)
+  last_name     varchar(255)
+  avatar_url    varchar(500)
+  auth_user_id  varchar       [ref: > auth_users.auth_user_id, note: 'ORM ใช้แบบ 1:1 แต่ DB ไม่ได้บังคับ unique']
+  created_at    timestamp     [note: 'app default: utcnow']
 }
 
-Table courses {
-  course_code integer [pk, not null, increment, note: 'Internal primary key, not the displayed course identifier.']
-  course_name varchar(255)
-  course_id varchar [note: 'Displayed course identifier, e.g. CS212.']
-  section varchar(50) [note: 'Default section displayed when enrollment.section is empty.']
-  join_code varchar(8)
-  join_open boolean [not null, default: true]
-  teacher_id varchar [not null]
-  created_at timestamp [note: 'Application default: datetime.utcnow']
-  is_deleted boolean [note: 'Application default: false']
-  is_archive boolean [note: 'Application default: false']
 
-  indexes {
-    course_code [name: 'ix_courses_course_code']
-    join_code [unique, name: 'ix_courses_join_code']
-  }
+// ---------------------------------------------------------------
+//  COURSE
+// ---------------------------------------------------------------
+
+Table courses [headercolor: #e9c46a] {
+  course_code  integer       [pk, increment, note: 'PK ภายใน (ไม่ใช่รหัสวิชาที่แสดง)']
+  course_id    varchar       [note: 'รหัสวิชาที่แสดง เช่น CS212']
+  course_name  varchar(255)
+  section      varchar(50)   [note: 'section เริ่มต้น ใช้เมื่อ enrollments.section ว่าง']
+  join_code    varchar(8)    [unique, note: 'รหัสให้นักศึกษา join เอง']
+  join_open    boolean       [not null, default: true]
+  teacher_id   varchar       [not null, ref: > teachers.teacher_id]
+  is_archive   boolean       [note: 'app default: false']
+  is_deleted   boolean       [note: 'app default: false']
+  created_at   timestamp     [note: 'app default: utcnow']
 }
 
-Table enrollments {
-  enrollment_id varchar [pk, not null, default: `gen_random_uuid()`]
-  student_id varchar [not null]
-  course_code integer [not null]
-  section varchar(50) [note: 'Student section within this course; CSV currently creates or updates this value.']
-  status varchar(20) [not null, default: 'active']
-  joined_via varchar(20) [not null, default: 'code', note: 'Origin recorded when enrollment is created: code or csv.']
-  created_at timestamptz [default: `now()`]
+Table enrollments [headercolor: #e9c46a] {
+  enrollment_id  varchar      [pk, default: `gen_random_uuid()`]
+  student_id     varchar      [not null, ref: > students.student_id]
+  course_code    integer      [not null, ref: > courses.course_code]
+  section        varchar(50)  [note: 'section ของนักศึกษาในวิชานี้']
+  status         varchar(20)  [not null, default: 'active', note: 'active | dropped']
+  joined_via     varchar(20)  [not null, default: 'code', note: 'code = join เอง | csv = อาจารย์อัปโหลด']
+  created_at     timestamptz  [default: `now()`]
 
   indexes {
-    enrollment_id [name: 'ix_enrollments_enrollment_id']
     (student_id, course_code) [unique, name: 'unique_student_course']
   }
 
   checks {
-    `status IN ('active', 'dropped')` [name: 'enrollment_status_check']
-    `joined_via IN ('code', 'csv')` [name: 'enrollment_joined_via_check']
+    `status IN ('active', 'dropped')`  [name: 'enrollment_status_check']
+    `joined_via IN ('code', 'csv')`    [name: 'enrollment_joined_via_check']
   }
+
+  Note: 'นักศึกษาคนไหนอยู่วิชาไหน (many-to-many ระหว่าง students กับ courses)'
 }
 
-Table quizzes {
-  quiz_id varchar [pk, not null, default: `gen_random_uuid()`]
-  course_code integer
-  quiz_name varchar(255)
-  full_mark integer [note: 'Application default: 100']
-  weight float [note: 'Application default: 1.0']
-  is_publish boolean [note: 'Application default: false']
-  created_at timestamp [note: 'Application default: datetime.utcnow']
-  is_deleted boolean [note: 'Application default: false']
 
-  indexes {
-    quiz_id [name: 'ix_quizzes_quiz_id']
-  }
+// ---------------------------------------------------------------
+//  GRADING
+// ---------------------------------------------------------------
+
+Table quizzes [headercolor: #e76f51] {
+  quiz_id      varchar       [pk, default: `gen_random_uuid()`]
+  course_code  integer       [ref: > courses.course_code]
+  quiz_name    varchar(255)
+  full_mark    integer       [note: 'คะแนนเต็ม — app default: 100']
+  weight       float         [note: 'น้ำหนักคะแนน — app default: 1.0']
+  is_publish   boolean       [note: 'app default: false']
+  is_deleted   boolean       [note: 'app default: false']
+  created_at   timestamp     [note: 'app default: utcnow']
 }
 
-Table scores {
-  score_id varchar [pk, not null, default: `gen_random_uuid()`]
-  score float [note: 'Application default: 0.0']
-  unread_flag boolean [note: 'Application default: true']
-  is_deleted boolean [note: 'Application default: false']
-  quiz_id varchar
-  student_id varchar
-  created_at timestamptz [default: `now()`]
-  updated_at timestamptz [default: `now()`, note: 'SQLAlchemy onupdate: now(); the models do not define a database update trigger.']
+Table scores [headercolor: #e76f51] {
+  score_id     varchar      [pk, default: `gen_random_uuid()`]
+  quiz_id      varchar      [ref: > quizzes.quiz_id]
+  student_id   varchar      [ref: > students.student_id]
+  score        float        [note: 'app default: 0.0']
+  unread_flag  boolean      [note: 'นักศึกษายังไม่เปิดดู — app default: true']
+  is_deleted   boolean      [note: 'app default: false']
+  created_at   timestamptz  [default: `now()`]
+  updated_at   timestamptz  [default: `now()`, note: 'อัปเดตผ่าน SQLAlchemy onupdate (ไม่มี trigger ใน DB)']
 
   indexes {
-    score_id [name: 'ix_scores_score_id']
     (student_id, quiz_id) [unique, name: 'unique_student_quiz']
   }
+
+  Note: 'คะแนนของนักศึกษา 1 คนในควิซ 1 อัน'
 }
 
-Table uploads {
-  upload_id varchar [pk, not null, default: `gen_random_uuid()`]
-  file_name varchar(255) [not null]
-  created_at timestamp [note: 'Application default: datetime.utcnow']
-  teacher_id varchar
-  course_code integer
+Table uploads [headercolor: #e76f51] {
+  upload_id    varchar       [pk, default: `gen_random_uuid()`]
+  file_name    varchar(255)  [not null]
+  teacher_id   varchar       [ref: > teachers.teacher_id]
+  course_code  integer       [ref: > courses.course_code]
+  created_at   timestamp     [note: 'app default: utcnow']
 
-  indexes {
-    upload_id [name: 'ix_uploads_upload_id']
-  }
+  Note: 'ประวัติไฟล์ CSV ที่อาจารย์อัปโหลด'
 }
 
-Ref: auth_providers.auth_user_id > auth_users.auth_user_id
-Ref: students.auth_user_id > auth_users.auth_user_id
-Ref: teachers.auth_user_id > auth_users.auth_user_id
-Ref: courses.teacher_id > teachers.teacher_id
-Ref: enrollments.student_id > students.student_id
-Ref: enrollments.course_code > courses.course_code
-Ref: quizzes.course_code > courses.course_code
-Ref: scores.quiz_id > quizzes.quiz_id
-Ref: scores.student_id > students.student_id
-Ref: uploads.teacher_id > teachers.teacher_id
-Ref: uploads.course_code > courses.course_code
+
+// ---------------------------------------------------------------
+//  GROUPS (กรอบสีใน diagram)
+// ---------------------------------------------------------------
+
+TableGroup Auth {
+  auth_users
+  auth_providers
+}
+
+TableGroup People {
+  students
+  teachers
+}
+
+TableGroup Course {
+  courses
+  enrollments
+}
+
+TableGroup Grading {
+  quizzes
+  scores
+  uploads
+}
